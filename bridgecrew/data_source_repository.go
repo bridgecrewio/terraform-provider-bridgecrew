@@ -25,7 +25,7 @@ func dataSourceRepositories() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": &schema.Schema{
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"repository": &schema.Schema{
@@ -111,8 +111,10 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 	}
     
 	log.Print(repositories)
-
-	if err := d.Set("repositories", repositories); err != nil {
+	flatRepos := flattenRepositoryData(&repositories)
+	
+	//if err := d.Set("repositories", repositories); err != nil {
+	if err := d.Set("repositories", flatRepos); err != nil {
 		log.Fatal(reflect.TypeOf(repositories))
 		return diag.FromErr(err)
 	}
@@ -122,3 +124,29 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 
 	return diags
 }
+
+func flattenRepositoryData(Repositories *[]map[string]interface{} ) []interface{} {
+	if Repositories != nil {
+	  ois := make([]interface{}, len(*Repositories), len(*Repositories))
+  
+
+    for i, Repository := range *Repositories {
+		oi := make(map[string]interface{})
+
+		oi["id"]=Repository["id"]
+		oi["repository"]=Repository["repository"]
+		oi["repository"] = Repository["repository"]
+		oi["source"] = Repository["source"]
+		oi["owner"] = Repository["owner"]
+        oi["defaultbranch"]="master"
+
+		oi["ispublic"] = Repository["ispublic"]
+		oi["creationdate"] = Repository["creationdate"]
+		ois[i] = oi
+	  }
+  
+	   return ois
+	}
+  
+	return make([]interface{}, 0)
+  }
