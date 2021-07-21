@@ -3,12 +3,12 @@ package bridgecrew
 import (
 	"context"
 	"encoding/json"
-	"net/http"
 	"fmt"
+	"log"
+	"net/http"
+	"os"
 	"strconv"
 	"time"
-	"log"
-	"os"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -44,14 +44,14 @@ func dataSourceRepositoryBranches() *schema.Resource {
 
 func dataSourceRepositoryBranchRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 
-    api := os.Getenv("BRIDGECREW_API")
-    
-    if api == "" {
-        log.Fatal("BRIDGECREW_API is missing")
-    }
+	api := os.Getenv("BRIDGECREW_API")
 
-    // Create a Bearer string by appending string access token
-    var bearer = "Bearer " + api
+	if api == "" {
+		log.Fatal("BRIDGECREW_API is missing")
+	}
+
+	// Create a Bearer string by appending string access token
+	var bearer = "Bearer " + api
 
 	client := &http.Client{Timeout: 10 * time.Second}
 
@@ -67,13 +67,13 @@ func dataSourceRepositoryBranchRead(ctx context.Context, d *schema.ResourceData,
 
 	log.Print("Passed http Request")
 
-    // add authorization header to the req
-    req.Header.Add("Authorization", bearer)
-	
+	// add authorization header to the req
+	req.Header.Add("Authorization", bearer)
+
 	log.Print("Added Header")
-	
+
 	r, err := client.Do(req)
-	
+
 	log.Print("Queried")
 
 	if err != nil {
@@ -81,11 +81,11 @@ func dataSourceRepositoryBranchRead(ctx context.Context, d *schema.ResourceData,
 		return diag.FromErr(err)
 	}
 	defer r.Body.Close()
-	
+
 	log.Print("All data obtained")
 	repositoriesbranches := make([]map[string]interface{}, 0)
 	err = json.NewDecoder(r.Body).Decode(&repositoriesbranches)
-	
+
 	log.Print("Decoded data")
 	log.Print(r.Body)
 
@@ -93,7 +93,6 @@ func dataSourceRepositoryBranchRead(ctx context.Context, d *schema.ResourceData,
 		log.Fatal("Failed to parse data")
 		return diag.FromErr(err)
 	}
-	
 
 	if err := d.Set("repositoriesbranches", repositoriesbranches); err != nil {
 		return diag.FromErr(err)

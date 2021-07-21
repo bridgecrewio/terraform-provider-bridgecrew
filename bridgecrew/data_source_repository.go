@@ -3,13 +3,13 @@ package bridgecrew
 import (
 	"context"
 	"encoding/json"
-	"net/http"
 	"fmt"
-	"strconv"
-	"time"
 	"log"
+	"net/http"
 	"os"
 	"reflect"
+	"strconv"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -24,6 +24,10 @@ func dataSourceRepositories() *schema.Resource {
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
+						"creationdate": &schema.Schema{
+							Type:     schema.TypeString,
+							Computed: true,
+						},
 						"id": &schema.Schema{
 							Type:     schema.TypeString,
 							Computed: true,
@@ -48,10 +52,6 @@ func dataSourceRepositories() *schema.Resource {
 							Type:     schema.TypeBool,
 							Computed: true,
 						},
-						"creationdate": &schema.Schema{
-							Type:     schema.TypeString,
-							Computed: true,
-						},
 					},
 				},
 			},
@@ -61,14 +61,14 @@ func dataSourceRepositories() *schema.Resource {
 
 func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 
-    api := os.Getenv("BRIDGECREW_API")
-    
-    if api == "" {
-        log.Fatal("BRIDGECREW_API is missing")
-    }
+	api := os.Getenv("BRIDGECREW_API")
 
-    // Create a Bearer string by appending string access token
-    var bearer = "Bearer " + api
+	if api == "" {
+		log.Fatal("BRIDGECREW_API is missing")
+	}
+
+	// Create a Bearer string by appending string access token
+	var bearer = "Bearer " + api
 
 	client := &http.Client{Timeout: 10 * time.Second}
 
@@ -84,13 +84,13 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 
 	log.Print("Passed http Request")
 
-    // add authorization header to the req
-    req.Header.Add("Authorization", bearer)
-	
+	// add authorization header to the req
+	req.Header.Add("Authorization", bearer)
+
 	log.Print("Added Header")
-	
+
 	r, err := client.Do(req)
-	
+
 	log.Print("Queried")
 
 	if err != nil {
@@ -98,22 +98,21 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 		return diag.FromErr(err)
 	}
 	defer r.Body.Close()
-	
+
 	log.Print("All data obtained")
 	repositories := make([]map[string]interface{}, 0)
 	err = json.NewDecoder(r.Body).Decode(&repositories)
-	
+
 	log.Print("Decoded data")
 
 	if err != nil {
 		log.Fatal("Failed to parse data")
 		return diag.FromErr(err)
 	}
-    
+
 	log.Print(repositories)
 	flatRepos := flattenRepositoryData(&repositories)
-	
-	//if err := d.Set("repositories", repositories); err != nil {
+
 	if err := d.Set("repositories", flatRepos); err != nil {
 		log.Fatal(reflect.TypeOf(repositories))
 		return diag.FromErr(err)
@@ -125,28 +124,34 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 	return diags
 }
 
-func flattenRepositoryData(Repositories *[]map[string]interface{} ) []interface{} {
+func flattenRepositoryData(Repositories *[]map[string]interface{}) []interface{} {
 	if Repositories != nil {
-	  ois := make([]interface{}, len(*Repositories), len(*Repositories))
-  
+		ois := make([]interface{}, len(*Repositories), len(*Repositories))
 
-    for i, Repository := range *Repositories {
-		oi := make(map[string]interface{})
+		for i, Repository := range *Repositories {
+			oi := make(map[string]interface{})
+			oi["id"] = Repository["id"]
+			oi["repository"] = Repository["repository"]
+			oi["source"] = Repository["source"]
+			oi["owner"] = Repository["owner"]
+			oi["creationdate"]=Repository["creationDate"]
+			oi["defaultbranch"] = Repository["defaultBranch"]
+			oi["ispublic"] = Repository["ispublic"]
 
-		oi["id"]=Repository["id"]
-		oi["repository"]=Repository["repository"]
-		oi["repository"] = Repository["repository"]
-		oi["source"] = Repository["source"]
-		oi["owner"] = Repository["owner"]
-        oi["defaultbranch"]="master"
+			ois[i] = oi
+		}
 
-		oi["ispublic"] = Repository["ispublic"]
-		oi["creationdate"] = Repository["creationdate"]
-		ois[i] = oi
-	  }
-  
-	   return ois
+		return ois
 	}
-  
+
 	return make([]interface{}, 0)
-  }
+}
+
+// TimeValue returns the value of the time.Time pointer passed in or
+// time.Time{} if the pointer is nil.
+func TimeValue(v *time.Time) time.Time {
+	if v != nil {
+		return *v
+	}
+	return time.Time{}
+}

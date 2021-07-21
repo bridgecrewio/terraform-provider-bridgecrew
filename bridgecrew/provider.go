@@ -3,7 +3,7 @@ package bridgecrew
 import (
 	//"context"
 	"net/http"
-//	"time"
+	//	"time"
 	//"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -13,6 +13,7 @@ type Client struct {
 	HTTPClient *http.Client
 	Token      string
 }
+
 const HostURL string = "https://www.bridgecrew.cloud/api/v1/"
 
 func Provider() *schema.Provider {
@@ -35,7 +36,7 @@ func Provider() *schema.Provider {
 		},
 		ResourcesMap: map[string]*schema.Resource{},
 		DataSourcesMap: map[string]*schema.Resource{
-			"bridgecrew_repositories": dataSourceRepositories(),
+			"bridgecrew_repositories":        dataSourceRepositories(),
 			"bridgecrew_repository_branches": dataSourceRepositoryBranches(),
 		},
 		//ConfigureContextFunc: configureProvider,
@@ -45,9 +46,9 @@ func Provider() *schema.Provider {
 //func configureProvider(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 //	token := d.Get("token").(string)
 
-	// Warning or errors can be collected in a slice type
+// Warning or errors can be collected in a slice type
 //	var diags diag.Diagnostics
-	
+
 //	if (token != "") {
 //		c, err := NewClient(&token)
 //		if err != nil {
