@@ -9,46 +9,29 @@ import (
 	"time"
 	"log"
 	"os"
-	"reflect"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func dataSourceRepositories() *schema.Resource {
+func dataSourceRepositoryBranches() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: dataSourceRepositoryRead,
+		ReadContext: dataSourceRepositoryBranchRead,
 		Schema: map[string]*schema.Schema{
-			"repositories": &schema.Schema{
+			"repositoriesbranches": &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"id": &schema.Schema{
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"repository": &schema.Schema{
+						"name": &schema.Schema{
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"source": &schema.Schema{
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"owner": &schema.Schema{
+						"creationdate": &schema.Schema{
 							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"defaultbranch": &schema.Schema{
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"ispublic": &schema.Schema{
-							Type:     schema.TypeBool,
-							Computed: true,
-						},
-						"creationdate": &schema.Schema{
 							Type:     schema.TypeString,
 							Computed: true,
 						},
@@ -59,7 +42,7 @@ func dataSourceRepositories() *schema.Resource {
 	}
 }
 
-func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourceRepositoryBranchRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 
     api := os.Getenv("BRIDGECREW_API")
     
@@ -75,7 +58,7 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/repositories", "https://www.bridgecrew.cloud/api/v1"), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/repositories/branches", "https://www.bridgecrew.cloud/api/v1"), nil)
 
 	if err != nil {
 		log.Fatal("Failed at http")
@@ -100,20 +83,19 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 	defer r.Body.Close()
 	
 	log.Print("All data obtained")
-	repositories := make([]map[string]interface{}, 0)
-	err = json.NewDecoder(r.Body).Decode(&repositories)
+	repositoriesbranches := make([]map[string]interface{}, 0)
+	err = json.NewDecoder(r.Body).Decode(&repositoriesbranches)
 	
 	log.Print("Decoded data")
+	log.Print(r.Body)
 
 	if err != nil {
 		log.Fatal("Failed to parse data")
 		return diag.FromErr(err)
 	}
-    
-	log.Print(repositories)
+	
 
-	if err := d.Set("repositories", repositories); err != nil {
-		log.Fatal(reflect.TypeOf(repositories))
+	if err := d.Set("repositoriesbranches", repositoriesbranches); err != nil {
 		return diag.FromErr(err)
 	}
 

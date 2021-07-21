@@ -36,6 +36,7 @@ func Provider() *schema.Provider {
 		ResourcesMap: map[string]*schema.Resource{},
 		DataSourcesMap: map[string]*schema.Resource{
 			"bridgecrew_repositories": dataSourceRepositories(),
+			"bridgecrew_repository_branches": dataSourceRepositoryBranches(),
 		},
 		//ConfigureContextFunc: configureProvider,
 	}
