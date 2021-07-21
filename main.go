@@ -1,12 +1,16 @@
 package main
 
 import (
-	"github.com/hashicorp/terraform/plugin"
-	"github.com/jameswoolfenden/terraform-providerbridgecrew/bridgecrew"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
+	"github.com/jameswoolfenden/terraform-provider-bridgecrew/bridgecrew"
 )
 
 func main() {
 	plugin.Serve(&plugin.ServeOpts{
-		ProviderFunc: bridgecrew.Provider,
+		ProviderFunc: func() *schema.Provider {
+			return bridgecrew.Provider()
+		},
 	})
 }
+

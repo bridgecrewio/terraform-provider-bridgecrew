@@ -1,12 +1,21 @@
-package main
+package bridgecrew
 
 import (
-	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/hashicorp/terraform/terraform"
-	//"github.com/jameswoolfenden/terraform-provider-bridgecrew/bridgecrew/client"
+	//"context"
+	"net/http"
+//	"time"
+	//"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func Provider() terraform.ResourceProvider {
+type Client struct {
+	HostURL    string
+	HTTPClient *http.Client
+	Token      string
+}
+const HostURL string = "https://www.bridgecrew.cloud/api/v1/"
+
+func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"url": {
@@ -21,17 +30,43 @@ func Provider() terraform.ResourceProvider {
 				Default:     "",
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("BRIDGECREW_TOKEN", nil),
-				Description: "Api Token for Bridgecrew",
+				Description: "API Token for Bridgecrew",
 			},
 		},
-		ResourcesMap:  map[string]*schema.Resource{},
-		ConfigureFunc: configureProvider,
+		ResourcesMap: map[string]*schema.Resource{},
+		DataSourcesMap: map[string]*schema.Resource{
+			"repositories": dataSourceRepositories(),
+		},
+		//ConfigureContextFunc: configureProvider,
 	}
 }
 
-func configureProvider(d *schema.ResourceData) (interface{}, error) {
-	url := d.Get("url").(string)
-	token := d.Get("token").(string)
-	return nil, nil
-	//return bridgecrew.New(url, token)
-}
+//func configureProvider(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+//	token := d.Get("token").(string)
+
+	// Warning or errors can be collected in a slice type
+//	var diags diag.Diagnostics
+	
+//	if (token != "") {
+//		c, err := NewClient(&token)
+//		if err != nil {
+//			diags = append(diags, diag.Diagnostic{
+//				Severity: diag.Error,
+//				Summary:  "Unable to create Bridgecrew client",
+//				Detail:   "Unable to authenticate api key for Bridgecrew client",
+//			})
+
+//			return nil, diags
+//		}
+
+//		return c, diags
+//	}
+
+//	diags = append(diags, diag.Diagnostic{
+//		Severity: diag.Error,
+//		Summary:  "Unable to create Bridgecrew client",
+//		Detail:   "Unable to authenticate api key for Bridgecrew client",
+//	})
+
+//	return nil, diags
+//}
