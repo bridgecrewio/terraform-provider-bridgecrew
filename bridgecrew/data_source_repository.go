@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+	"log"
+	"os"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -37,15 +39,15 @@ func dataSourceRepositories() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"defaultBranch": &schema.Schema{
+						"defaultbranch": &schema.Schema{
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"isPublic": &schema.Schema{
+						"ispublic": &schema.Schema{
 							Type:     schema.TypeBool,
 							Computed: true,
 						},
-						"creationDate": &schema.Schema{
+						"creationdate": &schema.Schema{
 							Type:     schema.TypeString,
 							Computed: true,
 						},
@@ -57,6 +59,16 @@ func dataSourceRepositories() *schema.Resource {
 }
 
 func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+
+    api := os.Getenv("BRIDGECREW_API")
+    
+    if api == "" {
+        log.Fatal("BRIDGECREW_API is missing")
+    }
+
+    // Create a Bearer string by appending string access token
+    var bearer = "Bearer " + api
+
 	client := &http.Client{Timeout: 10 * time.Second}
 
 	// Warning or errors can be collected in a slice type
@@ -67,6 +79,9 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 		return diag.FromErr(err)
 	}
 
+    // add authorization header to the req
+    req.Header.Add("Authorization", bearer)
+	
 	r, err := client.Do(req)
 
 	if err != nil {
