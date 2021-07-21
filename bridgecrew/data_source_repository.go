@@ -146,12 +146,3 @@ func flattenRepositoryData(Repositories *[]map[string]interface{}) []interface{}
 
 	return make([]interface{}, 0)
 }
-
-// TimeValue returns the value of the time.Time pointer passed in or
-// time.Time{} if the pointer is nil.
-func TimeValue(v *time.Time) time.Time {
-	if v != nil {
-		return *v
-	}
-	return time.Time{}
-}
