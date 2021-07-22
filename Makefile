@@ -41,3 +41,6 @@ check: install
 	-rm .terraform.lock.hcl
 	terraform init
 	terraform plan
+
+docs:
+	go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs

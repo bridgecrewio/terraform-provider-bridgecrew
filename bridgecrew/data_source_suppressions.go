@@ -139,10 +139,10 @@ func flattenSuppressionData(Suppressions *[]map[string]interface{}) []interface{
 		for i, Suppression := range *Suppressions {
 			oi := make(map[string]interface{})
 			oi["suppressiontype"] = Suppression["suppressionType"]
-			oi["creationdate"] = Suppression["creationDate"]
-			oi["id"] = Suppression["id"]
-			oi["policyid"] = Suppression["policyId"]
-			oi["comment"] = Suppression["comment"]
+			oi["creationdate"]    = Suppression["creationDate"]
+			oi["id"]        = Suppression["id"]
+			oi["policyid"]  = Suppression["policyId"]
+			oi["comment"]   = Suppression["comment"]
 			ois[i] = oi
 		}
 
