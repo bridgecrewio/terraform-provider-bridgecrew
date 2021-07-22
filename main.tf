@@ -4,8 +4,8 @@ provider "bridgecrew" {
 }
 
 data "bridgecrew_repositories" "all" {}
+data "bridgecrew_suppressions" "all" {}
 //data "bridgecrew_repository_branches" "all" {}
-
 
 terraform {
   required_providers {
@@ -19,3 +19,12 @@ terraform {
 output "repos" {
   value = data.bridgecrew_repositories.all
 }
+
+
+output "suppression" {
+  value = data.bridgecrew_suppressions.all
+}
+
+//output "branches" {
+ // value = data.bridgecrew_repository_branches.all
+//}

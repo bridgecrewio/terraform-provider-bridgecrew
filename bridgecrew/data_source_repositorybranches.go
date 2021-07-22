@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"reflect"
 	"strconv"
 	"time"
 
@@ -21,22 +22,7 @@ func dataSourceRepositoryBranches() *schema.Resource {
 			"repositoriesbranches": &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"name": &schema.Schema{
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"creationdate": &schema.Schema{
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"defaultbranch": &schema.Schema{
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-					},
-				},
+				Elem:     &schema.Resource{},
 			},
 		},
 	}
@@ -94,7 +80,11 @@ func dataSourceRepositoryBranchRead(ctx context.Context, d *schema.ResourceData,
 		return diag.FromErr(err)
 	}
 
-	if err := d.Set("repositoriesbranches", repositoriesbranches); err != nil {
+	log.Print(repositoriesbranches)
+	flatBranch := flattenBranchData(&repositoriesbranches)
+
+	if err := d.Set("repositories", flatBranch); err != nil {
+		log.Fatal(reflect.TypeOf(repositoriesbranches))
 		return diag.FromErr(err)
 	}
 
@@ -102,4 +92,22 @@ func dataSourceRepositoryBranchRead(ctx context.Context, d *schema.ResourceData,
 	d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
 
 	return diags
+}
+func flattenBranchData(Repositories *[]map[string]interface{}) []interface{} {
+	if Repositories != nil {
+		ois := make([]interface{}, len(*Repositories), len(*Repositories))
+
+		//for i, Repository := range *Repositories {
+		//	oi := make(map[string]interface{})
+		//oi["name"] = Repository["name"]
+		//oi["creationdate"] = Repository["creationDate"]
+		//oi["defaultbranch"] = Repository["defaultBranch"]
+
+		//	ois[i] = oi
+		//}
+
+		return ois
+	}
+
+	return make([]interface{}, 0)
 }

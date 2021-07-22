@@ -15,15 +15,19 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func dataSourceRepositories() *schema.Resource {
+func dataSourceSuppressions() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: dataSourceRepositoryRead,
+		ReadContext: dataSourceSuppressionRead,
 		Schema: map[string]*schema.Schema{
-			"repositories": &schema.Schema{
+			"suppressions": &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
+						"suppressiontype": &schema.Schema{
+							Type:     schema.TypeString,
+							Computed: true,
+						},
 						"creationdate": &schema.Schema{
 							Type:     schema.TypeString,
 							Computed: true,
@@ -32,25 +36,29 @@ func dataSourceRepositories() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"repository": &schema.Schema{
+						"policyid": &schema.Schema{
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"source": &schema.Schema{
+						"comment": &schema.Schema{
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"owner": &schema.Schema{
-							Type:     schema.TypeString,
+						"resources": &schema.Schema{
+							Type:     schema.TypeList,
 							Computed: true,
-						},
-						"defaultbranch": &schema.Schema{
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"ispublic": &schema.Schema{
-							Type:     schema.TypeBool,
-							Computed: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+								"accountid": &schema.Schema{
+									Type:     schema.TypeString,
+									Computed: true,
+								},
+								"resourceid": &schema.Schema{
+									Type:     schema.TypeString,
+									Computed: true,
+								},
+							},
+							},
 						},
 					},
 				},
@@ -59,7 +67,7 @@ func dataSourceRepositories() *schema.Resource {
 	}
 }
 
-func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourceSuppressionRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 
 	api := os.Getenv("BRIDGECREW_API")
 
@@ -75,7 +83,7 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/repositories", "https://www.bridgecrew.cloud/api/v1"), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/suppressions", "https://www.bridgecrew.cloud/api/v1"), nil)
 
 	if err != nil {
 		log.Fatal("Failed at http")
@@ -100,8 +108,8 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 	defer r.Body.Close()
 
 	log.Print("All data obtained")
-	repositories := make([]map[string]interface{}, 0)
-	err = json.NewDecoder(r.Body).Decode(&repositories)
+	Suppressions := make([]map[string]interface{}, 0)
+	err = json.NewDecoder(r.Body).Decode(&Suppressions)
 
 	log.Print("Decoded data")
 
@@ -110,11 +118,11 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 		return diag.FromErr(err)
 	}
 
-	log.Print(repositories)
-	flatRepos := flattenRepositoryData(&repositories)
+	log.Print(Suppressions)
+	flatRepos := flattenSuppressionData(&Suppressions)
 
-	if err := d.Set("repositories", flatRepos); err != nil {
-		log.Fatal(reflect.TypeOf(repositories))
+	if err := d.Set("suppressions", flatRepos); err != nil {
+		log.Fatal(reflect.TypeOf(Suppressions))
 		return diag.FromErr(err)
 	}
 
@@ -124,20 +132,17 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 	return diags
 }
 
-func flattenRepositoryData(Repositories *[]map[string]interface{}) []interface{} {
-	if Repositories != nil {
-		ois := make([]interface{}, len(*Repositories), len(*Repositories))
+func flattenSuppressionData(Suppressions *[]map[string]interface{}) []interface{} {
+	if Suppressions != nil {
+		ois := make([]interface{}, len(*Suppressions), len(*Suppressions))
 
-		for i, Repository := range *Repositories {
+		for i, Suppression := range *Suppressions {
 			oi := make(map[string]interface{})
-			oi["id"] = Repository["id"]
-			oi["repository"] = Repository["repository"]
-			oi["source"] = Repository["source"]
-			oi["owner"] = Repository["owner"]
-			oi["creationdate"] = Repository["creationDate"]
-			oi["defaultbranch"] = Repository["defaultBranch"]
-			oi["ispublic"] = Repository["ispublic"]
-
+			oi["suppressiontype"] = Suppression["suppressionType"]
+			oi["creationdate"] = Suppression["creationDate"]
+			oi["id"] = Suppression["id"]
+			oi["policyid"] = Suppression["policyId"]
+			oi["comment"] = Suppression["comment"]
 			ois[i] = oi
 		}
 
