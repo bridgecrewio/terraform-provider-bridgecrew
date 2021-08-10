@@ -27,3 +27,4 @@ website/node_modules
 *.iml
 vendor
 .terraform.lock.hcl
+terraform-provider-bridgecrew

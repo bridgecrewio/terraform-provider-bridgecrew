@@ -3,10 +3,7 @@ package bridgecrew
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
-	"net/http"
-	"os"
 	"reflect"
 	"strconv"
 	"time"
@@ -29,33 +26,14 @@ func dataSourceRepositoryBranches() *schema.Resource {
 }
 
 func dataSourceRepositoryBranchRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	path := "%s/repositories/branches"
+	
 
-	api := os.Getenv("BRIDGECREW_API")
+	client, diags, req, err, diagnostics, done := authClient(path)
 
-	if api == "" {
-		log.Fatal("BRIDGECREW_API is missing")
+	if done {
+		return diagnostics
 	}
-
-	// Create a Bearer string by appending string access token
-	var bearer = "Bearer " + api
-
-	client := &http.Client{Timeout: 10 * time.Second}
-
-	// Warning or errors can be collected in a slice type
-	var diags diag.Diagnostics
-
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/repositories/branches", "https://www.bridgecrew.cloud/api/v1"), nil)
-
-	if err != nil {
-		log.Fatal("Failed at http")
-		return diag.FromErr(err)
-	}
-
-	log.Print("Passed http Request")
-
-	// add authorization header to the req
-	req.Header.Add("Authorization", bearer)
-
 	log.Print("Added Header")
 
 	r, err := client.Do(req)
