@@ -8,14 +8,14 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+// Client To be able to customise the url
 type Client struct {
 	HostURL    string
 	HTTPClient *http.Client
 	Token      string
 }
 
-const HostURL string = "https://www.bridgecrew.cloud/api/v1/"
-
+//Provider main object
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
@@ -40,36 +40,5 @@ func Provider() *schema.Provider {
 			"bridgecrew_repository_branches": dataSourceRepositoryBranches(),
 			"bridgecrew_suppressions":        dataSourceSuppressions(),
 		},
-		//ConfigureContextFunc: configureProvider,
 	}
 }
-
-//func configureProvider(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-//	token := d.Get("token").(string)
-
-// Warning or errors can be collected in a slice type
-//	var diags diag.Diagnostics
-
-//	if (token != "") {
-//		c, err := NewClient(&token)
-//		if err != nil {
-//			diags = append(diags, diag.Diagnostic{
-//				Severity: diag.Error,
-//				Summary:  "Unable to create Bridgecrew client",
-//				Detail:   "Unable to authenticate api key for Bridgecrew client",
-//			})
-
-//			return nil, diags
-//		}
-
-//		return c, diags
-//	}
-
-//	diags = append(diags, diag.Diagnostic{
-//		Severity: diag.Error,
-//		Summary:  "Unable to create Bridgecrew client",
-//		Detail:   "Unable to authenticate api key for Bridgecrew client",
-//	})
-
-//	return nil, diags
-//}

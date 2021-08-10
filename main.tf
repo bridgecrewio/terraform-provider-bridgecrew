@@ -26,5 +26,5 @@ output "suppression" {
 }
 
 //output "branches" {
- // value = data.bridgecrew_repository_branches.all
+//  value = data.bridgecrew_repository_branches.all
 //}

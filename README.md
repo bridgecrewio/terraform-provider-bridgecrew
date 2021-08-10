@@ -1,7 +1,10 @@
 # terraform-provider-bridgecrew
 
-First of all you need to add your secret - the bridgecrew api key, as an env var - BRIDGECREW_API or it won't work.
-If this is you first time using this provider you will need to build and then run with:
+First you need to add your secret - the bridgecrew API key, as an env var,
+BRIDGECREW_API, or it won't work.
+
+If this is you first time using this provider you will need to build
+and then run with:
 
 ```bash
 make check

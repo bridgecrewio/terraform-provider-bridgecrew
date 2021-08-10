@@ -3,7 +3,7 @@
 page_title: "bridgecrew_repositories Data Source - terraform-provider-bridgecrew"
 subcategory: ""
 description: |-
-  
+
 ---
 
 # bridgecrew_repositories (Data Source)
@@ -35,5 +35,3 @@ Read-Only:
 - **owner** (String)
 - **repository** (String)
 - **source** (String)
-
-

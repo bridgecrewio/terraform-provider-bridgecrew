@@ -3,7 +3,7 @@
 page_title: "bridgecrew Provider"
 subcategory: ""
 description: |-
-  
+
 ---
 
 # bridgecrew Provider

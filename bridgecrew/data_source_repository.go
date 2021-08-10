@@ -58,7 +58,6 @@ func dataSourceRepositories() *schema.Resource {
 
 func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	path := "%s/repositories"
-	
 
 	client, diags, req, err, diagnostics, done := authClient(path)
 

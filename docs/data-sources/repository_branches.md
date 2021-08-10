@@ -3,7 +3,7 @@
 page_title: "bridgecrew_repository_branches Data Source - terraform-provider-bridgecrew"
 subcategory: ""
 description: |-
-  
+
 ---
 
 # bridgecrew_repository_branches (Data Source)
@@ -27,5 +27,3 @@ description: |-
 ### Nested Schema for `repositoriesbranches`
 
 Read-Only:
-
-

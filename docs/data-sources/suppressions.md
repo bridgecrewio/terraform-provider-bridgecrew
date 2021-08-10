@@ -3,7 +3,7 @@
 page_title: "bridgecrew_suppressions Data Source - terraform-provider-bridgecrew"
 subcategory: ""
 description: |-
-  
+
 ---
 
 # bridgecrew_suppressions (Data Source)
@@ -42,5 +42,3 @@ Read-Only:
 
 - **accountid** (String)
 - **resourceid** (String)
-
-
