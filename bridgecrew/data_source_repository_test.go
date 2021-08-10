@@ -10,7 +10,7 @@ import (
 
 func TestFlattenRepositoryData(t *testing.T) {
 	cases := []struct {
-		ownerId      *string
+		ownerID      *string
 		repositories []map[string]interface{}
 		expected     []*GroupIdentifier
 	}{

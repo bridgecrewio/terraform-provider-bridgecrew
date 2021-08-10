@@ -32,15 +32,6 @@ repos:
     hooks:
       - id: markdownlint
         exclude: docs/
-  - repo: git://github.com/adrienverge/yamllint
-    rev: v1.26.2
-    hooks:
-      - id: yamllint
-        name: yamllint
-        description: This hook runs yamllint.
-        entry: yamllint
-        language: python
-        types: [file, yaml]
   - repo: git://github.com/jameswoolfenden/pre-commit
     rev: v0.1.46
     hooks:
