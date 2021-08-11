@@ -16,41 +16,41 @@ func dataSourceSuppressions() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceSuppressionRead,
 		Schema: map[string]*schema.Schema{
-			"suppressions": &schema.Schema{
+			"suppressions": {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"suppressiontype": &schema.Schema{
+						"suppressiontype": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"creationdate": &schema.Schema{
+						"creationdate": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"id": &schema.Schema{
+						"id": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"policyid": &schema.Schema{
+						"policyid": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"comment": &schema.Schema{
+						"comment": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"resources": &schema.Schema{
+						"resources": {
 							Type:     schema.TypeList,
 							Computed: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
-									"accountid": &schema.Schema{
+									"accountid": {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
-									"resourceid": &schema.Schema{
+									"resourceid": {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
@@ -67,17 +67,13 @@ func dataSourceSuppressions() *schema.Resource {
 func dataSourceSuppressionRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	path := "%s/suppressions"
 
-	client, diags, req, err, diagnostics, done := authClient(path)
+	client, diags, req, diagnostics, done, err := authClient(path)
 
 	if done {
 		return diagnostics
 	}
 
-	log.Print("Added Header")
-
 	r, err := client.Do(req)
-
-	log.Print("Queried")
 
 	if err != nil {
 		log.Fatal("Failed at client.Do")
@@ -89,14 +85,11 @@ func dataSourceSuppressionRead(ctx context.Context, d *schema.ResourceData, m in
 	Suppressions := make([]map[string]interface{}, 0)
 	err = json.NewDecoder(r.Body).Decode(&Suppressions)
 
-	log.Print("Decoded data")
-
 	if err != nil {
 		log.Fatal("Failed to parse data")
 		return diag.FromErr(err)
 	}
 
-	log.Print(Suppressions)
 	flatRepos := flattenSuppressionData(&Suppressions)
 
 	if err := d.Set("suppressions", flatRepos); err != nil {

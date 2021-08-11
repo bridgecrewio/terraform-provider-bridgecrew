@@ -11,7 +11,7 @@ import (
 )
 
 //use basic auth client
-func authClient(path string) (*http.Client, diag.Diagnostics, *http.Request, error, diag.Diagnostics, bool) {
+func authClient(path string) (*http.Client, diag.Diagnostics, *http.Request, diag.Diagnostics, bool, error) {
 	api := os.Getenv("BRIDGECREW_API")
 
 	if api == "" {
@@ -25,17 +25,17 @@ func authClient(path string) (*http.Client, diag.Diagnostics, *http.Request, err
 
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
-	log.Print(fmt.Sprintf(path, "https://www.bridgecrew.cloud/api/v1"))
+
 	req, err := http.NewRequest("GET", fmt.Sprintf(path, "https://www.bridgecrew.cloud/api/v1"), nil)
 
 	if err != nil {
 		log.Fatal("Failed at http")
-		return nil, nil, nil, nil, diag.FromErr(err), true
+		return nil, nil, nil, diag.FromErr(err), true, nil
 	}
 
 	log.Print("Passed http Request")
 
 	// add authorization header to the req
 	req.Header.Add("Authorization", bearer)
-	return client, diags, req, err, nil, false
+	return client, diags, req, nil, false, err
 }

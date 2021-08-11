@@ -16,7 +16,7 @@ func dataSourceRepositoryBranches() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceRepositoryBranchRead,
 		Schema: map[string]*schema.Schema{
-			"repositoriesbranches": &schema.Schema{
+			"repositoriesbranches": {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Resource{},
@@ -28,7 +28,7 @@ func dataSourceRepositoryBranches() *schema.Resource {
 func dataSourceRepositoryBranchRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	path := "%s/repositories/branches"
 
-	client, diags, req, err, diagnostics, done := authClient(path)
+	client, diags, req, diagnostics, done, err := authClient(path)
 
 	if done {
 		return diagnostics

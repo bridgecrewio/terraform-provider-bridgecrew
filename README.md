@@ -1,6 +1,6 @@
 # terraform-provider-bridgecrew
 
-First you need to add your secret - the bridgecrew API key, as an env var,
+First you need to add your secret - the Bridgecrew API key, as an env var,
 BRIDGECREW_API, or it won't work.
 
 If this is you first time using this provider you will need to build
@@ -43,3 +43,8 @@ The Terraform config is in main.tf.
 
 - bridgecrew_repositories
 - bridgecrew_suppressions
+- bridgecrew_policies
+
+export TF_LOG_CORE=""
+and
+export TF_LOG_PROVIDER="DEBUG"

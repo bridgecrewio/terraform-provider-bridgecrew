@@ -1,10 +1,8 @@
 package bridgecrew
 
 import (
-	//"context"
 	"net/http"
-	//	"time"
-	//"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -39,6 +37,7 @@ func Provider() *schema.Provider {
 			"bridgecrew_repositories":        dataSourceRepositories(),
 			"bridgecrew_repository_branches": dataSourceRepositoryBranches(),
 			"bridgecrew_suppressions":        dataSourceSuppressions(),
+			"bridgecrew_policies":            dataSourcePolicies(),
 		},
 	}
 }
