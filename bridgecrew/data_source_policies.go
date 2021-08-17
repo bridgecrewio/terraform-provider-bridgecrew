@@ -2,7 +2,7 @@ package bridgecrew
 
 import (
 	"context"
-	"encoding/json"
+	"io/ioutil"
 	"log"
 	"reflect"
 	"strconv"
@@ -10,6 +10,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/karlseguin/typed"
 )
 
 func dataSourcePolicies() *schema.Resource {
@@ -18,13 +19,16 @@ func dataSourcePolicies() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"policies": {
-				Type:     schema.TypeList,
+				Type:     schema.TypeSet,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"provider": {
 							Type:     schema.TypeString,
-							Computed: true},
+							Computed: false,
+							Required: false,
+							Optional: true,
+							Default:  "aws"},
 						"id": {
 							Type:     schema.TypeString,
 							Computed: true},
@@ -43,63 +47,25 @@ func dataSourcePolicies() *schema.Resource {
 						"category": {
 							Type:     schema.TypeString,
 							Computed: true},
-					},
-				},
-			},
-			"filters": {
-				Type:     schema.TypeSet,
-				Computed: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"category": {
-							Type:     schema.TypeList,
-							Computed: true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
-							},
-						},
 						"resourcetypes": {
 							Type:     schema.TypeList,
 							Computed: true,
 							Elem: &schema.Schema{
-								Type: schema.TypeString,
+								Type:    schema.TypeString,
+								Default: "",
 							},
 						},
-						"severity": {
-							Type:     schema.TypeList,
-							Computed: true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
-							},
-						},
-						"createdby": {
-							Type:     schema.TypeList,
-							Computed: true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
-							},
-						},
-						"provider": {
-							Type:     schema.TypeList,
-							Computed: true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
-							},
-						},
-						"benchmarks": {
-							Type:     schema.TypeList,
-							Computed: true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
-							},
-						},
-						"accounts": {
-							Type:     schema.TypeList,
-							Computed: true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
-							},
-						},
+						//"accountsData":{},struct
+						"guideline": {Type: schema.TypeString,
+							Computed: true},
+						"iscustom": {Type: schema.TypeBool,
+							Computed: true},
+						//"conditionQuery":struct
+						//benchmarks: struct
+						"createdby": {Type: schema.TypeString,
+							Computed: true},
+						"code": {Type: schema.TypeString,
+							Computed: true},
 					},
 				},
 			},
@@ -110,12 +76,18 @@ func dataSourcePolicies() *schema.Resource {
 func dataSourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	path := "%s/policies/table/data"
 	client, diags, req, diagnostics, done, err := authClient(path)
+
+	if err != nil {
+		log.Fatal("Failed at authClient")
+		return diags
+	}
+
 	if done {
 		return diagnostics
 	}
 
+	log.Print("********PREQUEST********")
 	r, err := client.Do(req)
-	log.Print("Queried")
 
 	if err != nil {
 		log.Fatal("Failed at client.Do")
@@ -123,50 +95,54 @@ func dataSourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interfa
 	}
 	defer r.Body.Close()
 
-	policies := make([]map[string]interface{}, 0)
+	body, _ := ioutil.ReadAll(r.Body)
+	log.Print("********PRETYPE********")
+	typed, err := typed.Json(body)
 
-	log.Print("***** predecode ****")
-	err = json.NewDecoder(r.Body).Decode(&policies)
-	log.Print("***** postdecode ****")
-	if err != nil {
-		log.Fatal("Failed to parse data")
-		return diag.FromErr(err)
-	}
+	//var filters =typed.Object("filters")
+	var data = typed.Maps("data")
 
-	flatPolicies := flattenPolicyData(&policies)
+	flatPolicies := flattenPolicyData(&data)
 
+	log.Print("********PRESET********")
+	log.Print(reflect.TypeOf(data))
+	log.Print("********FLATTEN********")
+	log.Print(reflect.TypeOf(flatPolicies))
 	if err := d.Set("policies", flatPolicies); err != nil {
-		log.Fatal(reflect.TypeOf(policies))
+		log.Fatal(reflect.TypeOf(data))
 		return diag.FromErr(err)
 	}
 
 	// always run
 	d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
 
-	return diags
+	return diagnostics
 }
 
-func flattenPolicyData(Policies *[]map[string]interface{}) interface{} {
-	//if Policies != nil {
-	//ois := make([]interface{}, len(*Policies), len(*Policies))
-	//filters := make(map[string]interface{})
-	//filters["category"] = Policies[]
-	//filters["resourcetypes"] = Policies.Filters.ResourceTypes
-	//filters["severity"] = Policies.Filters.Severity
-	//log.Print(Policies.Filters)
-	//return filters
-	//	for i, Repository := range *Policies {
-	//		oi := make(map[string]interface{})
-	//		oi["provider"] = Repository["Provider"]
-	//		oi["id"] = Repository["ID"]
-	//		oi["title"] = Repository["Title"]
-	//		oi["descriptivetitle"] = Repository["DescriptiveTitle"]
-	//		oi["constructivetitle"] = Repository["ConstructiveTitle"]
-	//		oi["severity"] = Repository["Severity"]
-	//		oi["category"] = Repository["Category"]
-	//		ois[i] = oi
-	//	}
-	//}
+func flattenPolicyData(Policies *[]map[string]interface{}) []interface{} {
+	if Policies != nil {
+		ois := make([]interface{}, len(*Policies), len(*Policies))
+		for i, Policy := range *Policies {
+			oi := make(map[string]interface{})
 
-	return make(map[string]interface{}, 0)
+			oi["provider"] = Policy["provider"]
+			oi["id"] = Policy["id"]
+			oi["title"] = Policy["title"]
+			oi["descriptivetitle"] = Policy["descriptiveTitle"]
+			oi["constructivetitle"] = Policy["constructiveTitle"]
+			oi["severity"] = Policy["severity"]
+			oi["category"] = Policy["category"]
+			oi["resourcetypes"] = []string{"a", "b", "c"}
+			oi["guideline"] = Policy["guideline"]
+			oi["iscustom"] = true //Policy["isCustom"]
+
+			//oi["resourcetypes"]=Policy["resourceTypes"]
+			oi["createdby"] = Policy["createdBy"]
+			oi["code"] = Policy["code"]
+			ois[i] = oi
+		}
+		return ois
+	}
+
+	return make([]interface{}, 0)
 }
