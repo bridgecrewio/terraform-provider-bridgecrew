@@ -26,46 +26,101 @@ func dataSourcePolicies() *schema.Resource {
 						"provider": {
 							Type:     schema.TypeString,
 							Computed: false,
-							Required: false,
-							Optional: true,
-							Default:  "aws"},
+							Required: true,
+						},
 						"id": {
 							Type:     schema.TypeString,
-							Computed: true},
+							Computed: true,
+						},
 						"title": {
 							Type:     schema.TypeString,
-							Computed: true},
+							Required: true,
+						},
 						"descriptivetitle": {
 							Type:     schema.TypeString,
-							Computed: true},
+							Optional: true,
+						},
 						"constructivetitle": {
 							Type:     schema.TypeString,
-							Computed: true},
+							Optional: true,
+						},
 						"severity": {
 							Type:     schema.TypeString,
-							Computed: true},
+							Required: true,
+						},
 						"category": {
 							Type:     schema.TypeString,
-							Computed: true},
+							Required: true,
+						},
 						"resourcetypes": {
 							Type:     schema.TypeList,
-							Computed: true,
+							Required: true,
 							Elem: &schema.Schema{
 								Type:    schema.TypeString,
 								Default: "",
 							},
 						},
-						//"accountsData":{},struct
-						"guideline": {Type: schema.TypeString,
-							Computed: true},
-						"iscustom": {Type: schema.TypeBool,
-							Computed: true},
-						//"conditionQuery":struct
-						//benchmarks: struct
-						"createdby": {Type: schema.TypeString,
-							Computed: true},
-						"code": {Type: schema.TypeString,
-							Computed: true},
+						"accountsdata": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"guideline": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"iscustom": {
+							Type:     schema.TypeBool,
+							Computed: true,
+						},
+						"conditionquery": {
+							Type:     schema.TypeSet,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"value": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
+									"operator": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
+									"attribute": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
+									"cond_type": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
+									"resource_types": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Schema{
+											Type: schema.TypeString,
+										},
+									},
+								},
+							},
+						},
+						"benchmarks": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"createdby": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"code": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
 					},
 				},
 			},
@@ -86,7 +141,6 @@ func dataSourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interfa
 		return diagnostics
 	}
 
-	log.Print("********PREQUEST********")
 	r, err := client.Do(req)
 
 	if err != nil {
@@ -96,7 +150,6 @@ func dataSourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interfa
 	defer r.Body.Close()
 
 	body, _ := ioutil.ReadAll(r.Body)
-	log.Print("********PRETYPE********")
 	typed, err := typed.Json(body)
 
 	//var filters =typed.Object("filters")
@@ -104,10 +157,6 @@ func dataSourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interfa
 
 	flatPolicies := flattenPolicyData(&data)
 
-	log.Print("********PRESET********")
-	log.Print(reflect.TypeOf(data))
-	log.Print("********FLATTEN********")
-	log.Print(reflect.TypeOf(flatPolicies))
 	if err := d.Set("policies", flatPolicies); err != nil {
 		log.Fatal(reflect.TypeOf(data))
 		return diag.FromErr(err)
@@ -125,18 +174,20 @@ func flattenPolicyData(Policies *[]map[string]interface{}) []interface{} {
 		for i, Policy := range *Policies {
 			oi := make(map[string]interface{})
 
-			oi["provider"] = Policy["provider"]
-			oi["id"] = Policy["id"]
-			oi["title"] = Policy["title"]
+			oi["provider"] = Policy["provider"] // AWS
+			oi["id"] = Policy["id"]             // james_AWS_1620660945849
+			oi["title"] = Policy["title"]       // new policy
 			oi["descriptivetitle"] = Policy["descriptiveTitle"]
 			oi["constructivetitle"] = Policy["constructiveTitle"]
-			oi["severity"] = Policy["severity"]
-			oi["category"] = Policy["category"]
-			oi["resourcetypes"] = []string{"a", "b", "c"}
+			oi["severity"] = Policy["severity"] //CRITICAL
+			oi["category"] = Policy["category"] // General
 			oi["guideline"] = Policy["guideline"]
-			oi["iscustom"] = true //Policy["isCustom"]
+			oi["iscustom"] = Policy["isCustom"]
+			//oi["accountsdata"] = Policy["accountsData"]     //slice of map
+			//oi["conditionquery"] = Policy["conditionQuery"] //slice of map
+			oi["benchmarks"] = []string{"A", "B", "C"}
 
-			//oi["resourcetypes"]=Policy["resourceTypes"]
+			oi["resourcetypes"] = Policy["resourceTypes"]
 			oi["createdby"] = Policy["createdBy"]
 			oi["code"] = Policy["code"]
 			ois[i] = oi

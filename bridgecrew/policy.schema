@@ -1,0 +1,936 @@
+{
+  "data": [
+    {
+      "provider": "AWS",
+      "id": "james_AWS_1620660945849",
+      "title": "new policy",
+      "descriptiveTitle": null,
+      "constructiveTitle": null,
+      "severity": "CRITICAL",
+      "category": "General",
+      "resourceTypes": [
+        "aws_api_gateway_api_key"
+      ],
+      "accountsData": {
+        "JamesWoolfenden/terraform-aws-apigateway": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 1,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-05-10T21:06:37.342Z"
+        }
+      },
+      "guideline": "its insecure",
+      "isCustom": true,
+      "conditionQuery": {
+        "value": true,
+        "operator": "equals",
+        "attribute": "enabled",
+        "cond_type": "attribute",
+        "resource_types": [
+          "aws_api_gateway_api_key"
+        ]
+      },
+      "benchmarks": {
+        "CIS AZURE V1.1": [
+          "1.23"
+        ]
+      },
+      "createdBy": "james.woolfenden@gmail.com",
+      "code": null
+    },
+    {
+      "provider": "Azure",
+      "id": "james_AZR_1614079398705",
+      "title": "test gilad",
+      "descriptiveTitle": null,
+      "constructiveTitle": null,
+      "severity": "LOW",
+      "category": "Elasticsearch",
+      "resourceTypes": [
+        "aws_instance"
+      ],
+      "accountsData": {
+        "JamesWoolfenden/terraform-aws-artifactory-oss": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 1,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-02-24T06:26:27.136Z"
+        },
+        "JamesWoolfenden/dataops-infra": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 1,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-04-05T13:29:09.026Z"
+        },
+        "redwolfsystems/RedWolfOne/azuredevopsgoat": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 2,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-07-22T12:05:06.980Z"
+        },
+        "JamesWoolfenden/terraform-aws-cassandra": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 1,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-02-24T06:26:49.196Z"
+        },
+        "JamesWoolfenden/rancher-quickstart": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 2,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-02-24T06:25:23.154Z"
+        },
+        "james_test/cli": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 2,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-07-13T15:43:54.397Z"
+        },
+        "JamesWoolfenden/terraform-aws-pritunl-vpn-server": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 1,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-02-24T06:30:52.787Z"
+        },
+        "merchants/terraform-aws-current": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 1,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-02-25T08:19:54.612Z"
+        },
+        "JamesWoolfenden/terraform-aws-ssm-bastion": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 1,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-02-24T06:31:51.225Z"
+        },
+        "JamesWoolfenden/learn-terraform": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 1,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-02-24T06:23:38.378Z"
+        },
+        "JamesWoolfenden/terraform-aws-teamcity": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 1,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-02-24T06:32:04.927Z"
+        },
+        "JamesWoolfenden/terragoat": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 2,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-03-26T10:06:29.867Z"
+        },
+        "JamesWoolfenden/terraform-aws-confluent": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 6,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-02-24T06:28:12.430Z"
+        },
+        "JamesWoolfenden/learn-packer": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 1,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-02-24T06:23:18.487Z"
+        },
+        "JamesWoolfenden/terraform-aws-ec2": {
+          "amounts": {
+            "CLOSED": 1,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-04-09T22:24:48.900Z"
+        },
+        "JamesWoolfenden/terraform-docker-build": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 1,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-02-24T06:34:09.073Z"
+        },
+        "JamesWoolfenden/terraform-for-data": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 2,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-02-24T06:34:25.374Z"
+        },
+        "JamesWoolfenden/terraform-aws-ecs": {
+          "amounts": {
+            "CLOSED": 1,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-03-07T17:50:26.363Z"
+        }
+      },
+      "guideline": "123 test",
+      "isCustom": true,
+      "conditionQuery": {
+        "or": [
+          {
+            "value": "t3.micro",
+            "operator": "equals",
+            "attribute": "instance_type",
+            "cond_type": "attribute",
+            "resource_types": [
+              "aws_instance"
+            ]
+          },
+          {
+            "value": "t3.nano",
+            "operator": "equals",
+            "attribute": "instance_type",
+            "cond_type": "attribute",
+            "resource_types": [
+              "aws_instance"
+            ]
+          }
+        ]
+      },
+      "benchmarks": {},
+      "createdBy": "gilad@bridgecrew.io",
+      "code": "---\nmetadata:\n  name: \"test gilad\" #give your custom policy a unique name \n  guidelines: \"123 test\" #add text that explains the configuration the policy looks for, its implications, and how to fix it\n  category: \"elasticsearch\" #choose one: \"general\"/\"elaticsearch\"/\"iam\"/\"kubernetes\"/\"logging\"/\"monitoring\"/\"networking\"/\"public\"/\"secrets\"/\"serverless\"/\"storage\"\n  severity: \"info\" #choose one: \"critical\"/\"high\"/\"medium\"/\"low\"/\"info\"\nscope:\n  provider: \"azure\" #choose one: \"aws\"/\"azure\"/\"gcp\"\ndefinition: #define the conditions the policy searches for.\n# The example below checks EC2s with instance_type t3.micro or t3.nano. for more examples please visit our docs - https://docs.bridgecrew.io/docs/yaml-format-for-custom-policies\n or:\n  - cond_type: \"attribute\"\n    resource_types:\n    - \"aws_instance\"\n    attribute: \"instance_type\"\n    operator: \"equals\"\n    value: \"t3.micro\"\n  - cond_type: \"attribute\"\n    resource_types:\n    - \"aws_instance\"\n    attribute: \"instance_type\"\n    operator: \"equals\"\n    value: \"t3.nano\"\n"
+    },
+    {
+      "provider": "Azure",
+      "id": "james_AZR_1614079790665",
+      "title": "ffff",
+      "descriptiveTitle": null,
+      "constructiveTitle": null,
+      "severity": "HIGH",
+      "category": "Logging",
+      "resourceTypes": [
+        "aws_instance"
+      ],
+      "accountsData": {
+        "JamesWoolfenden/terraform-aws-artifactory-oss": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 1
+          },
+          "lastUpdateDate": "2021-02-24T06:26:27.363Z"
+        },
+        "JamesWoolfenden/dataops-infra": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 1
+          },
+          "lastUpdateDate": "2021-04-05T13:29:10.621Z"
+        },
+        "redwolfsystems/RedWolfOne/azuredevopsgoat": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 2
+          },
+          "lastUpdateDate": "2021-07-22T12:05:07.271Z"
+        },
+        "JamesWoolfenden/terraform-aws-cassandra": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 1
+          },
+          "lastUpdateDate": "2021-02-24T06:26:49.414Z"
+        },
+        "JamesWoolfenden/rancher-quickstart": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 2
+          },
+          "lastUpdateDate": "2021-02-24T06:25:23.349Z"
+        },
+        "james_test/cli": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 2
+          },
+          "lastUpdateDate": "2021-07-13T15:43:54.527Z"
+        },
+        "JamesWoolfenden/terraform-aws-pritunl-vpn-server": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 1
+          },
+          "lastUpdateDate": "2021-02-24T06:30:53.038Z"
+        },
+        "merchants/terraform-aws-current": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 1
+          },
+          "lastUpdateDate": "2021-02-25T08:19:55.134Z"
+        },
+        "JamesWoolfenden/terraform-aws-ssm-bastion": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 1
+          },
+          "lastUpdateDate": "2021-02-24T06:31:51.632Z"
+        },
+        "JamesWoolfenden/learn-terraform": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 1
+          },
+          "lastUpdateDate": "2021-02-24T06:23:38.713Z"
+        },
+        "JamesWoolfenden/terraform-aws-teamcity": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 1
+          },
+          "lastUpdateDate": "2021-02-24T06:32:05.186Z"
+        },
+        "JamesWoolfenden/terragoat": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 2
+          },
+          "lastUpdateDate": "2021-03-26T10:06:31.132Z"
+        },
+        "JamesWoolfenden/terraform-aws-confluent": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 6
+          },
+          "lastUpdateDate": "2021-02-24T06:28:12.752Z"
+        },
+        "JamesWoolfenden/learn-packer": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 1
+          },
+          "lastUpdateDate": "2021-02-24T06:23:18.899Z"
+        },
+        "JamesWoolfenden/terraform-aws-ec2": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 1
+          },
+          "lastUpdateDate": "2021-04-09T22:24:50.199Z"
+        },
+        "JamesWoolfenden/terraform-docker-build": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 1
+          },
+          "lastUpdateDate": "2021-02-24T06:34:09.345Z"
+        },
+        "JamesWoolfenden/terraform-for-data": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 2
+          },
+          "lastUpdateDate": "2021-02-24T06:34:25.690Z"
+        },
+        "JamesWoolfenden/terraform-aws-ecs": {
+          "amounts": {
+            "CLOSED": 0,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 1
+          },
+          "lastUpdateDate": "2021-03-07T17:50:26.572Z"
+        }
+      },
+      "guideline": "fgd",
+      "isCustom": true,
+      "conditionQuery": {
+        "or": [
+          {
+            "value": "t3.micro",
+            "operator": "equals",
+            "attribute": "instance_type",
+            "cond_type": "attribute",
+            "resource_types": [
+              "aws_instance"
+            ]
+          },
+          {
+            "value": "t3.nano",
+            "operator": "equals",
+            "attribute": "instance_type",
+            "cond_type": "attribute",
+            "resource_types": [
+              "aws_instance"
+            ]
+          }
+        ]
+      },
+      "benchmarks": {},
+      "createdBy": "gilad@bridgecrew.io",
+      "code": "---\nmetadata:\n  name: \"ffff\"\n  guidelines: \"fgd\"\n  category: \"logging\" \n  severity: \"high\" \nscope:\n  provider: \"azure\" \ndefinition: \n or:\n  - cond_type: \"attribute\"\n    resource_types:\n    - \"aws_instance\"\n    attribute: \"instance_type\"\n    operator: \"equals\"\n    value: \"t3.micro\"\n  - cond_type: \"attribute\"\n    resource_types:\n    - \"aws_instance\"\n    attribute: \"instance_type\"\n    operator: \"equals\"\n    value: \"t3.nano\"\n"
+    },
+    {
+      "provider": "GCP",
+      "id": "james_GCP_1614079848396",
+      "title": "fffffff",
+      "descriptiveTitle": null,
+      "constructiveTitle": null,
+      "severity": "CRITICAL",
+      "category": "Elasticsearch",
+      "resourceTypes": [
+        "google_access_context_manager_service_perimeter_resource"
+      ],
+      "accountsData": {},
+      "guideline": "fff",
+      "isCustom": true,
+      "conditionQuery": {
+        "value": "",
+        "operator": "exists",
+        "attribute": "perimeter_name",
+        "cond_type": "attribute",
+        "resource_types": [
+          "google_access_context_manager_service_perimeter_resource"
+        ]
+      },
+      "benchmarks": {},
+      "createdBy": "gilad@bridgecrew.io",
+      "code": null
+    },
+    {
+      "provider": "GCP",
+      "id": "james_GCP_1614081526723",
+      "title": "כ",
+      "descriptiveTitle": null,
+      "constructiveTitle": null,
+      "severity": "CRITICAL",
+      "category": "Elasticsearch",
+      "resourceTypes": [
+        "google_access_context_manager_access_policy",
+        "google_app_engine_application"
+      ],
+      "accountsData": {},
+      "guideline": "כ",
+      "isCustom": true,
+      "conditionQuery": {
+        "value": "",
+        "operator": "not_exists",
+        "attribute": "code_bucket",
+        "cond_type": "attribute",
+        "resource_types": [
+          "google_access_context_manager_access_policy",
+          "google_app_engine_application"
+        ]
+      },
+      "benchmarks": {},
+      "createdBy": "gilad@bridgecrew.io",
+      "code": null
+    },
+    {
+      "provider": "GCP",
+      "id": "james_GCP_1614081825449",
+      "title": "fffs",
+      "descriptiveTitle": null,
+      "constructiveTitle": null,
+      "severity": "CRITICAL",
+      "category": "General",
+      "resourceTypes": [
+        "google_access_context_manager_service_perimeter",
+        "google_app_engine_application"
+      ],
+      "accountsData": {},
+      "guideline": "dfggdsgh",
+      "isCustom": true,
+      "conditionQuery": {
+        "value": "",
+        "operator": "not_exists",
+        "attribute": "create_time",
+        "cond_type": "attribute",
+        "resource_types": [
+          "google_access_context_manager_service_perimeter",
+          "google_app_engine_application"
+        ]
+      },
+      "benchmarks": {},
+      "createdBy": "gilad@bridgecrew.io",
+      "code": null
+    },
+    {
+      "provider": "AWS",
+      "id": "james_aws_1629372787513",
+      "title": "custom1",
+      "descriptiveTitle": null,
+      "constructiveTitle": null,
+      "severity": "LOW",
+      "category": "Elasticsearch",
+      "resourceTypes": [
+        "aws_lb"
+      ],
+      "accountsData": {
+        "JamesWoolfenden/dataops-infra": {
+          "amounts": {
+            "CLOSED": 1,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-08-19T16:18:22.431Z"
+        },
+        "JamesWoolfenden/kong-terraform-aws": {
+          "amounts": {
+            "CLOSED": 2,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-08-19T16:23:27.402Z"
+        },
+        "JamesWoolfenden/learn-terraform": {
+          "amounts": {
+            "CLOSED": 1,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-08-19T16:21:01.955Z"
+        },
+        "JamesWoolfenden/terraform-aws-confluent": {
+          "amounts": {
+            "CLOSED": 2,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-08-19T16:34:25.881Z"
+        },
+        "JamesWoolfenden/terraform-aws-lb": {
+          "amounts": {
+            "CLOSED": 1,
+            "DELETED": 0,
+            "OPEN": 0,
+            "REMEDIATED": 0,
+            "SUPPRESSED": 0
+          },
+          "lastUpdateDate": "2021-08-19T16:44:11.307Z"
+        }
+      },
+      "guideline": "yay yaa",
+      "isCustom": true,
+      "conditionQuery": {
+        "value": "test",
+        "operator": "not_equals",
+        "attribute": "name_prefix",
+        "cond_type": "attribute",
+        "resource_types": [
+          "aws_lb"
+        ]
+      },
+      "benchmarks": {},
+      "createdBy": "james.woolfenden@gmail.com",
+      "code": null
+    }
+  ],
+  "filters": {
+    "category": [
+      "General",
+      "Elasticsearch",
+      "Logging"
+    ],
+    "severity": [
+      "CRITICAL",
+      "LOW",
+      "HIGH"
+    ],
+    "resourceTypes": [
+      "aws_api_gateway_api_key",
+      "aws_instance",
+      "google_access_context_manager_service_perimeter_resource",
+      "google_access_context_manager_access_policy",
+      "google_app_engine_application",
+      "google_access_context_manager_service_perimeter",
+      "aws_lb"
+    ],
+    "accounts": [
+      "037ce662-dfc1-4b8b-a8a7-6c414b540ed6",
+      "680235478471",
+      "examplea",
+      "examplea-304315",
+      "james_bridgecrewio/s3",
+      "james_bridgecrewio/awsterragoat",
+      "JamesWoolfenden/terraform-aws-artifactory-oss",
+      "JamesWoolfenden/terraform-gitlab-project",
+      "JamesWoolfenden/terraform-aws-ecr",
+      "JamesWoolfenden/community-deployer",
+      "JamesWoolfenden/terraform-azurerm-mariadb",
+      "JamesWoolfenden/module-management-aws",
+      "JamesWoolfenden/node-yarn-docker-react",
+      "JamesWoolfenden/learn-docker",
+      "JamesWoolfenden/packer-aws-snowflake",
+      "JamesWoolfenden/PlatformEngineerTest-AWS",
+      "JamesWoolfenden/pretree",
+      "JamesWoolfenden/dse-deployer",
+      "JamesWoolfenden/terraform-azurerm-mysql",
+      "JamesWoolfenden/packerdemo",
+      "JamesWoolfenden/dataops-infra",
+      "merchants/cassandra-data-authentic",
+      "merchants/goat",
+      "james_JamesWoolfenden/test",
+      "james_cli_repo/unnamed_repo",
+      "james_jameswoolfenden/module-management-aws",
+      "james_jameswoolfenden/terrafoem-aws-organisations",
+      "james_cli_repo/terraform-aws-s3",
+      "james_jameswoolfenden/test",
+      "james_jameswoolfenden/terraform-aws-organisations",
+      "redwolfsystems/RedWolfOne/azuredevopsgoat",
+      "james_jameswoolfenden/privategoat",
+      "JamesWoolfenden/so-you-want-to-onboard-a-devops-engineer",
+      "JamesWoolfenden/kong-terraform-aws",
+      "JamesWoolfenden/pre-commit",
+      "JamesWoolfenden/terraform-aws-budget",
+      "JamesWoolfenden/terraform-aws-cassandra",
+      "JamesWoolfenden/checkov-action",
+      "JamesWoolfenden/terraform-azurerm-linuxscaleset",
+      "JamesWoolfenden/node-yarn-docker",
+      "JamesWoolfenden/terraform-azurerm-postgresql",
+      "JamesWoolfenden/terraform-aws-athena",
+      "JamesWoolfenden/terraform-aws-neptune",
+      "JamesWoolfenden/terraform-aws-elasticbeanstalk",
+      "JamesWoolfenden/terraform-jfrog-repo",
+      "JamesWoolfenden/terraform-aws-kinesis-stream",
+      "JamesWoolfenden/rancher-quickstart",
+      "JamesWoolfenden/dev-helpers",
+      "JamesWoolfenden/terraform-aws-sagemaker",
+      "JamesWoolfenden/terraform-aws-vpc",
+      "JamesWoolfenden/terraform-aws-jenkins",
+      "merchants/terraform-aws-current-1",
+      "JamesWoolfenden/packer-centos-7",
+      "JamesWoolfenden/terraform-aws-test",
+      "merchants/terraform-aws-elastic",
+      "JamesWoolfenden/module-management-gcp",
+      "JamesWoolfenden/terraform-aws-ssmdocument",
+      "JamesWoolfenden/dockerfile",
+      "JamesWoolfenden/rancher-terraform-modules",
+      "JamesWoolfenden/terraform-aws-dax",
+      "JamesWoolfenden/terraform-aws-efs",
+      "JamesWoolfenden/terraform-aws-msk",
+      "JamesWoolfenden/terraform-aws-sns",
+      "JamesWoolfenden/terraform-aws-dns",
+      "JamesWoolfenden/terraform-aws-route53",
+      "james_jwoolfenden/terragoat",
+      "JamesWoolfenden/terraform-gcp-http-internal",
+      "JamesWoolfenden/terraform-gcp-staticip",
+      "james_test/cli",
+      "merchants/terraform-bitbucket-repos",
+      "JamesWoolfenden/packer-docker",
+      "redwolfsystems/RedWolfOne/RedWolfOne",
+      "JamesWoolfenden/packer-templates",
+      "JamesWoolfenden/policy-library",
+      "JamesWoolfenden/terraform-aws-ad",
+      "JamesWoolfenden/pre-commit-shell",
+      "JamesWoolfenden/terraform-aws-cloudfront-s3",
+      "JamesWoolfenden/terraform-aws-cognito",
+      "JamesWoolfenden/terraform-aws-pricing",
+      "JamesWoolfenden/terraform-aws-pritunl-vpn-server",
+      "JamesWoolfenden/JamesWoolfenden.github.io",
+      "merchants/terraform-aws-current",
+      "JamesWoolfenden/packer-baseboxes",
+      "JamesWoolfenden/packer-ubuntu",
+      "JamesWoolfenden/packer-vbox-ubuntu",
+      "JamesWoolfenden/terraform-aws-cloudfront",
+      "JamesWoolfenden/terraform-aws-dlmautosnapshot",
+      "JamesWoolfenden/terraform-aws-ssm-bastion",
+      "JamesWoolfenden/learn-terraform",
+      "JamesWoolfenden/terraform-aws-ssmpatching",
+      "JamesWoolfenden/terraform-gcp-iam",
+      "JamesWoolfenden/terraform-azurerm-sql",
+      "JamesWoolfenden/terraform-azurerm-vnet",
+      "JamesWoolfenden/terraform-azurerm-windowsvm",
+      "JamesWoolfenden/terraform-aws-elastic",
+      "JamesWoolfenden/terraform-aws-iamuser",
+      "JamesWoolfenden/terraform-aws-teamcity",
+      "JamesWoolfenden/gcp-container-cloudbuild",
+      "JamesWoolfenden/learn-docker-web",
+      "JamesWoolfenden/learn-tools-web",
+      "JamesWoolfenden/meta_data_upload",
+      "JamesWoolfenden/terraform-aws-cloudwatch-s3",
+      "JamesWoolfenden/terraform-aws-codepipeline",
+      "JamesWoolfenden/terraform-aws-elk",
+      "JamesWoolfenden/terraform-aws-guardduty",
+      "JamesWoolfenden/terragoat",
+      "JamesWoolfenden/terraform-aws-lambda",
+      "JamesWoolfenden/terraform-aws-lambda-janitor",
+      "JamesWoolfenden/terraform-aws-lambda-redux",
+      "JamesWoolfenden/terraform-aws-lex-lambda",
+      "merchants/packer-aws-authentic-desktop",
+      "JamesWoolfenden/terraform-aws-rds",
+      "JamesWoolfenden/terraform-aws-s3",
+      "merchants/terraform-helm-rabbitmq",
+      "merchants/terraform-authentic-azure-presales",
+      "JamesWoolfenden/terraform-aws-confluent",
+      "JamesWoolfenden/terraform-aws-securityhub",
+      "JamesWoolfenden/terraform-aws-servicecatalog",
+      "JamesWoolfenden/terraform-aws-lexbotexamples",
+      "JamesWoolfenden/terraform-aws-snstoslack",
+      "JamesWoolfenden/terraform-aws-ssh-ssm",
+      "JamesWoolfenden/terraform-aws-statemachine",
+      "JamesWoolfenden/terraform-aws-trafficmirror",
+      "JamesWoolfenden/terraform-aws-vpc-peering",
+      "JamesWoolfenden/consul-template-by-example",
+      "JamesWoolfenden/devops-by-example",
+      "JamesWoolfenden/docker-scout2",
+      "JamesWoolfenden/go-localstack-github-actions-sample",
+      "JamesWoolfenden/terraform-azurerm-linuxvm",
+      "JamesWoolfenden/terraform-azurerm-managementgroup",
+      "JamesWoolfenden/test2",
+      "JamesWoolfenden/terraform-aws-ebssnap",
+      "JamesWoolfenden/terraform-security-scan",
+      "JamesWoolfenden/terraform-terraform-cloud",
+      "JamesWoolfenden/terraform-azurerm-vpcpeer",
+      "JamesWoolfenden/terraform-digitalocean-compute",
+      "JamesWoolfenden/terraform-gcp-bastion",
+      "JamesWoolfenden/terraform-gcp-cloudsql",
+      "JamesWoolfenden/terraform-linode-instance",
+      "JamesWoolfenden/terraform-tls-key",
+      "JamesWoolfenden/test",
+      "JamesWoolfenden/terraform-gcp-statebucket",
+      "JamesWoolfenden/terraform-gcp-storage",
+      "JamesWoolfenden/test-demo",
+      "JamesWoolfenden/terraform-github-repository",
+      "JamesWoolfenden/terraform-github-team",
+      "JamesWoolfenden/terraform-github-teamrepository",
+      "JamesWoolfenden/terraform-google-gke",
+      "JamesWoolfenden/terraform-guidelines",
+      "JamesWoolfenden/terraform-helm-release",
+      "JamesWoolfenden/terraform-aws-s3-suppressed",
+      "JamesWoolfenden/terraform-aws-cloudtrail",
+      "JamesWoolfenden/terraform-aws-imagebuilder",
+      "JamesWoolfenden/terraform-aws-lambdalayer",
+      "JamesWoolfenden/Packer-Windows10",
+      "JamesWoolfenden/terraform-aws-artifactory-ecs",
+      "JamesWoolfenden/terraform-aws-aurora",
+      "JamesWoolfenden/terraform-aws-batch",
+      "merchants/packer-aws-cassandra",
+      "JamesWoolfenden/terraform-aws-certificate-authority",
+      "JamesWoolfenden/terraform-aws-cloudwatch",
+      "JamesWoolfenden/terraform-aws-codebuild-container",
+      "JamesWoolfenden/terraform-aws-codecommit",
+      "JamesWoolfenden/learn-gcp-web",
+      "JamesWoolfenden/learn-packer",
+      "JamesWoolfenden/packer",
+      "JamesWoolfenden/terraform-aws-crossaccountbucket",
+      "JamesWoolfenden/terraform-aws-ec2",
+      "JamesWoolfenden/packer-by-example",
+      "JamesWoolfenden/terraform-aws-ecrpublic",
+      "JamesWoolfenden/terraform-aws-elasticache",
+      "JamesWoolfenden/terraform-aws-statebucket",
+      "JamesWoolfenden/terraform-aws-transitvpcspoke",
+      "JamesWoolfenden/terraform-aws-waf-global",
+      "JamesWoolfenden/terraform-by-example",
+      "JamesWoolfenden/terraform-docker-build",
+      "JamesWoolfenden/terraform-for-data",
+      "JamesWoolfenden/terraform-gcp-appengine",
+      "JamesWoolfenden/terraform-gcp-cloudfunction",
+      "JamesWoolfenden/terraform-gcp-cluster",
+      "JamesWoolfenden/terraform-gcp-helmrepo",
+      "JamesWoolfenden/terraform-gcp-network",
+      "JamesWoolfenden/terraform-aws-waf-regional",
+      "JamesWoolfenden/terraform-azurerm-appserviceplan",
+      "JamesWoolfenden/terraform-azurerm-dns",
+      "JamesWoolfenden/terraform-azurerm-mssqlserver",
+      "JamesWoolfenden/terraform-azurerm-statebucket",
+      "JamesWoolfenden/terraform-azurerm-static",
+      "JamesWoolfenden/terraform-azurerm-storageaccount",
+      "JamesWoolfenden/terraform-provider-template",
+      "JamesWoolfenden/terraform-azurerm-windowsscaleset",
+      "JamesWoolfenden/terraform-bitbucket-repos",
+      "JamesWoolfenden/terraform-aws-test-gha",
+      "JamesWoolfenden/terraform-aws-workspaces",
+      "JamesWoolfenden/terraform-azurerm-cosmosdb",
+      "JamesWoolfenden/terraform-azurerm-disk",
+      "JamesWoolfenden/tf-scaffold",
+      "JamesWoolfenden/terraform-aws-lb",
+      "JamesWoolfenden/terraform-aws-organisations",
+      "JamesWoolfenden/terraform-aws-rdsinit",
+      "JamesWoolfenden/terraform-aws-redshift",
+      "JamesWoolfenden/terraform-aws-security-buckets",
+      "JamesWoolfenden/terraform-aws-sqs",
+      "JamesWoolfenden/terraform-aws-sslcert",
+      "JamesWoolfenden/terraform-aws-staticsite",
+      "JamesWoolfenden/terraform-aws-documentdb",
+      "JamesWoolfenden/terraform-aws-fargate",
+      "JamesWoolfenden/terraform-azurerm-redis",
+      "JamesWoolfenden/terraform-gcp-instance",
+      "JamesWoolfenden/terraform-gcp-service",
+      "JamesWoolfenden/terraform-aws-config",
+      "JamesWoolfenden/terraform-aws-glue-crawler",
+      "JamesWoolfenden/test-checkov-action",
+      "JamesWoolfenden/terraform-aws-inspector",
+      "JamesWoolfenden/terraform-gcp-googlecomputeinstance",
+      "JamesWoolfenden/kube-jenkins-imager",
+      "JamesWoolfenden/module-management-azure",
+      "JamesWoolfenden/packer-example",
+      "JamesWoolfenden/pre-commit-terraform",
+      "JamesWoolfenden/pre-commit-tflint",
+      "JamesWoolfenden/terraform-aws-apigateway",
+      "JamesWoolfenden/terraform-aws-appsync",
+      "JamesWoolfenden/terraform-aws-artifactory",
+      "JamesWoolfenden/terraform-aws-codeartifact",
+      "JamesWoolfenden/terraform-aws-codebuild",
+      "JamesWoolfenden/terraform-aws-cross-account-role",
+      "JamesWoolfenden/terraform-azurerm-networkwatcher",
+      "JamesWoolfenden/consul_demo",
+      "JamesWoolfenden/learn-kubernetes-web",
+      "JamesWoolfenden/markdown-portfolio",
+      "JamesWoolfenden/module-management-tls",
+      "JamesWoolfenden/packer-ubuntu-1804",
+      "JamesWoolfenden/shift-left",
+      "JamesWoolfenden/terraform-ado-repo",
+      "JamesWoolfenden/terraform-aws-account",
+      "JamesWoolfenden/terraform-aws-activemq",
+      "JamesWoolfenden/terraform-aws-auto-bastion",
+      "JamesWoolfenden/terraform-aws-cloudfront-compound",
+      "JamesWoolfenden/terraform-aws-dynamodb",
+      "JamesWoolfenden/terraform-aws-ecs",
+      "JamesWoolfenden/terraform-aws-kms",
+      "JamesWoolfenden/terraform-aws-lambdaslack",
+      "JamesWoolfenden/terraform-aws-media-convert-queue",
+      "JamesWoolfenden/terraform-aws-notify-slack",
+      "james_cli_repo/examplea",
+      "JamesWoolfenden/terraform-http-ip"
+    ],
+    "benchmarks": [
+      "CIS AZURE V1.1"
+    ],
+    "provider": [
+      "Kubernetes",
+      "AWS",
+      "GCP",
+      "Azure",
+      "Docker",
+      "Git"
+    ],
+    "createdBy": [
+      "Bridgecrew",
+      "james.woolfenden@gmail.com",
+      "gilad@bridgecrew.io"
+    ]
+  }
+}
