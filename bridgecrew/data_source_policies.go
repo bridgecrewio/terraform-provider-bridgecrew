@@ -61,10 +61,26 @@ func dataSourcePolicies() *schema.Resource {
 							},
 						},
 						"accountsdata": {
-							Type:     schema.TypeList,
+							Type:     schema.TypeSet,
 							Optional: true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"repository": {
+										Required: true,
+										Type:     schema.TypeString,
+									},
+									"amounts": {
+										Required: true,
+										Type:     schema.TypeMap,
+										Elem: &schema.Schema{
+											Type: schema.TypeString,
+										},
+									},
+									"lastupdatedate": {
+										Computed: true,
+										Type:     schema.TypeString,
+									},
+								},
 							},
 						},
 						"guideline": {
@@ -76,14 +92,10 @@ func dataSourcePolicies() *schema.Resource {
 							Computed: true,
 						},
 						"conditionquery": {
-							Type:     schema.TypeSet,
-							Optional: true,
+							Type:     schema.TypeList,
+							Computed: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
-									"value": {
-										Type:     schema.TypeString,
-										Computed: true,
-									},
 									"operator": {
 										Type:     schema.TypeString,
 										Computed: true,
@@ -96,18 +108,23 @@ func dataSourcePolicies() *schema.Resource {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
+									"value": {
+										Type:     schema.TypeBool,
+										Computed: true,
+									},
 									"resource_types": {
 										Type:     schema.TypeList,
-										Optional: true,
+										Required: true,
 										Elem: &schema.Schema{
-											Type: schema.TypeString,
+											Type:    schema.TypeString,
+											Default: "",
 										},
 									},
 								},
 							},
 						},
 						"benchmarks": {
-							Type:     schema.TypeList,
+							Type:     schema.TypeMap,
 							Optional: true,
 							Elem: &schema.Schema{
 								Type: schema.TypeString,
@@ -145,21 +162,25 @@ func dataSourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interfa
 
 	if err != nil {
 		log.Fatal("Failed at client.Do")
-		return diag.FromErr(err)
+		//return diag.FromErr(err)
 	}
 	defer r.Body.Close()
 
 	body, _ := ioutil.ReadAll(r.Body)
-	typed, err := typed.Json(body)
+	typedjson, err := typed.Json(body)
+
+	if err != nil {
+		log.Fatal("Failed at unmarshalling with typed")
+	}
 
 	//var filters =typed.Object("filters")
-	var data = typed.Maps("data")
+	var data = typedjson.Maps("data")
 
 	flatPolicies := flattenPolicyData(&data)
 
 	if err := d.Set("policies", flatPolicies); err != nil {
 		log.Fatal(reflect.TypeOf(data))
-		return diag.FromErr(err)
+		//return diag.FromErr(err)
 	}
 
 	// always run
@@ -183,10 +204,17 @@ func flattenPolicyData(Policies *[]map[string]interface{}) []interface{} {
 			oi["category"] = Policy["category"] // General
 			oi["guideline"] = Policy["guideline"]
 			oi["iscustom"] = Policy["isCustom"]
-			//oi["accountsdata"] = Policy["accountsData"]     //slice of map
-			//oi["conditionquery"] = Policy["conditionQuery"] //slice of map
-			oi["benchmarks"] = []string{"A", "B", "C"}
+			//accountsData:=Policy["accountsData"]
 
+			condition := make(map[string]interface{})
+			condition["value"] = true
+			condition["operator"] = "operator"
+			condition["attribute"] = "attribute"
+			condition["cond_type"] = "cond_type"
+			condition["resource_types"] = []string{"aws_api_gateway_api_key"}
+			conditions := make([]interface{}, 1, 1)
+			conditions[0] = condition
+			oi["conditionquery"] = conditions
 			oi["resourcetypes"] = Policy["resourceTypes"]
 			oi["createdby"] = Policy["createdBy"]
 			oi["code"] = Policy["code"]
@@ -196,4 +224,23 @@ func flattenPolicyData(Policies *[]map[string]interface{}) []interface{} {
 	}
 
 	return make([]interface{}, 0)
+}
+
+func printtypes(accountsData interface{}) {
+	m := accountsData.(map[string]interface{})
+	for k, v := range m {
+		switch vv := v.(type) {
+		case string:
+			log.Println(k, "is string", vv)
+		case float64:
+			log.Println(k, "is float64", vv)
+		case []interface{}:
+			log.Println(k, "is an array:")
+			for i, u := range vv {
+				log.Println(i, u)
+			}
+		default:
+			log.Println(k, "is of a type I don't know how to handle")
+		}
+	}
 }
