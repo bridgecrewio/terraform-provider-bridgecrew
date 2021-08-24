@@ -2,6 +2,7 @@ package bridgecrew
 
 import (
 	"context"
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"reflect"
@@ -92,36 +93,8 @@ func dataSourcePolicies() *schema.Resource {
 							Computed: true,
 						},
 						"conditionquery": {
-							Type:     schema.TypeList,
-							Computed: true,
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									"operator": {
-										Type:     schema.TypeString,
-										Computed: true,
-									},
-									"attribute": {
-										Type:     schema.TypeString,
-										Computed: true,
-									},
-									"cond_type": {
-										Type:     schema.TypeString,
-										Computed: true,
-									},
-									"value": {
-										Type:     schema.TypeBool,
-										Computed: true,
-									},
-									"resource_types": {
-										Type:     schema.TypeList,
-										Required: true,
-										Elem: &schema.Schema{
-											Type:    schema.TypeString,
-											Default: "",
-										},
-									},
-								},
-							},
+							Type:     schema.TypeString,
+							Required: true,
 						},
 						"benchmarks": {
 							Type:     schema.TypeMap,
@@ -204,17 +177,14 @@ func flattenPolicyData(Policies *[]map[string]interface{}) []interface{} {
 			oi["category"] = Policy["category"] // General
 			oi["guideline"] = Policy["guideline"]
 			oi["iscustom"] = Policy["isCustom"]
-			//accountsData:=Policy["accountsData"]
 
-			condition := make(map[string]interface{})
-			condition["value"] = true
-			condition["operator"] = "operator"
-			condition["attribute"] = "attribute"
-			condition["cond_type"] = "cond_type"
-			condition["resource_types"] = []string{"aws_api_gateway_api_key"}
-			conditions := make([]interface{}, 1, 1)
-			conditions[0] = condition
-			oi["conditionquery"] = conditions
+			// this was hard... dynamic schema!
+			u, err := json.Marshal(Policy["conditionQuery"])
+			if err != nil {
+				panic(err)
+			}
+
+			oi["conditionquery"] = string(u)
 			oi["resourcetypes"] = Policy["resourceTypes"]
 			oi["createdby"] = Policy["createdBy"]
 			oi["code"] = Policy["code"]
