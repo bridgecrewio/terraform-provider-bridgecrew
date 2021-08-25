@@ -1,3 +1,4 @@
+.PHONY: clean  docs
 TEST?=$$(go list ./... | grep -v 'vendor')
 HOSTNAME=jameswoolfenden
 NAMESPACE=dev

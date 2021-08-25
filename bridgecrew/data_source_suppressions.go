@@ -23,7 +23,7 @@ func dataSourceSuppressions() *schema.Resource {
 					Schema: map[string]*schema.Schema{
 						"suppressiontype": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Required: true,
 						},
 						"creationdate": {
 							Type:     schema.TypeString,
@@ -39,20 +39,20 @@ func dataSourceSuppressions() *schema.Resource {
 						},
 						"comment": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"resources": {
 							Type:     schema.TypeList,
-							Computed: true,
+							Required: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"accountid": {
 										Type:     schema.TypeString,
-										Computed: true,
+										Required: true,
 									},
 									"resourceid": {
 										Type:     schema.TypeString,
-										Computed: true,
+										Required: true,
 									},
 								},
 							},

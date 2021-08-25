@@ -12,11 +12,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func dataSourceRepositories() *schema.Resource {
+func dataSourceErrors() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: dataSourceRepositoryRead,
+		ReadContext: dataSourceErrorRead,
 		Schema: map[string]*schema.Schema{
-			"repositories": {
+			"errors": {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Resource{
@@ -57,8 +57,8 @@ func dataSourceRepositories() *schema.Resource {
 	}
 }
 
-func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	path := "%s/repositories"
+func dataSourceErrorRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	path := "%s/errors/gitBlameAuthors"
 
 	client, diags, req, diagnostics, done, err := authClient(path)
 
@@ -76,18 +76,18 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 	defer r.Body.Close()
 
 	log.Print("All data obtained")
-	repositories := make([]map[string]interface{}, 0)
-	err = json.NewDecoder(r.Body).Decode(&repositories)
+	errors := make([]map[string]interface{}, 0)
+	err = json.NewDecoder(r.Body).Decode(&errors)
 
 	if err != nil {
 		log.Fatal("Failed to parse data")
 		return diag.FromErr(err)
 	}
 
-	flatRepos := flattenRepositoryData(&repositories)
+	flatErrors := flattenErrorData(&errors)
 
-	if err := d.Set("repositories", flatRepos); err != nil {
-		log.Fatal(reflect.TypeOf(repositories))
+	if err := d.Set("errors", flatErrors); err != nil {
+		log.Fatal(reflect.TypeOf(errors))
 		return diag.FromErr(err)
 	}
 
@@ -97,19 +97,20 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 	return diags
 }
 
-func flattenRepositoryData(Repositories *[]map[string]interface{}) []interface{} {
-	if Repositories != nil {
-		ois := make([]interface{}, len(*Repositories), len(*Repositories))
+func flattenErrorData(Errors *[]map[string]interface{}) []interface{} {
+	if Errors != nil {
+		ois := make([]interface{}, len(*Errors), len(*Errors))
 
-		for i, Repository := range *Repositories {
+		for i, Error := range *Errors {
 			oi := make(map[string]interface{})
-			oi["id"] = Repository["id"]
+			log.Print(Error)
+			/*oi["id"] = Repository["id"]
 			oi["repository"] = Repository["repository"]
 			oi["source"] = Repository["source"]
 			oi["owner"] = Repository["owner"]
 			oi["creationdate"] = Repository["creationDate"]
 			oi["defaultbranch"] = Repository["defaultBranch"]
-			oi["ispublic"] = Repository["ispublic"]
+			oi["ispublic"] = Repository["ispublic"]*/
 
 			ois[i] = oi
 		}

@@ -21,32 +21,43 @@ description: |-
 
 ### Read-Only
 
-- **filters** (Set of Object) (see [below for nested schema](#nestedatt--filters))
-- **policies** (List of Object) (see [below for nested schema](#nestedatt--policies))
-
-<a id="nestedatt--filters"></a>
-### Nested Schema for `filters`
-
-Read-Only:
-
-- **accounts** (List of String)
-- **benchmarks** (List of String)
-- **category** (List of String)
-- **createdby** (List of String)
-- **provider** (List of String)
-- **resourcetypes** (List of String)
-- **severity** (List of String)
-
+- **policies** (Set of Object) (see [below for nested schema](#nestedatt--policies))
 
 <a id="nestedatt--policies"></a>
 ### Nested Schema for `policies`
 
 Read-Only:
 
+- **accountsdata** (Set of Object) (see [below for nested schema](#nestedobjatt--policies--accountsdata))
+- **benchmarks** (Set of Object) (see [below for nested schema](#nestedobjatt--policies--benchmarks))
 - **category** (String)
+- **code** (String)
+- **conditionquery** (String)
 - **constructivetitle** (String)
+- **createdby** (String)
 - **descriptivetitle** (String)
+- **guideline** (String)
 - **id** (String)
+- **iscustom** (Boolean)
 - **provider** (String)
+- **resourcetypes** (List of String)
 - **severity** (String)
 - **title** (String)
+
+<a id="nestedobjatt--policies--accountsdata"></a>
+### Nested Schema for `policies.accountsdata`
+
+Read-Only:
+
+- **amounts** (Map of Number)
+- **lastupdatedate** (String)
+- **repository** (String)
+
+
+<a id="nestedobjatt--policies--benchmarks"></a>
+### Nested Schema for `policies.benchmarks`
+
+Read-Only:
+
+- **benchmark** (String)
+- **version** (List of String)
