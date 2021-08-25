@@ -74,7 +74,7 @@ func dataSourcePolicies() *schema.Resource {
 										Required: true,
 										Type:     schema.TypeMap,
 										Elem: &schema.Schema{
-											Type: schema.TypeString,
+											Type: schema.TypeInt,
 										},
 									},
 									"lastupdatedate": {
@@ -191,12 +191,22 @@ func flattenPolicyData(Policies *[]map[string]interface{}) []interface{} {
 			oi["iscustom"] = Policy["isCustom"]
 
 			//TODO:accountsdata
-			//TODO:benchmarks
-			//oi["benchmarks"] =Policy["benchmarks"]
-			//benchmarks:=Policy["benchmarks"].(map[string]interface{})
-			//benchmark:=map[string]interface{}{
-			//	"CIS AZURE V1.1": []string{"1.23"}}
-			//log.Print(benchmark)
+			//log.Print(Policy["accountsData"])
+			var accounts []interface{}
+
+			accountsData := Policy["accountsData"].(map[string]interface{})
+			//log.Print(accountsData)
+			for key, element := range accountsData {
+				account := make(map[string]interface{})
+				account["repository"] = key
+				temp := element.(map[string]interface{})
+				account["amounts"] = temp["amounts"]
+				account["lastupdatedate"] = temp["lastUpdateDate"]
+				log.Print(account)
+				accounts = append(accounts, account)
+			}
+
+			oi["accountsdata"] = accounts
 
 			var marks []interface{}
 
