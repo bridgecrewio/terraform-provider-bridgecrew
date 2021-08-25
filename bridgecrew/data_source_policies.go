@@ -97,10 +97,22 @@ func dataSourcePolicies() *schema.Resource {
 							Required: true,
 						},
 						"benchmarks": {
-							Type:     schema.TypeMap,
+							Type:     schema.TypeSet,
 							Optional: true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"benchmark": {
+										Type:     schema.TypeString,
+										Required: true,
+									},
+									"version": {
+										Type:     schema.TypeList,
+										Required: true,
+										Elem: &schema.Schema{
+											Type: schema.TypeString,
+										},
+									},
+								},
 							},
 						},
 						"createdby": {
@@ -177,6 +189,26 @@ func flattenPolicyData(Policies *[]map[string]interface{}) []interface{} {
 			oi["category"] = Policy["category"] // General
 			oi["guideline"] = Policy["guideline"]
 			oi["iscustom"] = Policy["isCustom"]
+
+			//TODO:accountsdata
+			//TODO:benchmarks
+			//oi["benchmarks"] =Policy["benchmarks"]
+			//benchmarks:=Policy["benchmarks"].(map[string]interface{})
+			//benchmark:=map[string]interface{}{
+			//	"CIS AZURE V1.1": []string{"1.23"}}
+			//log.Print(benchmark)
+
+			var marks []interface{}
+
+			benchmarks := Policy["benchmarks"].(map[string]interface{})
+			for key, element := range benchmarks {
+				bench := make(map[string]interface{})
+				bench["benchmark"] = key
+				bench["version"] = element
+				marks = append(marks, bench)
+			}
+
+			oi["benchmarks"] = marks
 
 			// this was hard... dynamic schema!
 			u, err := json.Marshal(Policy["conditionQuery"])
