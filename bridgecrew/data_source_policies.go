@@ -190,19 +190,15 @@ func flattenPolicyData(Policies *[]map[string]interface{}) []interface{} {
 			oi["guideline"] = Policy["guideline"]
 			oi["iscustom"] = Policy["isCustom"]
 
-			//TODO:accountsdata
-			//log.Print(Policy["accountsData"])
 			var accounts []interface{}
 
 			accountsData := Policy["accountsData"].(map[string]interface{})
-			//log.Print(accountsData)
 			for key, element := range accountsData {
 				account := make(map[string]interface{})
 				account["repository"] = key
 				temp := element.(map[string]interface{})
 				account["amounts"] = temp["amounts"]
 				account["lastupdatedate"] = temp["lastUpdateDate"]
-				log.Print(account)
 				accounts = append(accounts, account)
 			}
 
