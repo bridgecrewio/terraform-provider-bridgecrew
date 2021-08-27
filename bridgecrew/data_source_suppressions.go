@@ -67,7 +67,8 @@ func dataSourceSuppressions() *schema.Resource {
 func dataSourceSuppressionRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	path := "%s/suppressions"
 
-	client, req, diagnostics, done, err := authClient(path)
+	configure := m.(ProviderConfig)
+	client, req, diagnostics, done, err := authClient(path, configure)
 
 	if done {
 		return diagnostics

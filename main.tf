@@ -1,5 +1,5 @@
 provider "bridgecrew" {
-  url   = "https://www.bridgecrew.cloud/api/v1"
+  url   = "https://www.bridgecrew.cloud"
   token = "e1debacc-fb6d-5230-89f4-ec76f383d092"
 }
 
@@ -17,19 +17,19 @@ terraform {
   }
 }
 
-//output "repos" {
-//  value = data.bridgecrew_repositories.all
-//}
+output "repos" {
+  value = data.bridgecrew_repositories.all
+}
 
 
-//output "suppression" {
-//  value = data.bridgecrew_suppressions.all
-//}
+output "suppression" {
+  value = data.bridgecrew_suppressions.all
+}
 
 output "polices" {
   value = data.bridgecrew_policies.all
 }
 
 //output "branches" {
-//  value = data.bridgecrew_repository_branches.all
+// value = data.bridgecrew_repository_branches.all
 //}

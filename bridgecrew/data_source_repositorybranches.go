@@ -28,7 +28,8 @@ func dataSourceRepositoryBranches() *schema.Resource {
 func dataSourceRepositoryBranchRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	path := "%s/repositories/branches"
 
-	client, req, diagnostics, done, err := authClient(path)
+	configure := m.(ProviderConfig)
+	client, req, diagnostics, done, err := authClient(path, configure)
 
 	if done {
 		return diagnostics

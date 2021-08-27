@@ -4,15 +4,19 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 )
 
 //use basic auth client
-func authClient(path string) (*http.Client, *http.Request, diag.Diagnostics, bool, error) {
-	api := os.Getenv("BRIDGECREW_API")
+func authClient(path string, configure ProviderConfig) (*http.Client, *http.Request, diag.Diagnostics, bool, error) {
+
+	api := configure.Token
+	url := configure.URL
+
+	var baseurl string
+	baseurl = fmt.Sprintf(url + "/api/v1")
 
 	if api == "" {
 		log.Fatal("BRIDGECREW_API is missing")
@@ -23,11 +27,10 @@ func authClient(path string) (*http.Client, *http.Request, diag.Diagnostics, boo
 
 	client := &http.Client{Timeout: 10 * time.Second}
 
-	req, err := http.NewRequest("GET", fmt.Sprintf(path, "https://www.bridgecrew.cloud/api/v1"), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf(path, baseurl), nil)
 
 	if err != nil {
 		log.Fatal("Failed at http")
-		return nil, nil, diag.FromErr(err), true, nil
 	}
 
 	// add authorization header to the req

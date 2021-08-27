@@ -59,8 +59,8 @@ func dataSourceErrors() *schema.Resource {
 
 func dataSourceErrorRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	path := "%s/errors/gitBlameAuthors"
-
-	client, req, diagnostics, done, err := authClient(path)
+	configure := m.(ProviderConfig)
+	client, req, diagnostics, done, err := authClient(path, configure)
 
 	if done {
 		return diagnostics
