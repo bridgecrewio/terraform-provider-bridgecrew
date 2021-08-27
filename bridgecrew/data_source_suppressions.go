@@ -67,7 +67,7 @@ func dataSourceSuppressions() *schema.Resource {
 func dataSourceSuppressionRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	path := "%s/suppressions"
 
-	client, diags, req, diagnostics, done, err := authClient(path)
+	client, req, diagnostics, done, err := authClient(path)
 
 	if done {
 		return diagnostics
@@ -77,30 +77,27 @@ func dataSourceSuppressionRead(ctx context.Context, d *schema.ResourceData, m in
 
 	if err != nil {
 		log.Fatal("Failed at client.Do")
-		return diag.FromErr(err)
 	}
+
 	defer r.Body.Close()
 
-	log.Print("All data obtained")
 	Suppressions := make([]map[string]interface{}, 0)
 	err = json.NewDecoder(r.Body).Decode(&Suppressions)
 
 	if err != nil {
 		log.Fatal("Failed to parse data")
-		return diag.FromErr(err)
 	}
 
 	flatRepos := flattenSuppressionData(&Suppressions)
 
 	if err := d.Set("suppressions", flatRepos); err != nil {
 		log.Fatal(reflect.TypeOf(Suppressions))
-		return diag.FromErr(err)
 	}
 
 	// always run
 	d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
 
-	return diags
+	return diagnostics
 }
 
 func flattenSuppressionData(Suppressions *[]map[string]interface{}) []interface{} {

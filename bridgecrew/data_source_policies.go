@@ -132,11 +132,10 @@ func dataSourcePolicies() *schema.Resource {
 
 func dataSourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	path := "%s/policies/table/data"
-	client, diags, req, diagnostics, done, err := authClient(path)
+	client, req, diagnostics, done, err := authClient(path)
 
 	if err != nil {
 		log.Fatal("Failed at authClient")
-		return diags
 	}
 
 	if done {
@@ -147,7 +146,6 @@ func dataSourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interfa
 
 	if err != nil {
 		log.Fatal("Failed at client.Do")
-		//return diag.FromErr(err)
 	}
 	defer r.Body.Close()
 
@@ -165,7 +163,6 @@ func dataSourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interfa
 
 	if err := d.Set("policies", flatPolicies); err != nil {
 		log.Fatal(reflect.TypeOf(data))
-		//return diag.FromErr(err)
 	}
 
 	// always run

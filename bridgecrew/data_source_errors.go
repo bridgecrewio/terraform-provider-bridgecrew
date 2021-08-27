@@ -60,7 +60,7 @@ func dataSourceErrors() *schema.Resource {
 func dataSourceErrorRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	path := "%s/errors/gitBlameAuthors"
 
-	client, diags, req, diagnostics, done, err := authClient(path)
+	client, req, diagnostics, done, err := authClient(path)
 
 	if done {
 		return diagnostics
@@ -94,7 +94,7 @@ func dataSourceErrorRead(ctx context.Context, d *schema.ResourceData, m interfac
 	// always run
 	d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
 
-	return diags
+	return diagnostics
 }
 
 func flattenErrorData(Errors *[]map[string]interface{}) []interface{} {

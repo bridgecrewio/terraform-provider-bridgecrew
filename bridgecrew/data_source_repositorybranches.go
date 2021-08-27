@@ -28,16 +28,13 @@ func dataSourceRepositoryBranches() *schema.Resource {
 func dataSourceRepositoryBranchRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	path := "%s/repositories/branches"
 
-	client, diags, req, diagnostics, done, err := authClient(path)
+	client, req, diagnostics, done, err := authClient(path)
 
 	if done {
 		return diagnostics
 	}
-	log.Print("Added Header")
 
 	r, err := client.Do(req)
-
-	log.Print("Queried")
 
 	if err != nil {
 		log.Fatal("Failed at client.Do")
@@ -54,7 +51,6 @@ func dataSourceRepositoryBranchRead(ctx context.Context, d *schema.ResourceData,
 
 	if err != nil {
 		log.Fatal("Failed to parse data")
-		return diag.FromErr(err)
 	}
 
 	log.Print(repositoriesbranches)
@@ -62,13 +58,12 @@ func dataSourceRepositoryBranchRead(ctx context.Context, d *schema.ResourceData,
 
 	if err := d.Set("repositories", flatBranch); err != nil {
 		log.Fatal(reflect.TypeOf(repositoriesbranches))
-		return diag.FromErr(err)
 	}
 
 	// always run
 	d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
 
-	return diags
+	return diagnostics
 }
 func flattenBranchData(Repositories *[]map[string]interface{}) []interface{} {
 	if Repositories != nil {

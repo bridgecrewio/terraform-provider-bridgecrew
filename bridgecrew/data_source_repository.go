@@ -60,7 +60,7 @@ func dataSourceRepositories() *schema.Resource {
 func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	path := "%s/repositories"
 
-	client, diags, req, diagnostics, done, err := authClient(path)
+	client, req, diagnostics, done, err := authClient(path)
 
 	if done {
 		return diagnostics
@@ -94,7 +94,7 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 	// always run
 	d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
 
-	return diags
+	return diagnostics
 }
 
 func flattenRepositoryData(Repositories *[]map[string]interface{}) []interface{} {
