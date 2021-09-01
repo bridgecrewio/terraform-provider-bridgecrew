@@ -47,3 +47,14 @@ docs:
 	go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
 clean:
 	rm -rf ./bin
+
+BIN=$(CURDIR)/bin
+$(BIN)/%:
+	@echo "Installing tools from tools/tools.go"
+	@cat tools/tools.go | grep _ | awk -F '"' '{print $$2}' | GOBIN=$(BIN) xargs -tI {} go install {}
+
+generate-docs: $(BIN)/tfplugindocs
+	go run scripts/generate-docs.go -tfplugindocsPath=$(BIN)/tfplugindocs
+
+validate-docs: $(BIN)/tfplugindocs
+	$(BIN)/tfplugindocs validate
