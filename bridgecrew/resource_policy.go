@@ -2,6 +2,7 @@ package bridgecrew
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -46,12 +47,47 @@ func resourcePolicy() *schema.Resource {
 			"severity": {
 				Type:     schema.TypeString,
 				Required: true,
-				//todo
-				// needs to one of the severity classes not a free string field
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					switch val.(string) {
+					case
+						"CRITICAL",
+						"HIGH",
+						"LOW",
+						"MEDIUM":
+						return
+					}
+					errs = append(errs, fmt.Errorf("%q Must be one of CRITICAL, HIGH, MEDIUM or LOW", val))
+					return
+				},
 			},
 			"category": {
 				Type:     schema.TypeString,
 				Required: true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					switch val.(string) {
+					case
+						"LOGGING",
+						"ELASTICSEARCH",
+						"GENERAL",
+						"STORAGE",
+						"ENCRYPTION",
+						"NETWORKING",
+						"MONITORING",
+						"KUBERNETES",
+						"SERVERLESS",
+						"BACKUP_AND_RECOVERY",
+						"IAM",
+						"SECRETS",
+						"PUBLIC",
+						"GENERAL_SECURITY":
+						return
+					}
+					errs = append(errs,
+						fmt.Errorf("%q Must be one of LOGGING, ELASTICSEARCH, GENERAL, STORAGE, ENCRYPTION,"+
+							" NETWORKING, MONITORING, KUBERNETES, SERVERLESS, BACKUP_AND_RECOVERY, SECRETS, PUBLIC,"+
+							" GENERAL_SECURITY or IAM", val))
+					return
+				},
 			},
 			"resource_types": {
 				Type:     schema.TypeList,
@@ -124,9 +160,6 @@ func resourcePolicy() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			//	},
-			//	},
-			//	},
 		},
 	}
 }

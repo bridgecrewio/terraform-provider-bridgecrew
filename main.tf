@@ -26,9 +26,9 @@ terraform {
 //  value = data.bridgecrew_suppressions.all
 //}
 
-//output "polices" {
-//  value = data.bridgecrew_policies.all
-//}
+output "polices" {
+  value = data.bridgecrew_policies.all
+}
 
 //output "branches" {
 // value = data.bridgecrew_repository_branches.all
@@ -48,6 +48,17 @@ resource "bridgecrew_policy" "new" {
   benchmarks {
     benchmark = "free text for now"
     version   = ["1.1", "1.2"]
+  }
+
+  accountsdata {
+    amounts = {
+      CLOSED     = 1
+      DELETED    = 0
+      OPEN       = 0
+      REMEDIATED = 0
+      SUPPRESSED = 0
+    }
+    repository = "JamesWoolfenden/learn-terraform"
   }
 }
 

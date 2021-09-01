@@ -24,10 +24,11 @@ func dataSourcePolicies() *schema.Resource {
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"provider": {
-							Type:     schema.TypeString,
-							Computed: false,
-							Required: true,
+						"cloud_provider": {
+							Type:        schema.TypeString,
+							Computed:    false,
+							Required:    true,
+							Description: "The name of the Cloud Provider",
 						},
 						"id": {
 							Type:     schema.TypeString,
@@ -37,11 +38,11 @@ func dataSourcePolicies() *schema.Resource {
 							Type:     schema.TypeString,
 							Required: true,
 						},
-						"descriptivetitle": {
+						"descriptive_title": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"constructivetitle": {
+						"constructive_title": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
@@ -53,7 +54,7 @@ func dataSourcePolicies() *schema.Resource {
 							Type:     schema.TypeString,
 							Required: true,
 						},
-						"resourcetypes": {
+						"resource_types": {
 							Type:     schema.TypeList,
 							Required: true,
 							Elem: &schema.Schema{
@@ -92,7 +93,7 @@ func dataSourcePolicies() *schema.Resource {
 							Type:     schema.TypeBool,
 							Computed: true,
 						},
-						"conditionquery": {
+						"condition_query": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
@@ -179,11 +180,11 @@ func flattenPolicyData(Policies *[]map[string]interface{}) []interface{} {
 		for i, Policy := range *Policies {
 			oi := make(map[string]interface{})
 
-			oi["provider"] = Policy["provider"] // AWS
-			oi["id"] = Policy["id"]             // james_AWS_1620660945849
-			oi["title"] = Policy["title"]       // new policy
-			oi["descriptivetitle"] = Policy["descriptiveTitle"]
-			oi["constructivetitle"] = Policy["constructiveTitle"]
+			oi["cloud_provider"] = Policy["provider"] // AWS
+			oi["id"] = Policy["id"]                   // james_AWS_1620660945849
+			oi["title"] = Policy["title"]             // new policy
+			oi["descriptive_title"] = Policy["descriptiveTitle"]
+			oi["constructive_title"] = Policy["constructiveTitle"]
 			oi["severity"] = Policy["severity"] //CRITICAL
 			oi["category"] = Policy["category"] // General
 			oi["guideline"] = Policy["guideline"]
@@ -221,8 +222,8 @@ func flattenPolicyData(Policies *[]map[string]interface{}) []interface{} {
 				panic(err)
 			}
 
-			oi["conditionquery"] = string(u)
-			oi["resourcetypes"] = Policy["resourceTypes"]
+			oi["condition_query"] = string(u)
+			oi["resource_types"] = Policy["resourceTypes"]
 			oi["createdby"] = Policy["createdBy"]
 			oi["code"] = Policy["code"]
 			ois[i] = oi
