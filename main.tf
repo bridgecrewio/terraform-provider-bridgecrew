@@ -1,6 +1,6 @@
 provider "bridgecrew" {
-  url   = "https://www.bridgecrew.cloud"
-  token = "e1debacc-fb6d-5230-89f4-ec76f383d092"
+  url = "https://www.bridgecrew.cloud"
+  //token = "gets value from environment"
 }
 
 data "bridgecrew_repositories" "all" {}

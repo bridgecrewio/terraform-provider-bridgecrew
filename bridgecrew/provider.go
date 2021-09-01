@@ -26,9 +26,9 @@ func Provider() *schema.Provider {
 			},
 			"token": {
 				Type:        schema.TypeString,
-				Default:     "",
 				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("BRIDGECREW_TOKEN", nil),
+				Sensitive:   true,
+				DefaultFunc: schema.EnvDefaultFunc("BRIDGECREW_API", nil),
 				Description: "API Token for Bridgecrew",
 			},
 		},
