@@ -45,3 +45,5 @@ check: install
 
 docs:
 	go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
+clean:
+	rm -rf ./bin

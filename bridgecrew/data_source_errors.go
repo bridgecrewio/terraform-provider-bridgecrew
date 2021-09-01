@@ -104,6 +104,7 @@ func flattenErrorData(Errors *[]map[string]interface{}) []interface{} {
 		for i, Error := range *Errors {
 			oi := make(map[string]interface{})
 			log.Print(Error)
+			//todo
 			/*oi["id"] = Repository["id"]
 			oi["repository"] = Repository["repository"]
 			oi["source"] = Repository["source"]
