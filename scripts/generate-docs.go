@@ -100,68 +100,66 @@ func main() {
 		},
 	}
 
-	//var resourcePages = []Page{
-	//{
-	//	name: "service_v1",
-	//	path: tempDir + "/resources/service_v1.md.tmpl",
-	//	Data: PageData{
-	//		"vcl",
-	//	},
-	//},
-	//{
-	//	name: "service_compute",
-	//	path: tempDir + "/resources/service_compute.md.tmpl",
-	//	Data: PageData{
-	//		"wasm",
-	//	},
-	//},
-	//{
-	//	name: "service_dictionary_items_v1",
-	//	path: tempDir + "/resources/service_dictionary_items_v1.md.tmpl",
-	//},
-	//{
-	//	name: "service_acl_entries_v1",
-	//	path: tempDir + "/resources/service_acl_entries_v1.md.tmpl",
-	//},
-	//{
-	//	name: "service_dynamic_snippet_content_v1",
-	//	path: tempDir + "/resources/service_dynamic_snippet_content_v1.md.tmpl",
-	//},
-	//{
-	//	name: "service_waf_configuration",
-	//	path: tempDir + "/resources/service_waf_configuration.md.tmpl",
-	//},
-	//{
-	//	name: "user_v1",
-	//	path: tempDir + "/resources/user_v1.md.tmpl",
-	//},
-	//{
-	//	name: "tls_activation",
-	//	path: tempDir + "/resources/tls_activation.md.tmpl",
-	//},
-	//{
-	//	name: "tls_certificate",
-	//	path: tempDir + "/resources/tls_certificate.md.tmpl",
-	//},
-	//{
-	//	name: "tls_platform_certificate",
-	//	path: tempDir + "/resources/tls_platform_certificate.md.tmpl",
-	//},
-	//{
-	//	name: "tls_private_key",
-	//	path: tempDir + "/resources/tls_private_key.md.tmpl",
-	//},
-	//{
-	//	name: "tls_subscription",
-	//	path: tempDir + "/resources/tls_subscription.md.tmpl",
-	//},
-	//{
-	//	name: "tls_subscription_validation",
-	//	path: tempDir + "/resources/tls_subscription_validation.md.tmpl",
-	//},
-	//}
-	pages := dataPages
-	//pages := append(resourcePages, dataPages...)
+	var resourcePages = []Page{
+		{
+			name: "resource_policy",
+			path: tempDir + "/resources/policy.md.tmpl",
+		},
+		//,
+		//{
+		//	name: "service_compute",
+		//	path: tempDir + "/resources/service_compute.md.tmpl",
+		//	Data: PageData{
+		//		"wasm",
+		//	},
+		//},
+		//{
+		//	name: "service_dictionary_items_v1",
+		//	path: tempDir + "/resources/service_dictionary_items_v1.md.tmpl",
+		//},
+		//{
+		//	name: "service_acl_entries_v1",
+		//	path: tempDir + "/resources/service_acl_entries_v1.md.tmpl",
+		//},
+		//{
+		//	name: "service_dynamic_snippet_content_v1",
+		//	path: tempDir + "/resources/service_dynamic_snippet_content_v1.md.tmpl",
+		//},
+		//{
+		//	name: "service_waf_configuration",
+		//	path: tempDir + "/resources/service_waf_configuration.md.tmpl",
+		//},
+		//{
+		//	name: "user_v1",
+		//	path: tempDir + "/resources/user_v1.md.tmpl",
+		//},
+		//{
+		//	name: "tls_activation",
+		//	path: tempDir + "/resources/tls_activation.md.tmpl",
+		//},
+		//{
+		//	name: "tls_certificate",
+		//	path: tempDir + "/resources/tls_certificate.md.tmpl",
+		//},
+		//{
+		//	name: "tls_platform_certificate",
+		//	path: tempDir + "/resources/tls_platform_certificate.md.tmpl",
+		//},
+		//{
+		//	name: "tls_private_key",
+		//	path: tempDir + "/resources/tls_private_key.md.tmpl",
+		//},
+		//{
+		//	name: "tls_subscription",
+		//	path: tempDir + "/resources/tls_subscription.md.tmpl",
+		//},
+		//{
+		//	name: "tls_subscription_validation",
+		//	path: tempDir + "/resources/tls_subscription_validation.md.tmpl",
+		//},
+	}
+
+	pages := append(resourcePages, dataPages...)
 
 	renderPages(getTemplate(tmplDir), pages)
 

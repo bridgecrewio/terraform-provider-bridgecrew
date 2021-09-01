@@ -32,7 +32,9 @@ func Provider() *schema.Provider {
 				Description: "API Token for Bridgecrew",
 			},
 		},
-		ResourcesMap: map[string]*schema.Resource{},
+		ResourcesMap: map[string]*schema.Resource{
+			"bridgecrew_policy": resourcePolicy(),
+		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"bridgecrew_repositories":        dataSourceRepositories(),
 			"bridgecrew_repository_branches": dataSourceRepositoryBranches(),
