@@ -94,6 +94,10 @@ func main() {
 			name: "data_source_suppressions",
 			path: tempDir + "/data-sources/suppressions.md.tmpl",
 		},
+		{
+			name: "data_source_errors",
+			path: tempDir + "/data-sources/errors.md.tmpl",
+		},
 	}
 
 	//var resourcePages = []Page{
@@ -188,7 +192,7 @@ func getTemplate(tmplDir string) *template.Template {
 	var templateFiles []string
 	log.Print(tmplDir)
 	filepath.Walk(tmplDir, func(path string, info os.FileInfo, err error) error {
-		log.Print(filepath.Ext(path))
+		log.Print(path)
 		if filepath.Ext(path) == ".tmpl" {
 			templateFiles = append(templateFiles, path)
 		}
@@ -198,6 +202,7 @@ func getTemplate(tmplDir string) *template.Template {
 	if err != nil {
 		log.Fatalf("Error parsing template files: %s", err)
 	}
+	log.Print(template)
 	return template
 }
 

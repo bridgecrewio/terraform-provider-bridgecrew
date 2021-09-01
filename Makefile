@@ -43,8 +43,6 @@ check: install
 	terraform init
 	terraform plan
 
-docs:
-	go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
 clean:
 	rm -rf ./bin
 

@@ -48,3 +48,25 @@ The Terraform config is in main.tf.
 export TF_LOG_CORE=""
 and
 export TF_LOG_PROVIDER="DEBUG"
+
+## Building The Documentation
+
+The documentation is built from components (go templates) stored in the `templates` folder.
+Building the documentation copies the full markdown into the `docs` folder, ready for deployment to Hashicorp.
+
+> NOTE: you'll need the [`tfplugindocs`](https://github.com/hashicorp/terraform-plugin-docs) tool for generating the Markdown to be deployed to Hashicorp. For more information on generating documentation, refer to https://www.terraform.io/docs/registry/providers/docs.html
+
+- To validate the `/template` directory structure:
+
+```bash
+make validate-docs
+```
+
+- To build the `/docs` documentation Markdown files:
+
+```bash
+make generate-docs
+```
+
+- To view the documentation:
+Paste `/docs` Markdown file content into https://registry.terraform.io/tools/doc-preview
