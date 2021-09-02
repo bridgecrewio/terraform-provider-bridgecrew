@@ -43,6 +43,14 @@ check: install
 	terraform init
 	terraform plan
 
+apply: install
+	-rm terraform.tfstate
+	-rm terraform.tfstate.backup
+	-rm -fr .terraform
+	-rm .terraform.lock.hcl
+	terraform init
+	terraform apply --auto-approve
+
 clean:
 	rm -rf ./bin
 

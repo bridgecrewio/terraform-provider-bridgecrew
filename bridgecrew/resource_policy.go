@@ -2,8 +2,11 @@ package bridgecrew
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -169,13 +172,89 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	//client := &http.Client{Timeout: 10 * time.Second}
 	var diags diag.Diagnostics
 
-	policies := d.Get("policies").([]interface{})
+	myPolicy := Policy{}
 
-	log.Print(policies)
+	//if d.Get("accountsdata") != nil {
+	//	myAccounts := d.Get("accountsdata").([]interface{})
+	//	log.Print(myAccounts)
+	//	//log.Print(myAccounts["repository"])
+	//	//for i, Account := range myAccounts {
+	//	//	myAccount:=Account.(map[string]interface{})
+	//	//
+	//	//	myPolicy.AccountsData[i].repository = myAccount["repository"].(string)
+	//	//}
+	//}
 
-	//d.SetId(strconv.Itoa(o.ID))
+	//Benchmarks := d.Get("benchmarks").([]interface{})
+	//log.Print(Benchmarks)
+	//if d.Get("benchmarks") != nil {
+	//	Benchmarks := d.Get("benchmarks").([]interface{})
+	//	log.Print(Benchmarks)
+	//}
+
+	myPolicy.Category = d.Get("category").(string)
+	myPolicy.Code = d.Get("title").(string)
+	myPolicy.Code = d.Get("code").(string)
+	myPolicy.Constructivetitle = d.Get("constructive_title").(string)
+	myPolicy.Descriptivetitle = d.Get("descriptive_title").(string)
+	myPolicy.Provider = d.Get("cloud_provider").(string)
+	myPolicy.Severity = d.Get("severity").(string)
+	myPolicy.Title = d.Get("title").(string)
+	myPolicy.Conditionquery = d.Get("condition_query").(string)
+	myPolicy.Createdby = d.Get("createdby").(string)
+	myPolicy.Guideline = d.Get("guideline").(string)
+	myPolicy.Iscustom = d.Get("iscustom").(bool)
+
+	Types := d.Get("resource_types").([]interface{})
+
+	if len(Types) != 0 {
+		for _, Type := range Types {
+			myPolicy.Resourcetypes = append(myPolicy.Resourcetypes, Type.(string))
+		}
+	}
+
+	//highlight(myPolicy)
+
+	jspolicy, err := json.Marshal(myPolicy)
+	if err != nil {
+		log.Fatal("json could no be written")
+	}
+	log.Print(strings.NewReader(string(jspolicy)))
+
+	//configure := m.(ProviderConfig)
+	//url := configure.URL+"/policies"
+	//
+	//req, _ := http.NewRequest("POST", url, strings.NewReader(string(jspolicy)))
+	//
+	//req.Header.Add("Accept", "application/json")
+	//req.Header.Add("Content-Type", "application/json")
+	//req.Header.Add("authorization", configure.Token)
+	//
+	//res, _ := client.Do(req)
+	//
+	//defer res.Body.Close()
+	//body, err := ioutil.ReadAll(res.Body)
+	//
+	//if err != nil {
+	//	log.Fatal("json could no be written")
+	//}
+	//
+	//Policy := Policy{}
+	//err = json.Unmarshal(body, &Policy)
+	//
+	//if err != nil {
+	//	log.Fatal("json could no be unmarshalled")
+	//}
+
+	d.SetId(strconv.Itoa(myPolicy.ID))
 
 	return diags
+}
+
+func highlight(myPolicy Policy) {
+	log.Print("XXXXXXXXXXX")
+	log.Print(myPolicy)
+	log.Print("XXXXXXXXXXX")
 }
 
 func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
