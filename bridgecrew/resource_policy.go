@@ -267,6 +267,7 @@ func CastToStringList(temp []interface{}) []string {
 	return versions
 }
 
+// highlight is just to help with manual debugging so you can find the lines
 func highlight(myPolicy interface{}) {
 	log.Print("XXXXXXXXXXX")
 	log.Print(myPolicy)
