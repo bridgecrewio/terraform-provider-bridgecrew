@@ -2,11 +2,9 @@ package bridgecrew
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"strconv"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -135,7 +133,7 @@ func resourcePolicy() *schema.Resource {
 				Required: true,
 			},
 			"benchmarks": {
-				Type:     schema.TypeSet,
+				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -185,13 +183,21 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	//	//}
 	//}
 
-	//Benchmarks := d.Get("benchmarks").([]interface{})
-	//log.Print(Benchmarks)
-	//if d.Get("benchmarks") != nil {
-	//	Benchmarks := d.Get("benchmarks").([]interface{})
-	//	log.Print(Benchmarks)
-	//}
+	myBenchmarks := d.Get("benchmarks").([]interface{})
 
+	var myItems []Benchmark
+	if len(myBenchmarks) != 0 {
+		for _, myBenchmark := range myBenchmarks {
+			s := myBenchmark.(map[string]interface{})
+			var Item Benchmark
+			versions := CastToStringList(s["version"].([]interface{}))
+			Item.version = versions
+			Item.benchmark = s["benchmark"].(string)
+			myItems = append(myItems, Item)
+		}
+	}
+
+	myPolicy.Benchmarks = myItems
 	myPolicy.Category = d.Get("category").(string)
 	myPolicy.Code = d.Get("title").(string)
 	myPolicy.Code = d.Get("code").(string)
@@ -213,13 +219,13 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 		}
 	}
 
-	//highlight(myPolicy)
+	highlight(myPolicy)
 
-	jspolicy, err := json.Marshal(myPolicy)
-	if err != nil {
-		log.Fatal("json could no be written")
-	}
-	log.Print(strings.NewReader(string(jspolicy)))
+	//jspolicy, err := json.Marshal(myPolicy)
+	//if err != nil {
+	//	log.Fatal("json could no be written")
+	//}
+	//log.Print(strings.NewReader(string(jspolicy)))
 
 	//configure := m.(ProviderConfig)
 	//url := configure.URL+"/policies"
@@ -251,7 +257,17 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	return diags
 }
 
-func highlight(myPolicy Policy) {
+// CastToStringList is a helper to work with coversion of types
+// If theres a better way (most likely)?
+func CastToStringList(temp []interface{}) []string {
+	var versions []string
+	for _, version := range temp {
+		versions = append(versions, version.(string))
+	}
+	return versions
+}
+
+func highlight(myPolicy interface{}) {
 	log.Print("XXXXXXXXXXX")
 	log.Print(myPolicy)
 	log.Print("XXXXXXXXXXX")

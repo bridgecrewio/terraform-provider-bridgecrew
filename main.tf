@@ -50,6 +50,11 @@ resource "bridgecrew_policy" "new" {
     version   = ["1.1", "1.2"]
   }
 
+  benchmarks {
+    benchmark = "another benchmark"
+    version   = ["9.9", "0.3"]
+  }
+
   accountsdata {
     amounts = {
       CLOSED     = 1
