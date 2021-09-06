@@ -159,7 +159,6 @@ func dataSourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interfa
 		log.Fatal("Failed at unmarshalling with typed")
 	}
 
-	//var filters =typed.Object("filters")
 	var data = typedjson.Maps("data")
 
 	flatPolicies := flattenPolicyData(&data)

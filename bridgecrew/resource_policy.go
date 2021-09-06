@@ -2,9 +2,16 @@ package bridgecrew
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"strings"
+
+	//	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"log"
 	"strconv"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -17,33 +24,15 @@ func resourcePolicy() *schema.Resource {
 		UpdateContext: resourePolicyUpdate,
 		DeleteContext: resourcePolicyDelete,
 		Schema: map[string]*schema.Schema{
-			//"policies": {
-			//	Type:     schema.TypeSet,
-			//	Computed: false,
-			//	Required: true,
-			//	Elem: &schema.Resource{
-			//		Schema: map[string]*schema.Schema{
 			"cloud_provider": {
 				Type:     schema.TypeString,
 				Computed: false,
 				Required: true,
 			},
-			//"id": {
-			//  Type:     schema.TypeString,
-			//  Computed: true,
-			//},
 			"title": {
 				Type:     schema.TypeString,
 				ForceNew: true,
 				Required: true,
-			},
-			"descriptive_title": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"constructive_title": {
-				Type:     schema.TypeString,
-				Optional: true,
 			},
 			"severity": {
 				Type:     schema.TypeString,
@@ -51,13 +40,13 @@ func resourcePolicy() *schema.Resource {
 				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
 					switch val.(string) {
 					case
-						"CRITICAL",
-						"HIGH",
-						"LOW",
-						"MEDIUM":
+						"critical",
+						"high",
+						"low",
+						"medium":
 						return
 					}
-					errs = append(errs, fmt.Errorf("%q Must be one of CRITICAL, HIGH, MEDIUM or LOW", val))
+					errs = append(errs, fmt.Errorf("%q Must be one of critical, high, medium or low", val))
 					return
 				},
 			},
@@ -67,70 +56,65 @@ func resourcePolicy() *schema.Resource {
 				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
 					switch val.(string) {
 					case
-						"LOGGING",
-						"ELASTICSEARCH",
-						"GENERAL",
-						"STORAGE",
-						"ENCRYPTION",
-						"NETWORKING",
-						"MONITORING",
-						"KUBERNETES",
-						"SERVERLESS",
-						"BACKUP_AND_RECOVERY",
-						"IAM",
-						"SECRETS",
-						"PUBLIC",
-						"GENERAL_SECURITY":
+						"logging",
+						"elasticsearch",
+						"general",
+						"storage",
+						"encryption",
+						"networking",
+						"monitoring",
+						"kubernetes",
+						"serverless",
+						"backup_and_recovery",
+						"iam",
+						"secrets",
+						"public",
+						"general_security":
 						return
 					}
 					errs = append(errs,
-						fmt.Errorf("%q Must be one of LOGGING, ELASTICSEARCH, GENERAL, STORAGE, ENCRYPTION,"+
-							" NETWORKING, MONITORING, KUBERNETES, SERVERLESS, BACKUP_AND_RECOVERY, SECRETS, PUBLIC,"+
-							" GENERAL_SECURITY or IAM", val))
+						fmt.Errorf("%q Must be one of logging, elasticsearch, general, storage, encryption,"+
+							" networking, monitoring, kubernetes, serverless, backup_and_recovery, backup_and_recovery, public,"+
+							" general_security or iam", val))
 					return
 				},
 			},
-			"resource_types": {
+			"guidelines": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"conditions": {
 				Type:     schema.TypeList,
 				Required: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-			},
-			"accountsdata": {
-				Type:     schema.TypeSet,
-				Optional: true,
+				MaxItems: 1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"repository": {
+						"resource_types": {
+							Type:     schema.TypeList,
 							Required: true,
-							Type:     schema.TypeString,
-						},
-						"amounts": {
-							Required: true,
-							Type:     schema.TypeMap,
 							Elem: &schema.Schema{
-								Type: schema.TypeInt,
+								Type: schema.TypeString,
 							},
 						},
-						"lastupdatedate": {
-							Computed: true,
+						"cond_type": {
 							Type:     schema.TypeString,
+							Required: true,
+						},
+						"attribute": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+
+						"operator": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"value": {
+							Type:     schema.TypeString,
+							Required: true,
 						},
 					},
 				},
-			},
-			"guideline": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"iscustom": {
-				Type:     schema.TypeBool,
-				Required: true,
-			},
-			"condition_query": {
-				Type:     schema.TypeString,
-				Required: true,
 			},
 			"benchmarks": {
 				Type:     schema.TypeList,
@@ -151,12 +135,6 @@ func resourcePolicy() *schema.Resource {
 					},
 				},
 			},
-			"createdby": {
-				Type:     schema.TypeString,
-				Computed: true,
-				//todo
-				// should this not be estimated automatically from the TOKEN?
-			},
 			"code": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -167,98 +145,113 @@ func resourcePolicy() *schema.Resource {
 
 func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 
-	//client := &http.Client{Timeout: 10 * time.Second}
+	client := &http.Client{Timeout: 60 * time.Second}
 	var diags diag.Diagnostics
 
 	myPolicy := Policy{}
 
-	//if d.Get("accountsdata") != nil {
-	//	myAccounts := d.Get("accountsdata").([]interface{})
-	//	log.Print(myAccounts)
-	//	//log.Print(myAccounts["repository"])
-	//	//for i, Account := range myAccounts {
-	//	//	myAccount:=Account.(map[string]interface{})
-	//	//
-	//	//	myPolicy.AccountsData[i].repository = myAccount["repository"].(string)
-	//	//}
-	//}
-
 	myBenchmarks := d.Get("benchmarks").([]interface{})
 
-	var myItems []Benchmark
 	if len(myBenchmarks) != 0 {
 		for _, myBenchmark := range myBenchmarks {
 			s := myBenchmark.(map[string]interface{})
-			var Item Benchmark
+			var myItem Benchmark
 			versions := CastToStringList(s["version"].([]interface{}))
-			Item.version = versions
-			Item.benchmark = s["benchmark"].(string)
-			myItems = append(myItems, Item)
+			myItem.Version = versions
+			myItem.Benchmark = s["benchmark"].(string)
+			myPolicy.Benchmarks = append(myPolicy.Benchmarks, myItem)
 		}
 	}
 
-	myPolicy.Benchmarks = myItems
 	myPolicy.Category = d.Get("category").(string)
-	myPolicy.Code = d.Get("title").(string)
-	myPolicy.Code = d.Get("code").(string)
-	myPolicy.Constructivetitle = d.Get("constructive_title").(string)
-	myPolicy.Descriptivetitle = d.Get("descriptive_title").(string)
+	myCode := d.Get("code").(string)
+	if len(myCode) != 0 {
+		myPolicy.Code = d.Get("code").(string)
+	}
+
 	myPolicy.Provider = d.Get("cloud_provider").(string)
 	myPolicy.Severity = d.Get("severity").(string)
 	myPolicy.Title = d.Get("title").(string)
-	myPolicy.Conditionquery = d.Get("condition_query").(string)
-	myPolicy.Createdby = d.Get("createdby").(string)
-	myPolicy.Guideline = d.Get("guideline").(string)
-	myPolicy.Iscustom = d.Get("iscustom").(bool)
 
-	Types := d.Get("resource_types").([]interface{})
+	conditions := make([]Conditions, 0, 1)
 
-	if len(Types) != 0 {
-		for _, Type := range Types {
-			myPolicy.Resourcetypes = append(myPolicy.Resourcetypes, Type.(string))
-		}
+	myConditions := d.Get("conditions").([]interface{})
+	for _, myCondition := range myConditions {
+		temp := myCondition.(map[string]interface{})
+		var Condition Conditions
+		Condition.Value = temp["value"].(string)
+		Condition.CondType = temp["cond_type"].(string)
+		Condition.Attribute = temp["attribute"].(string)
+		Condition.Operator = temp["operator"].(string)
+
+		var myResources []string
+		myResources = CastToStringList(temp["resource_types"].([]interface{}))
+		Condition.ResourceTypes = myResources
+
+		conditions = append(conditions, Condition)
 	}
 
-	highlight(myPolicy)
+	myPolicy.Conditions = conditions[0]
 
-	//jspolicy, err := json.Marshal(myPolicy)
-	//if err != nil {
-	//	log.Fatal("json could no be written")
-	//}
-	//log.Print(strings.NewReader(string(jspolicy)))
+	myPolicy.Guidelines = d.Get("guidelines").(string)
 
-	//configure := m.(ProviderConfig)
-	//url := configure.URL+"/policies"
-	//
-	//req, _ := http.NewRequest("POST", url, strings.NewReader(string(jspolicy)))
-	//
-	//req.Header.Add("Accept", "application/json")
-	//req.Header.Add("Content-Type", "application/json")
-	//req.Header.Add("authorization", configure.Token)
-	//
-	//res, _ := client.Do(req)
-	//
-	//defer res.Body.Close()
-	//body, err := ioutil.ReadAll(res.Body)
-	//
+	jsPolicy, err := json.Marshal(myPolicy)
+	if err != nil {
+		log.Fatal("json could no be written")
+	}
+
+	configure := m.(ProviderConfig)
+	url := configure.URL + "/policies"
+
+	payload := strings.NewReader(string(jsPolicy))
+	log.Print(string(jsPolicy))
+
+	req, _ := http.NewRequest("POST", url, payload)
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("authorization", configure.Token)
+
+	res, err := client.Do(req)
+	if err != nil {
+		log.Print(err)
+		log.Fatal("POST FAILED")
+	}
+
+	defer res.Body.Close()
+	body, err := ioutil.ReadAll(res.Body)
+
+	if err != nil {
+		//find out what the results of the post was in the message
+		log.Print(err.Error())
+		myResults := body
+		log.Print(myResults)
+		log.Fatal("IO Failure")
+	}
+
+	if err != nil {
+		log.Fatal("json could not be written")
+	}
+
+	////Policy := Policy{}
+	//highlight(string(body))
+	//typedbody, err := typed.Json(body)
+	////err = json.Unmarshal(body, &Policy)
+	//highlight(typedbody)
+
 	//if err != nil {
-	//	log.Fatal("json could no be written")
-	//}
-	//
-	//Policy := Policy{}
-	//err = json.Unmarshal(body, &Policy)
-	//
-	//if err != nil {
-	//	log.Fatal("json could no be unmarshalled")
+	//	//unmarshall error
+	//	log.Print(body)
+	//	log.Print(err)
+	//	log.Fatal("json could not be unmarshalled")
 	//}
 
-	d.SetId(strconv.Itoa(myPolicy.ID))
+	d.SetId(strconv.Itoa(myPolicy.id))
 
 	return diags
 }
 
-// CastToStringList is a helper to work with coversion of types
-// If theres a better way (most likely)?
+// CastToStringList is a helper to work with conversion of types
+// If there's a better way (most likely)?
 func CastToStringList(temp []interface{}) []string {
 	var versions []string
 	for _, version := range temp {
