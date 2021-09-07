@@ -3,7 +3,7 @@ package bridgecrew
 // The Policy record
 type Policy struct {
 	Provider string `json:"provider"`
-	id       int
+	ID       int    `json:"id,omitempty"`
 	Title    string `json:"title"`
 	//descriptivetitle  string
 	//constructivetitle string

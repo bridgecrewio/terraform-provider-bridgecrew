@@ -2,13 +2,13 @@ package bridgecrew
 
 //import (
 //"encoding/json"
-////"errors"
+//"errors"
 //"fmt"
 //"net/http"
 //"strings"
 //)
 
-// GetPolicy - Returns a specifc Policy
+//GetPolicy - Returns a specifc Policy
 //func (c *Client) GetPolicy(PolicyID string) (*Policy, error) {
 //	req, err := http.NewRequest("GET", fmt.Sprintf("%s/Policys/%s", c.HostURL, PolicyID), nil)
 //	if err != nil {

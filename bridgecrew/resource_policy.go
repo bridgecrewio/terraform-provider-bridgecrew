@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"strings"
+
+	"github.com/karlseguin/typed"
 
 	//	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"log"
-	"strconv"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -28,6 +30,10 @@ func resourcePolicy() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: false,
 				Required: true,
+			},
+			"id": &schema.Schema{
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"title": {
 				Type:     schema.TypeString,
@@ -204,7 +210,6 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	url := configure.URL + "/policies"
 
 	payload := strings.NewReader(string(jsPolicy))
-	log.Print(string(jsPolicy))
 
 	req, _ := http.NewRequest("POST", url, payload)
 	req.Header.Add("Accept", "application/json")
@@ -232,20 +237,11 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 		log.Fatal("json could not be written")
 	}
 
-	////Policy := Policy{}
-	//highlight(string(body))
-	//typedbody, err := typed.Json(body)
-	////err = json.Unmarshal(body, &Policy)
-	//highlight(typedbody)
-
-	//if err != nil {
-	//	//unmarshall error
-	//	log.Print(body)
-	//	log.Print(err)
-	//	log.Fatal("json could not be unmarshalled")
-	//}
-
-	d.SetId(strconv.Itoa(myPolicy.id))
+	//set the ID from the post into the current object
+	clean, err := strconv.Unquote(string(body))
+	d.SetId(clean)
+	//check it's written to the object
+	highlight(d.Get("id"))
 
 	return diags
 }
@@ -260,18 +256,53 @@ func CastToStringList(temp []interface{}) []string {
 	return versions
 }
 
+func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	client := &http.Client{Timeout: 60 * time.Second}
+
+	policyID := d.Id()
+
+	configure := m.(ProviderConfig)
+	url := configure.URL + "/policies"
+
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/policies/%s", url, policyID), nil)
+
+	highlight(req.URL)
+
+	if err != nil {
+		log.Print("Failed to make get")
+		log.Fatal(err.Error())
+	}
+
+	r, err := client.Do(req)
+
+	if err != nil {
+		log.Fatal("Failed at client.Do")
+	}
+	defer r.Body.Close()
+
+	body, _ := ioutil.ReadAll(r.Body)
+	typedjson, err := typed.Json(body)
+	if err != nil {
+		log.Fatal("Failed at unmarshalling with typed")
+	}
+
+	var data = typedjson.Maps("data")
+
+	highlight(data)
+
+	//writes back the id in into the data object
+	//d.Set("cloud_provider", policy.Provider)
+
+	var diags diag.Diagnostics
+
+	return diags
+}
+
 // highlight is just to help with manual debugging so you can find the lines
 func highlight(myPolicy interface{}) {
 	log.Print("XXXXXXXXXXX")
 	log.Print(myPolicy)
 	log.Print("XXXXXXXXXXX")
-}
-
-func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	// Warning or errors can be collected in a slice type
-	var diags diag.Diagnostics
-
-	return diags
 }
 
 func resourePolicyUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

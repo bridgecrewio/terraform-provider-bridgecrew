@@ -5,7 +5,7 @@ provider "bridgecrew" {
 
 //data "bridgecrew_repositories" "all" {}
 //data "bridgecrew_suppressions" "all" {}
-data "bridgecrew_policies" "all" {}
+//data "bridgecrew_policies" "all" {}
 //data "bridgecrew_repository_branches" "all" {}
 
 terraform {
@@ -26,9 +26,9 @@ terraform {
 //  value = data.bridgecrew_suppressions.all
 //}
 
-output "polices" {
-  value = data.bridgecrew_policies.all
-}
+//output "polices" {
+//  value = data.bridgecrew_policies.all
+//}
 
 //output "branches" {
 // value = data.bridgecrew_repository_branches.all
@@ -76,6 +76,6 @@ resource "bridgecrew_policy" "new" {
 
 }
 
-//output "policy" {
-//  value = bridgecrew_policy.new
-//}
+output "policy" {
+  value = bridgecrew_policy.new
+}
