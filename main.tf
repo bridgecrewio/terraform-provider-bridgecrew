@@ -17,18 +17,18 @@ terraform {
   }
 }
 
-//output "repos" {
-//  value = data.bridgecrew_repositories.all
-//}
+# output "repos" {
+#   value = data.bridgecrew_repositories.all
+# }
 
 
 //output "suppression" {
 //  value = data.bridgecrew_suppressions.all
 //}
 
-//output "polices" {
-//  value = data.bridgecrew_policies.all
-//}
+# output "polices" {
+#   value = data.bridgecrew_policies.all
+# }
 
 //output "branches" {
 // value = data.bridgecrew_repository_branches.all
@@ -52,7 +52,7 @@ resource "bridgecrew_policy" "new" {
 
   // For now only one condition block is valid
   conditions {
-    resource_types = ["aws_s3_bucket"]
+    resource_types = ["aws_s3_bucket", "aws_instance"]
     cond_type      = "attribute"
     attribute      = "bucket"
     operator       = "not_equals"
@@ -69,10 +69,9 @@ resource "bridgecrew_policy" "new" {
   //  }
 
   //benchmarks cannot be free text entry
-  //  benchmarks {
-  //    benchmark = "CIS AWS V1.2"
-  //    version   = ["1.1", "0.3"]
-  //  }
+  benchmarks {
+    cis_aws_v12 = ["1.1", "2.1"]
+  }
 
 }
 

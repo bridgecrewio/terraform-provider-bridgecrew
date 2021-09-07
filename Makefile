@@ -52,7 +52,9 @@ apply: install
 	terraform apply --auto-approve
 
 clean:
-	rm -rf ./bin
+	-rm -rf ./bin
+	-rm -fr .terraform
+	-rm .terraform.lock.hcl
 
 BIN=$(CURDIR)/bin
 $(BIN)/%:

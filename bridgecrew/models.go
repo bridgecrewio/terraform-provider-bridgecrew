@@ -11,16 +11,16 @@ type Policy struct {
 	Category string `json:"category"`
 	//Resourcetypes []string `json:"resourcetypes"`
 	//accountsData      []Account
-	Guidelines string      `json:"guidelines"`
-	Conditions Conditions  `json:"conditions"`
-	Benchmarks []Benchmark `json:"benchmarks,omitempty"`
-	Code       string      `json:"code,omitempty"`
+	Guidelines string     `json:"guidelines"`
+	Conditions Conditions `json:"conditions"`
+	Benchmarks Benchmark  `json:"benchmarks,omitempty"`
+	Code       string     `json:"code,omitempty"`
 }
 
 // Benchmark is child object to Policy
 type Benchmark struct {
-	Benchmark string   `json:"benchmark"`
-	Version   []string `json:"version"`
+	Cisawsv12 []string `json:"CIS AWS V1.2,omitempty"`
+	Cisawsv13 []string `json:"CIS AWS V1.3,omitempty"`
 }
 
 // Account is a child object to Policy

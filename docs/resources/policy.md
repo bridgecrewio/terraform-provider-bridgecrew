@@ -28,42 +28,35 @@ resource "bridgecrew_policy" "mypolicy" {
 - **category** (String)
 - **cloud_provider** (String)
 - **code** (String)
-- **condition_query** (String)
-- **iscustom** (Boolean)
-- **resource_types** (List of String)
+- **conditions** (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--conditions))
+- **guidelines** (String)
 - **severity** (String)
 - **title** (String)
 
 ### Optional
 
-- **accountsdata** (Block Set) (see [below for nested schema](#nestedblock--accountsdata))
 - **benchmarks** (Block Set) (see [below for nested schema](#nestedblock--benchmarks))
-- **constructive_title** (String)
-- **descriptive_title** (String)
-- **guideline** (String)
-- **id** (String) The ID of this resource.
 
 ### Read-Only
 
-- **createdby** (String)
+- **id** (String) The ID of this resource.
 
-<a id="nestedblock--accountsdata"></a>
-### Nested Schema for `accountsdata`
+<a id="nestedblock--conditions"></a>
+### Nested Schema for `conditions`
 
 Required:
 
-- **amounts** (Map of Number)
-- **repository** (String)
-
-Read-Only:
-
-- **lastupdatedate** (String)
+- **attribute** (String)
+- **cond_type** (String)
+- **operator** (String)
+- **resource_types** (List of String)
+- **value** (String)
 
 
 <a id="nestedblock--benchmarks"></a>
 ### Nested Schema for `benchmarks`
 
-Required:
+Optional:
 
-- **benchmark** (String)
-- **version** (List of String)
+- **cis_aws_v12** (List of String)
+- **cis_aws_v13** (List of String)

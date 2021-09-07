@@ -23,7 +23,7 @@ func resourcePolicy() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: resourcePolicyCreate,
 		ReadContext:   resourcePolicyRead,
-		UpdateContext: resourePolicyUpdate,
+		UpdateContext: resourcePolicyUpdate,
 		DeleteContext: resourcePolicyDelete,
 		Schema: map[string]*schema.Schema{
 			"cloud_provider": {
@@ -31,7 +31,7 @@ func resourcePolicy() *schema.Resource {
 				Computed: false,
 				Required: true,
 			},
-			"id": &schema.Schema{
+			"id": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
@@ -123,17 +123,21 @@ func resourcePolicy() *schema.Resource {
 				},
 			},
 			"benchmarks": {
-				Type:     schema.TypeList,
+				Type:     schema.TypeSet,
+				MaxItems: 1,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"benchmark": {
-							Type:     schema.TypeString,
-							Required: true,
-						},
-						"version": {
+						"cis_aws_v12": {
 							Type:     schema.TypeList,
-							Required: true,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"cis_aws_v13": {
+							Type:     schema.TypeList,
+							Optional: true,
 							Elem: &schema.Schema{
 								Type: schema.TypeString,
 							},
@@ -156,18 +160,12 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 
 	myPolicy := Policy{}
 
-	myBenchmarks := d.Get("benchmarks").([]interface{})
-
-	if len(myBenchmarks) != 0 {
-		for _, myBenchmark := range myBenchmarks {
-			s := myBenchmark.(map[string]interface{})
-			var myItem Benchmark
-			versions := CastToStringList(s["version"].([]interface{}))
-			myItem.Version = versions
-			myItem.Benchmark = s["benchmark"].(string)
-			myPolicy.Benchmarks = append(myPolicy.Benchmarks, myItem)
-		}
-	}
+	myBenchmark := (d.Get("benchmarks").(*schema.Set)).List()
+	var myItem Benchmark
+	s := myBenchmark[0].(map[string]interface{})
+	myItem.Cisawsv12 = CastToStringList(s["cis_aws_v12"].([]interface{}))
+	myItem.Cisawsv13 = CastToStringList(s["cis_aws_v13"].([]interface{}))
+	myPolicy.Benchmarks = myItem
 
 	myPolicy.Category = d.Get("category").(string)
 	myCode := d.Get("code").(string)
@@ -240,8 +238,6 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	//set the ID from the post into the current object
 	clean, err := strconv.Unquote(string(body))
 	d.SetId(clean)
-	//check it's written to the object
-	highlight(d.Get("id"))
 
 	return diags
 }
@@ -262,11 +258,13 @@ func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface
 	policyID := d.Id()
 
 	configure := m.(ProviderConfig)
-	url := configure.URL + "/policies"
 
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/policies/%s", url, policyID), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/policies/%s", configure.URL, policyID), nil)
 
-	highlight(req.URL)
+	// add authorization header to the req
+	req.Header.Add("authorization", configure.Token)
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Content-Type", "application/json")
 
 	if err != nil {
 		log.Print("Failed to make get")
@@ -286,12 +284,14 @@ func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface
 		log.Fatal("Failed at unmarshalling with typed")
 	}
 
-	var data = typedjson.Maps("data")
-
-	highlight(data)
-
-	//writes back the id in into the data object
-	//d.Set("cloud_provider", policy.Provider)
+	d.Set("cloud_provider", strings.ToLower(typedjson["provider"].(string)))
+	d.Set("title", typedjson["title"].(string))
+	d.Set("severity", strings.ToLower(typedjson["severity"].(string)))
+	d.Set("category", strings.ToLower(typedjson["category"].(string)))
+	d.Set("guidelines", typedjson["guidelines"])
+	d.Set("conditions", typedjson["conditions"])
+	d.Set("benchmarks", typedjson["benchmarks"])
+	d.Set("code", typedjson["code"])
 
 	var diags diag.Diagnostics
 
@@ -305,7 +305,7 @@ func highlight(myPolicy interface{}) {
 	log.Print("XXXXXXXXXXX")
 }
 
-func resourePolicyUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	return resourcePolicyRead(ctx, d, m)
 }
 
