@@ -65,7 +65,7 @@ make validate-docs
 - To build the `/docs` documentation Markdown files:
 
 ```bash
-make generate-docs
+make docs
 ```
 
 - To view the documentation:
