@@ -73,3 +73,20 @@ resource "bridgecrew_policy" "new" {
 output "policy" {
   value = bridgecrew_policy.new
 }
+
+
+resource "bridgecrew_policy" "import" {
+  category       = "logging"
+  title          = "my first test 0 iUCqDafm"
+  cloud_provider = "aws"
+  code           = ""
+  severity       = "critical"
+  conditions {
+    attribute      = ""
+    value          = ""
+    cond_type      = ""
+    operator       = ""
+    resource_types = []
+  }
+  guidelines = ""
+}
