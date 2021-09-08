@@ -25,7 +25,7 @@ func authClient(path string, configure ProviderConfig) (*http.Client, *http.Requ
 	// Create a Bearer string by appending string access token
 	var bearer = "Bearer " + api
 
-	client := &http.Client{Timeout: 10 * time.Second}
+	client := &http.Client{Timeout: 30 * time.Second}
 
 	req, err := http.NewRequest("GET", fmt.Sprintf(path, baseurl), nil)
 

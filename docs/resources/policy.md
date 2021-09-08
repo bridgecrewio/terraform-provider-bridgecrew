@@ -35,7 +35,8 @@ resource "bridgecrew_policy" "mypolicy" {
 
 ### Optional
 
-- **benchmarks** (Block Set) (see [below for nested schema](#nestedblock--benchmarks))
+- **benchmarks** (Block Set, Max: 1) (see [below for nested schema](#nestedblock--benchmarks))
+- **last_updated** (String)
 
 ### Read-Only
 
@@ -60,3 +61,12 @@ Optional:
 
 - **cis_aws_v12** (List of String)
 - **cis_aws_v13** (List of String)
+- **cis_azure_v11** (List of String)
+- **cis_azure_v12** (List of String)
+- **cis_azure_v13** (List of String)
+- **cis_docker_v11** (List of String)
+- **cis_eks_v11** (List of String)
+- **cis_gcp_v11** (List of String)
+- **cis_gke_v11** (List of String)
+- **cis_kubernetes_v15** (List of String)
+- **cis_kubernetes_v16** (List of String)
