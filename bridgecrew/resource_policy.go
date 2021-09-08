@@ -4,19 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/karlseguin/typed"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
-
-	"github.com/karlseguin/typed"
-
-	//	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
-	"log"
 	"time"
-
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourcePolicy() *schema.Resource {
@@ -128,6 +124,27 @@ func resourcePolicy() *schema.Resource {
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
+						"cis_azure_v11": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"cis_azure_v12": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"cis_azure_v13": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
 						"cis_aws_v12": {
 							Type:     schema.TypeList,
 							Optional: true,
@@ -136,6 +153,48 @@ func resourcePolicy() *schema.Resource {
 							},
 						},
 						"cis_aws_v13": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"cis_kubernetes_v15": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"cis_kubernetes_v16": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"cis_gcp_v11": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"cis_gke_v11": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"cis_docker_v11": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"cis_eks_v11": {
 							Type:     schema.TypeList,
 							Optional: true,
 							Elem: &schema.Schema{
@@ -159,13 +218,7 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	var diags diag.Diagnostics
 
 	myPolicy := Policy{}
-
-	myBenchmark := (d.Get("benchmarks").(*schema.Set)).List()
-	var myItem Benchmark
-	s := myBenchmark[0].(map[string]interface{})
-	myItem.Cisawsv12 = CastToStringList(s["cis_aws_v12"].([]interface{}))
-	myItem.Cisawsv13 = CastToStringList(s["cis_aws_v13"].([]interface{}))
-	myPolicy.Benchmarks = myItem
+	myPolicy.Benchmarks = setBenchmark(d)
 
 	myPolicy.Category = d.Get("category").(string)
 	myCode := d.Get("code").(string)
@@ -242,6 +295,25 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	d.SetId(clean)
 
 	return diags
+}
+
+func setBenchmark(d *schema.ResourceData) Benchmark {
+	myBenchmark := (d.Get("benchmarks").(*schema.Set)).List()
+
+	var myItem Benchmark
+	s := myBenchmark[0].(map[string]interface{})
+	myItem.Cisawsv12 = CastToStringList(s["cis_aws_v12"].([]interface{}))
+	myItem.Cisawsv13 = CastToStringList(s["cis_aws_v13"].([]interface{}))
+	myItem.Cisazurev11 = CastToStringList(s["cis_azure_v11"].([]interface{}))
+	myItem.Cisazurev12 = CastToStringList(s["cis_azure_v12"].([]interface{}))
+	myItem.Cisazurev13 = CastToStringList(s["cis_azure_v13"].([]interface{}))
+	myItem.Cisgcpv11 = CastToStringList(s["cis_gcp_v11"].([]interface{}))
+	myItem.Ciskubernetesv15 = CastToStringList(s["cis_kubernetes_v15"].([]interface{}))
+	myItem.Ciskubernetesv16 = CastToStringList(s["cis_kubernetes_v16"].([]interface{}))
+	myItem.Cisdockerv11 = CastToStringList(s["cis_docker_v11"].([]interface{}))
+	myItem.Ciseksv11 = CastToStringList(s["cis_eks_v11"].([]interface{}))
+	myItem.Cisgkev11 = CastToStringList(s["cis_gke_v11"].([]interface{}))
+	return myItem
 }
 
 // CastToStringList is a helper to work with conversion of types

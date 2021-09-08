@@ -21,6 +21,15 @@ type Policy struct {
 type Benchmark struct {
 	Cisawsv12 []string `json:"CIS AWS V1.2,omitempty"`
 	Cisawsv13 []string `json:"CIS AWS V1.3,omitempty"`
+	Cisazurev11 []string `json:"CIS AZURE V11,omitempty"`
+	Cisazurev12 []string `json:"CIS AZURE V12,omitempty"`
+	Cisazurev13 []string `json:"CIS AZURE V13,omitempty"`
+	Ciskubernetesv15 []string `json:"CIS KUBERNETES V15,omitempty"`
+	Ciskubernetesv16 []string `json:"CIS KUBERNETES V16,omitempty"`
+	Cisgcpv11 []string `json:"CIS GCP V11,omitempty"`
+	Cisgkev11 []string `json:"CIS GKE V11,omitempty"`
+	Cisdockerv11 []string `json:"CIS DOCKER V11,omitempty"`
+	Ciseksv11 []string `json:"CIS EKS V11,omitempty"`
 }
 
 // Account is a child object to Policy
