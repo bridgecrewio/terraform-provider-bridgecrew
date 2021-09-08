@@ -1,11 +1,11 @@
 provider "bridgecrew" {
-  url   = "https://9vk79w5qvc.execute-api.us-west-2.amazonaws.com/v1/api/v1"
+  url   = "https://9vk79w5qvc.execute-api.us-west-2.amazonaws.com/v1"
   token = "af7147be-f48a-4c4e-9e50-c32356cde608"
 }
 
 //data "bridgecrew_repositories" "all" {}
 //data "bridgecrew_suppressions" "all" {}
-//data "bridgecrew_policies" "all" {}
+data "bridgecrew_policies" "all" {}
 //data "bridgecrew_repository_branches" "all" {}
 
 terraform {
@@ -26,9 +26,9 @@ terraform {
 //  value = data.bridgecrew_suppressions.all
 //}
 
-# output "polices" {
-#   value = data.bridgecrew_policies.all
-# }
+output "polices" {
+  value = data.bridgecrew_policies.all
+}
 
 //output "branches" {
 // value = data.bridgecrew_repository_branches.all
@@ -63,14 +63,9 @@ resource "bridgecrew_policy" "new" {
 
   // although benchmarks take a free text this is total BS, as it needs to be an existing benchmark as
   // does the version, and that more like a category than anything
-  //  benchmarks {
-  //    benchmark = "CIS AWS V1.2"
-  //    version   = ["1.1", "1.2"]
-  //  }
-
-  //benchmarks cannot be free text entry
   benchmarks {
     cis_aws_v12 = ["1.1", "2.1"]
+    //cis_aws_v13 = ["1.3", "2.4"]
   }
 
 }

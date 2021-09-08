@@ -205,11 +205,13 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	}
 
 	configure := m.(ProviderConfig)
-	url := configure.URL + "/policies"
+	url := configure.URL + "/api/v1/policies"
 
 	payload := strings.NewReader(string(jsPolicy))
 
 	req, _ := http.NewRequest("POST", url, payload)
+	highlight(url)
+
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("authorization", configure.Token)
@@ -259,7 +261,7 @@ func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface
 
 	configure := m.(ProviderConfig)
 
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/policies/%s", configure.URL, policyID), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/v1/policies/%s", configure.URL, policyID), nil)
 
 	// add authorization header to the req
 	req.Header.Add("authorization", configure.Token)

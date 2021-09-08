@@ -76,7 +76,7 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 
 	defer r.Body.Close()
 
-	log.Print("All data obtained")
+	highlight("All data obtained")
 	repositories := make([]map[string]interface{}, 0)
 	err = json.NewDecoder(r.Body).Decode(&repositories)
 
@@ -85,6 +85,7 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 		return diag.FromErr(err)
 	}
 
+	highlight(repositories)
 	flatRepos := flattenRepositoryData(&repositories)
 
 	if err := d.Set("repositories", flatRepos); err != nil {
