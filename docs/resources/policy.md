@@ -18,7 +18,7 @@ Use this resource to create new custom policies.
 ```hcl
 resource "bridgecrew_policy" "mypolicy" {
   cloud_provider = "aws"
-  title          = "my first test ${count.index} ${random_string.new.id}"
+  title          = "my first test"
   severity       = "critical"
   category       = "logging"
 
