@@ -19,7 +19,7 @@ func Provider() *schema.Provider {
 		Schema: map[string]*schema.Schema{
 			"url": {
 				Type:        schema.TypeString,
-				Default:     "https://www.bridgecrew.cloud/",
+				Default:     "https://www.bridgecrew.cloud",
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("BRIDGECREW_URL", nil),
 				Description: "url for Bridgecrew",
