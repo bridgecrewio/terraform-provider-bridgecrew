@@ -29,8 +29,6 @@ func authClient(path string, configure ProviderConfig) (*http.Client, *http.Requ
 
 	req, err := http.NewRequest("GET", fmt.Sprintf(path, baseurl), nil)
 
-	highlight(fmt.Sprintf(path, baseurl))
-
 	if err != nil {
 		log.Fatal("Failed at http")
 	}

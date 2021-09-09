@@ -62,6 +62,10 @@ func dataSourceErrorRead(ctx context.Context, d *schema.ResourceData, m interfac
 	configure := m.(ProviderConfig)
 	client, req, diagnostics, done, err := authClient(path, configure)
 
+	if err != nil {
+		log.Fatal("Failed at authClient")
+	}
+
 	if done {
 		return diagnostics
 	}
@@ -75,12 +79,22 @@ func dataSourceErrorRead(ctx context.Context, d *schema.ResourceData, m interfac
 
 	defer r.Body.Close()
 
-	log.Print("All data obtained")
+	highlight("All data obtained")
+
 	errors := make([]map[string]interface{}, 0)
-	err = json.NewDecoder(r.Body).Decode(&errors)
+	var strerrors string
+	highlight(r.Body)
+	err = json.NewDecoder(r.Body).Decode(&strerrors)
+
+	//TODO:
+	// errors method actually requires parameters to be supplied
+	// fullRepoName: repository, sourceType
+	// Published example lacks information on these
 
 	if err != nil {
+		log.Print(err.Error())
 		log.Fatal("Failed to parse data")
+
 		return diag.FromErr(err)
 	}
 

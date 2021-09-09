@@ -6,6 +6,7 @@ NAME=bridgecrew
 BINARY=terraform-provider-${NAME}
 VERSION=0.1.1
 OS_ARCH=darwin_amd64
+TERRAFORM=./terraform/
 
 default: install
 
@@ -37,24 +38,27 @@ test:
 testacc:
 	TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m
 
-check: install
-	-rm -fr .terraform
-	-rm .terraform.lock.hcl
-	terraform init
-	terraform plan
+check: install purge_tf purge_state
+	cd $(TERRAFORM) && terraform init
+	cd $(TERRAFORM) && terraform plan
 
-apply: install
-	-rm terraform.tfstate
-	-rm terraform.tfstate.backup
-	-rm -fr .terraform
-	-rm .terraform.lock.hcl
-	terraform init
-	terraform apply --auto-approve
+apply: install purge_tf purge_state
+	cd $(TERRAFORM) && terraform init
+	cd $(TERRAFORM) && terraform apply --auto-approve
 
-clean:
+destroy:
+	cd $(TERRAFORM) && terraform destroy --auto-approve
+
+clean: purge_tf
 	-rm -rf ./bin
-	-rm -fr .terraform
-	-rm .terraform.lock.hcl
+
+purge_state:
+	-rm $(TERRAFORM)terraform.tfstate
+	-rm $(TERRAFORM)terraform.tfstate.backup
+
+purge_tf:
+	-rm -fr $(TERRAFORM).terraform
+	-rm $(TERRAFORM).terraform.lock.hcl
 
 BIN=$(CURDIR)/bin
 $(BIN)/%:

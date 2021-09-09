@@ -21,12 +21,19 @@ func dataSourceRepositoryBranches() *schema.Resource {
 				Computed: true,
 				Elem:     &schema.Resource{},
 			},
+			"target": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
 		},
 	}
 }
 
 func dataSourceRepositoryBranchRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	path := "%s/repositories/branches"
+	target := d.Get("target")
+	path := "%s/repositories/branches" + "/" + target.(string)
+
+	//todo endpoint doesnt work like this
 
 	configure := m.(ProviderConfig)
 	client, req, diagnostics, done, err := authClient(path, configure)
@@ -46,6 +53,8 @@ func dataSourceRepositoryBranchRead(ctx context.Context, d *schema.ResourceData,
 	log.Print("All data obtained")
 	repositoriesbranches := make([]map[string]interface{}, 0)
 	err = json.NewDecoder(r.Body).Decode(&repositoriesbranches)
+
+	//todo this actually needs the target repository
 
 	log.Print("Decoded data")
 	log.Print(r.Body)

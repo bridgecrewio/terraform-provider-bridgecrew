@@ -1,0 +1,5 @@
+data "bridgecrew_errors" "all" {}
+
+output "errors" {
+  value=data.bridgecrew_errors.all
+}
