@@ -15,7 +15,7 @@ This will build and install the provider locally, and run a test template.
 If you're not using a Mac you will have to change OS_ARCH=darwin_amd64 to the value for your platform.
 
 Terraform examples live in a sub-folder Terraform:
-The example tf gets all the repositories you have in Bridgecrew and lists them, also included its a sample policy that can be created, updated and destroyed by the platfrom.
+The example tf gets all the repositories you have in Bridgecrew and lists them, also included its a sample policy that can be created, updated and destroyed by the platform.
 
 Once installed you can use the provider via the normal Terraform workflow:
 
@@ -54,11 +54,14 @@ and one resource:
 ## Debugging
 
 To see the debug output for a provider set:
-```
+
+```bash
 export TF_LOG_CORE=""
 ```
+
 and
-```
+
+```bash
 export TF_LOG_PROVIDER="DEBUG"
 ```
 
@@ -83,3 +86,19 @@ make docs
 
 - To view the documentation:
 Paste `/docs` Markdown file content into https://registry.terraform.io/tools/doc-preview
+
+## Contribting
+
+The repository uses the pre-commit framework to format and test code prior to checkin, pre-commit is installed via pip and then the config is installed (from the root)after you initially clone the repo:
+
+```bash
+git clone git@github.com:bridgecrewio/terraform-provider-bridgecrew.git
+pip3 install pre-commit
+pre-commit install
+```
+
+For details on the hooks used see the config: .pre-commit-config.yaml.
+
+## Building a release
+
+This repository uses Github actions in conjunction with goreleaser, pushing a tag will invoke a matrix build of goreleaser.
