@@ -39,14 +39,17 @@ checksum:
   algorithm: sha256
 signs:
   - artifacts: checksum
-    args:
-      - "--batch"
-      - "-u"
-      - "{{ .Env.GPG_FINGERPRINT }}"
-      - "--output"
-      - "${signature}"
-      - "--detach-sign"
-      - "${artifact}"
+    args: ["--batch", "-u", "{{ .Env.GPG_FINGERPRINT }}", "--output", "${signature}", "--detach-sign", "${artifact}"]
+#signs:
+#  - artifacts: checksum
+#    args:
+#      - "--batch"
+#      - "-u"
+#      - "{{ .Env.GPG_FINGERPRINT }}"
+#      - "--output"
+#      - "${signature}"
+#      - "--detach-sign"
+#      - "${artifact}"
 release:
   # If you want to manually examine the release before its live, uncomment this line:
   # draft: true
