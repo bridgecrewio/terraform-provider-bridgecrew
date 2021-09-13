@@ -28,3 +28,4 @@ website/node_modules
 vendor
 .terraform.lock.hcl
 terraform-provider-bridgecrew
+provider.bridgecrew.tf
