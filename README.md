@@ -87,7 +87,7 @@ make docs
 - To view the documentation:
 Paste `/docs` Markdown file content into https://registry.terraform.io/tools/doc-preview
 
-## Contribting
+## Contributing
 
 The repository uses the pre-commit framework to format and test code prior to checkin, pre-commit is installed via pip and then the config is installed (from the root)after you initially clone the repo:
 
