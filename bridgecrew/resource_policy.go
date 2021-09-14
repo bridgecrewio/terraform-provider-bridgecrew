@@ -390,7 +390,7 @@ func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface
 	return diags
 }
 
-// highlight is just to help with manual debugging so you can find the lines
+// highlight is just to help with manual debugging, so you can find the lines
 func highlight(myPolicy interface{}) {
 	log.Print("XXXXXXXXXXX")
 	log.Print(myPolicy)
@@ -401,9 +401,8 @@ func resourcePolicyUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 	client := &http.Client{Timeout: 60 * time.Second}
 
 	policyID := d.Id()
-	var myPolicy Policy
 	if policyChange(d) {
-		myPolicy = setPolicy(d)
+		myPolicy := setPolicy(d)
 
 		jsPolicy, err := json.Marshal(myPolicy)
 		if err != nil {

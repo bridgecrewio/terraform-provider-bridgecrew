@@ -21,7 +21,7 @@ resource "bridgecrew_policy" "new" {
 
   guidelines = "This should explain a little"
 
-  // although benchmarks take a free text this is total BS, as it needs to be an existing benchmark as
+  // although benchmarks take a free text this is total ***, as it needs to be an existing benchmark as
   // does the version, and that more like a category than anything
   benchmarks {
     cis_aws_v12 = ["1.1", "2.1"]
