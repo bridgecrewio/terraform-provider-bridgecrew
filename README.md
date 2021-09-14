@@ -9,11 +9,13 @@
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/bridgecrewio/terraform-provider-bridgecrew)
 ![GitHub issues](https://img.shields.io/github/issues/bridgecrewio/terraform-provider-bridgecrew)
 
-This guide is to help you devlop/debug the Terraform Bridgecrew provider, to get started you need to obtain and add your secret - your Bridgecrew API key, as an env var,
+This guide is to help you develop/debug the Terraform Bridgecrew provider, to get started you need to obtain and add your secret - your Bridgecrew API key, as an env var,
 BRIDGECREW_API, or it won't work.
 
+First obtain your API key here: <https://www.bridgecrew.cloud/integrations/api-token>
+
 If this is your first time using this provider you will need to build
-and then run with:
+and then run it with:
 
 ```bash
 make check
@@ -26,12 +28,13 @@ If you're not using a Mac you will have to change OS_ARCH=darwin_amd64 to the va
 Terraform examples live in a sub-folder Terraform:
 The example tf gets all the repositories you have in Bridgecrew and lists them, also included its a sample policy that can be created, updated and destroyed by the platform.
 
-Once installed you can use the provider via the normal Terraform workflow:
+Once installed you can use the Provider via the normal Terraform workflow:
 
 ```bash
 terraform init
 terraform plan
 terraform apply
+...
 
 Changes to Outputs:
   + repos       = {
@@ -50,7 +53,7 @@ Changes to Outputs:
 ```
 
 The Terraform config is in main.tf.
- Currently there uis only support for 3 data sources:
+Currently there is only support for 3 data sources:
 
 - bridgecrew_repositories
 - bridgecrew_suppressions
@@ -59,6 +62,8 @@ The Terraform config is in main.tf.
 and one resource:
 
 - bridgecrew_policy
+
+More will follow.
 
 ## Debugging
 

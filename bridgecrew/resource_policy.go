@@ -88,9 +88,10 @@ func resourcePolicy() *schema.Resource {
 				Required: true,
 			},
 			"conditions": {
-				Type:     schema.TypeList,
-				Required: true,
-				MaxItems: 1,
+				Type:          schema.TypeList,
+				Optional:      true,
+				ConflictsWith: []string{"code"},
+				MaxItems:      1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"resource_types": {
@@ -207,8 +208,9 @@ func resourcePolicy() *schema.Resource {
 				},
 			},
 			"code": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:          schema.TypeString,
+				Optional:      true,
+				ConflictsWith: []string{"conditions"},
 			},
 			"last_updated": &schema.Schema{
 				Type:     schema.TypeString,
