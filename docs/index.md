@@ -12,6 +12,7 @@ The Bridgecrew provider is used to interact with the Bridgecrew Security Platfor
 In order to use this Provider, you must have an active account with Bridgecrew.
 Pricing and sign-up information can be found at <https://www.bridgecrew.cloud/login/signUp?return_to=%2Fsignup>
 
+For further infomation on bridgecrew see their on line documentation <https://docs.bridgecrew.io/docs>.
 ## Example Usage
 
 ```hcl

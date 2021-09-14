@@ -4,7 +4,8 @@ page_title: "Bridgecrew: data_source_repositories"
 sidebar_current: "docs-bridgecrew-data_source_repositories"
 
 description: |-
-Gets a list of all your managed repositories
+Gets a list of all your repositories managed by the Bridgecrew platform <https://docs.bridgecrew.io/reference/getrepositories>.
+
 ---
 
 # bridgecrew_repositories (Data Source)

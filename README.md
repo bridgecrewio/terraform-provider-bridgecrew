@@ -1,5 +1,14 @@
 # terraform-provider-bridgecrew
 
+[![Maintained by Bridgecrew.io](https://img.shields.io/badge/maintained%20by-bridgecrew.io-blueviolet)](https://bridgecrew.io/?utm_source=github&utm_medium=organic_oss&utm_campaign=terraform-provider-bridgecrew)
+[![release](https://github.com/bridgecrewio/terraform-provider-bridgecrew/actions/workflows/release.yml/badge.svg)](https://github.com/bridgecrewio/terraform-provider-bridgecrew/actions/workflows/security.yml)
+[![slack-community](https://slack.bridgecrew.io/badge.svg)](https://slack.bridgecrew.io/?utm_source=github&utm_medium=organic_oss&utm_campaign=terraform-provider-bridgecrew)
+[![Go Report Card](https://goreportcard.com/badge/github.com/bridgecrewio/terraform-provider-bridgecrew)](https://goreportcard.com/report/github.com/bridgecrewio/terraform-provider-bridgecrew)
+[![Go Reference](https://pkg.go.dev/badge/github.com/bridgecrewio/terraform-provider-bridgecrew.svg)](https://pkg.go.dev/github.com/bridgecrewio/terraform-provider-bridgecrew)
+[![GitHub All Releases](https://img.shields.io/github/downloads/bridgecrewio/terraform-provider-bridgecrew/total)](https://github.com/bridgecrewio/terraform-provider-bridgecrew/releases)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/bridgecrewio/terraform-provider-bridgecrew)
+![GitHub issues](https://img.shields.io/github/issues/bridgecrewio/terraform-provider-bridgecrew)
+
 This guide is to help you devlop/debug the Terraform Bridgecrew provider, to get started you need to obtain and add your secret - your Bridgecrew API key, as an env var,
 BRIDGECREW_API, or it won't work.
 
@@ -87,7 +96,7 @@ make docs
 - To view the documentation:
 Paste `/docs` Markdown file content into https://registry.terraform.io/tools/doc-preview
 
-## Contribting
+## Contributing
 
 The repository uses the pre-commit framework to format and test code prior to checkin, pre-commit is installed via pip and then the config is installed (from the root)after you initially clone the repo:
 
@@ -102,3 +111,29 @@ For details on the hooks used see the config: .pre-commit-config.yaml.
 ## Building a release
 
 This repository uses Github actions in conjunction with goreleaser, pushing a tag will invoke a matrix build of goreleaser.
+
+## Checkov/Bridgecrew
+
+The Terraform you create for this provider is already supported by Checkov and the Bridgecrew platform.
+For example If you run the Checkov cli over this repository, you'll see there's a security check on the bridgecrew provider:
+
+```bash
+checkov -d .
+
+       _               _
+   ___| |__   ___  ___| | _______   __
+  / __| '_ \ / _ \/ __| |/ / _ \ \ / /
+ | (__| | | |  __/ (__|   < (_) \ V /
+  \___|_| |_|\___|\___|_|\_\___/ \_/
+
+By bridgecrew.io | version: 2.0.413
+
+terraform scan results:
+
+Passed checks: 1, Failed checks: 0, Skipped checks: 0
+
+Check: CKV_BCW_1: "Ensure no hard coded API token exist in the provider"
+    PASSED for resource: bridgecrew.default
+    File: /terraform/provider.bridgecrew.tf:1-4
+
+```

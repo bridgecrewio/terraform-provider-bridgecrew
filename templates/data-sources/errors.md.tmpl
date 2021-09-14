@@ -4,7 +4,9 @@ page_title: "Bridgecrew: data_source_errors"
 sidebar_current: "docs-bridgecrew-data_source_errors"
 
 description: |-
-Get a list of all your errors
+Get a list of all your Bridgecrew platform errors.
+More details on the Bridgecrew API for this datasource are available <https://docs.bridgecrew.io/reference/getgitblameauthors>.
+
 ---
 
 # bridgecrew_errors

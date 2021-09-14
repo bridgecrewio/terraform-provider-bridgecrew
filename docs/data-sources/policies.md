@@ -4,7 +4,8 @@ page_title: "Bridgecrew: data_source_policies"
 sidebar_current: "docs-bridgecrew-data_source_policies"
 
 description: |-
-Get a list of all your custom policies
+Get a list of all of your custom policies in the Bridgecrew platform.
+Details on this API call are available here <https://docs.bridgecrew.io/reference/getcustompoliciestable>.
 ---
 
 # bridgecrew_policies

@@ -4,7 +4,7 @@ page_title: "Bridgecrew: data_source_suppressions"
 sidebar_current: "docs-bridgecrew-data_source_suppressions"
 
 description: |-
-Get a list of all your policies suppressions
+Get a list of all your policies suppressions in the Bridgecrew platform <https://docs.bridgecrew.io/reference/getsuppressions>
 ---
 
 # bridgecrew_suppressions (Data Source)
