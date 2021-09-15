@@ -12,5 +12,6 @@ require (
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.7.0
 	github.com/karlseguin/typed v1.1.7
 	github.com/mitchellh/cli v1.1.2 // indirect
+	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	golang.org/x/tools v0.1.5 // indirect
 )

@@ -3,13 +3,17 @@ package bridgecrew
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/mitchellh/go-homedir"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -90,7 +94,7 @@ func resourcePolicy() *schema.Resource {
 			"conditions": {
 				Type:          schema.TypeList,
 				Optional:      true,
-				ConflictsWith: []string{"code"},
+				ConflictsWith: []string{"file"},
 				MaxItems:      1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -207,11 +211,12 @@ func resourcePolicy() *schema.Resource {
 					},
 				},
 			},
-			"code": {
+			"file": {
 				Type:          schema.TypeString,
 				Optional:      true,
 				ConflictsWith: []string{"conditions"},
 			},
+
 			"last_updated": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
@@ -229,16 +234,23 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	client := &http.Client{Timeout: 60 * time.Second}
 	var diags diag.Diagnostics
 
-	myPolicy := setPolicy(d)
+	myPolicy, err := setPolicy(d)
+
+	if err != nil {
+		highlight("Set Policy Failed")
+		log.Fatal(err.Error())
+	}
 
 	jsPolicy, err := json.Marshal(myPolicy)
 	if err != nil {
+		highlight("marshal failed")
 		log.Fatal("json could no be written")
 	}
 
 	configure := m.(ProviderConfig)
 	url := configure.URL + "/api/v1/policies"
 	payload := strings.NewReader(string(jsPolicy))
+	highlight(string(jsPolicy))
 
 	req, _ := http.NewRequest("POST", url, payload)
 	highlight(url)
@@ -249,6 +261,7 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 
 	res, err := client.Do(req)
 	if err != nil {
+		highlight("Post Failed")
 		log.Print(err)
 		log.Fatal("POST FAILED")
 	}
@@ -270,49 +283,87 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 
 	resourcePolicyRead(ctx, d, m)
 
+	highlight("Created Policy")
 	return diags
 }
 
-func setPolicy(d *schema.ResourceData) Policy {
+func setPolicy(d *schema.ResourceData) (Policy, error) {
 	myPolicy := Policy{}
+	highlight("SetPolicy Starts")
 	myPolicy.Benchmarks = setBenchmark(d)
 
 	myPolicy.Category = d.Get("category").(string)
-	myCode := d.Get("code").(string)
-	if len(myCode) != 0 {
-		myPolicy.Code = d.Get("code").(string)
+
+	filename, hasFilename := d.GetOk("file")
+
+	//if the filename is set
+	if hasFilename {
+		highlight("Filename issue")
+		code, err := loadFileContent(filename.(string))
+		if err != nil {
+			return myPolicy, fmt.Errorf("unable to load %q: %w", filename.(string), err)
+		}
+		highlight(string(code))
+		myPolicy.Code = string(code)
 	}
 
 	myPolicy.Provider = d.Get("cloud_provider").(string)
 	myPolicy.Severity = d.Get("severity").(string)
 	myPolicy.Title = d.Get("title").(string)
+	conditions, err := setConditions(d)
 
-	conditions := setConditions(d)
-	myPolicy.Conditions = conditions[0]
+	//Don't set if not set
+	if err != nil {
+		highlight("Don't set conditions as err")
+		log.Print(err)
+	} else {
+		myPolicy.Conditions = conditions[0]
+	}
 
 	myPolicy.Guidelines = d.Get("guidelines").(string)
-	return myPolicy
+	highlight("Set Policy Ends")
+	return myPolicy, nil
 }
 
-func setConditions(d *schema.ResourceData) []Conditions {
+// loadFileContent returns contents of a file in a given path
+func loadFileContent(v string) ([]byte, error) {
+	filename, err := homedir.Expand(v)
+	if err != nil {
+		return nil, err
+	}
+	fileContent, err := os.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+	return fileContent, nil
+}
+
+func setConditions(d *schema.ResourceData) ([]Conditions, error) {
 	conditions := make([]Conditions, 0, 1)
 
 	myConditions := d.Get("conditions").([]interface{})
-	for _, myCondition := range myConditions {
-		temp := myCondition.(map[string]interface{})
-		var Condition Conditions
-		Condition.Value = temp["value"].(string)
-		Condition.CondType = temp["cond_type"].(string)
-		Condition.Attribute = temp["attribute"].(string)
-		Condition.Operator = temp["operator"].(string)
 
-		var myResources []string
-		myResources = CastToStringList(temp["resource_types"].([]interface{}))
-		Condition.ResourceTypes = myResources
+	if len(myConditions) > 0 {
+		for _, myCondition := range myConditions {
+			temp := myCondition.(map[string]interface{})
+			var Condition Conditions
+			Condition.Value = temp["value"].(string)
+			Condition.CondType = temp["cond_type"].(string)
+			Condition.Attribute = temp["attribute"].(string)
+			Condition.Operator = temp["operator"].(string)
 
-		conditions = append(conditions, Condition)
+			var myResources []string
+			myResources = CastToStringList(temp["resource_types"].([]interface{}))
+			Condition.ResourceTypes = myResources
+
+			conditions = append(conditions, Condition)
+		}
+	} else {
+		highlight("No conditions set")
+		return nil, errors.New("No Conditions Set")
 	}
-	return conditions
+
+	return conditions, nil
 }
 
 func setBenchmark(d *schema.ResourceData) Benchmark {
@@ -402,7 +453,11 @@ func resourcePolicyUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 
 	policyID := d.Id()
 	if policyChange(d) {
-		myPolicy := setPolicy(d)
+		myPolicy, err := setPolicy(d)
+
+		if err != nil {
+			log.Fatal(err.Error())
+		}
 
 		jsPolicy, err := json.Marshal(myPolicy)
 		if err != nil {
@@ -449,7 +504,7 @@ func policyChange(d *schema.ResourceData) bool {
 		d.HasChange("category") ||
 		d.HasChange("guidelines") ||
 		d.HasChange("benchmarks") ||
-		d.HasChange("code") //||
+		d.HasChange("file") //||
 	//d.HasChange("last_updated")
 }
 

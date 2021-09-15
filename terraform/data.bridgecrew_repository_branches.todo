@@ -1,7 +1,0 @@
-data "bridgecrew_repository_branches" "all" {
-  target="terraform-aws-s3"
-}
-
-output "branches" {
- value = data.bridgecrew_repository_branches.all
-}

@@ -8,7 +8,7 @@ resource "bridgecrew_policy" "new" {
   category       = "logging"
 
   //still fails for now
-  //code = ""
+  #  file = "${path.module}/policy/policy.yaml"
 
   // For now only one condition block is valid
   conditions {
@@ -33,8 +33,4 @@ resource "bridgecrew_policy" "new" {
 resource "random_string" "new" {
   length  = 8
   special = false
-}
-
-output "policy" {
-  value = bridgecrew_policy.new
 }
