@@ -217,7 +217,7 @@ func resourcePolicy() *schema.Resource {
 				ConflictsWith: []string{"conditions"},
 			},
 
-			"last_updated": &schema.Schema{
+			"last_updated": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Computed: true,
@@ -360,7 +360,7 @@ func setConditions(d *schema.ResourceData) ([]Conditions, error) {
 		}
 	} else {
 		highlight("No conditions set")
-		return nil, errors.New("No Conditions Set")
+		return nil, errors.New("no Conditions Set")
 	}
 
 	return conditions, nil

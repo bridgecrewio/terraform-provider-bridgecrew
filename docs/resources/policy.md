@@ -65,8 +65,6 @@ You can view the policy id, either by using the API docs policy list feature:
 
 - **category** (String)
 - **cloud_provider** (String)
-- **code** (String)
-- **conditions** (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--conditions))
 - **guidelines** (String)
 - **severity** (String)
 - **title** (String)
@@ -74,23 +72,13 @@ You can view the policy id, either by using the API docs policy list feature:
 ### Optional
 
 - **benchmarks** (Block Set, Max: 1) (see [below for nested schema](#nestedblock--benchmarks))
+- **conditions** (Block List, Max: 1) (see [below for nested schema](#nestedblock--conditions))
+- **file** (String)
 - **last_updated** (String)
 
 ### Read-Only
 
 - **id** (String) The ID of this resource.
-
-<a id="nestedblock--conditions"></a>
-### Nested Schema for `conditions`
-
-Required:
-
-- **attribute** (String)
-- **cond_type** (String)
-- **operator** (String)
-- **resource_types** (List of String)
-- **value** (String)
-
 
 <a id="nestedblock--benchmarks"></a>
 ### Nested Schema for `benchmarks`
@@ -108,3 +96,15 @@ Optional:
 - **cis_gke_v11** (List of String)
 - **cis_kubernetes_v15** (List of String)
 - **cis_kubernetes_v16** (List of String)
+
+
+<a id="nestedblock--conditions"></a>
+### Nested Schema for `conditions`
+
+Required:
+
+- **attribute** (String)
+- **cond_type** (String)
+- **operator** (String)
+- **resource_types** (List of String)
+- **value** (String)
