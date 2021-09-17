@@ -3,8 +3,7 @@ package bridgecrew
 import (
 	"context"
 	"encoding/json"
-	"log"
-	"reflect"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -63,15 +62,25 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 	configure := m.(ProviderConfig)
 	client, req, diagnostics, done, err := authClient(path, configure)
 
+	if err != nil {
+		diagnostics = append(diagnostics, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("Failed at authClient %s \n", err.Error()),
+		})
+		return diagnostics
+	}
+
 	if done {
 		return diagnostics
 	}
 
 	r, err := client.Do(req)
-
 	if err != nil {
-		log.Fatal("Failed at client.Do")
-		return diag.FromErr(err)
+		diagnostics = append(diagnostics, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("Failed at client.Do %s \n", err.Error()),
+		})
+		return diagnostics
 	}
 
 	defer r.Body.Close()
@@ -81,16 +90,22 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 	err = json.NewDecoder(r.Body).Decode(&repositories)
 
 	if err != nil {
-		log.Fatal("Failed to parse data")
-		return diag.FromErr(err)
+		diagnostics = append(diagnostics, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("Failed to parse data %s \n", err.Error()),
+		})
+		return diagnostics
 	}
 
 	highlight(repositories)
 	flatRepos := flattenRepositoryData(&repositories)
 
 	if err := d.Set("repositories", flatRepos); err != nil {
-		log.Fatal(reflect.TypeOf(repositories))
-		return diag.FromErr(err)
+		diagnostics = append(diagnostics, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("Repositories didn't set %s \n", err.Error()),
+		})
+		return diagnostics
 	}
 
 	// always run

@@ -3,8 +3,8 @@ package bridgecrew
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
-	"reflect"
 	"strconv"
 	"time"
 
@@ -63,7 +63,10 @@ func dataSourceErrorRead(ctx context.Context, d *schema.ResourceData, m interfac
 	client, req, diagnostics, done, err := authClient(path, configure)
 
 	if err != nil {
-		log.Fatal("Failed at authClient")
+		diagnostics = append(diagnostics, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("Failed at authClient %s \n", err.Error()),
+		})
 	}
 
 	if done {
@@ -73,8 +76,11 @@ func dataSourceErrorRead(ctx context.Context, d *schema.ResourceData, m interfac
 	r, err := client.Do(req)
 
 	if err != nil {
-		log.Fatal("Failed at client.Do")
-		return diag.FromErr(err)
+		diagnostics = append(diagnostics, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("Failed at client.Do %s \n", err.Error()),
+		})
+		return diagnostics
 	}
 
 	defer r.Body.Close()
@@ -92,17 +98,22 @@ func dataSourceErrorRead(ctx context.Context, d *schema.ResourceData, m interfac
 	// Published example lacks information on these
 
 	if err != nil {
-		log.Print(err.Error())
-		log.Fatal("Failed to parse data")
+		diagnostics = append(diagnostics, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("Failed to parse data %s \n", err.Error()),
+		})
 
-		return diag.FromErr(err)
+		return diagnostics
 	}
 
 	flatErrors := flattenErrorData(&errors)
 
 	if err := d.Set("errors", flatErrors); err != nil {
-		log.Fatal(reflect.TypeOf(errors))
-		return diag.FromErr(err)
+		diagnostics = append(diagnostics, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("Set Errors failed %s \n", err.Error()),
+		})
+		return diagnostics
 	}
 
 	// always run

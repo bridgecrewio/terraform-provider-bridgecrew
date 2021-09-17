@@ -3,6 +3,7 @@ package bridgecrew
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"reflect"
@@ -138,7 +139,11 @@ func dataSourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interfa
 	client, req, diagnostics, done, err := authClient(path, configure)
 
 	if err != nil {
-		log.Fatal("Failed at authClient")
+		diagnostics = append(diagnostics, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("Failed at authClient %s \n", err.Error()),
+		})
+		return diagnostics
 	}
 
 	if done {
@@ -148,15 +153,24 @@ func dataSourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interfa
 	r, err := client.Do(req)
 
 	if err != nil {
-		log.Fatal("Failed at client.Do")
+		diagnostics = append(diagnostics, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("Failed at client.Do %s \n", err.Error()),
+		})
+		return diagnostics
 	}
+
 	defer r.Body.Close()
 
 	body, _ := ioutil.ReadAll(r.Body)
 	typedjson, err := typed.Json(body)
 
 	if err != nil {
-		log.Fatal("Failed at unmarshalling with typed")
+		diagnostics = append(diagnostics, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("Failed at unmarshalling with typed %s \n", err.Error()),
+		})
+		return diagnostics
 	}
 
 	var data = typedjson.Maps("data")
@@ -233,23 +247,4 @@ func flattenPolicyData(Policies *[]map[string]interface{}) []interface{} {
 	}
 
 	return make([]interface{}, 0)
-}
-
-func printtypes(accountsData interface{}) {
-	m := accountsData.(map[string]interface{})
-	for k, v := range m {
-		switch vv := v.(type) {
-		case string:
-			log.Println(k, "is string", vv)
-		case float64:
-			log.Println(k, "is float64", vv)
-		case []interface{}:
-			log.Println(k, "is an array:")
-			for i, u := range vv {
-				log.Println(i, u)
-			}
-		default:
-			log.Println(k, "is of a type I don't know how to handle")
-		}
-	}
 }

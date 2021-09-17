@@ -10,14 +10,14 @@ output "policy" {
   value = bridgecrew_policy.new
 }
 
-#output "repos" {
-#  value = data.bridgecrew_repositories.all
-#}
-#
-#output "suppression" {
-#  value = data.bridgecrew_suppressions.all
-#}
-#
-#output "polices" {
-#  value = data.bridgecrew_policies.all
-#}
+output "repos" {
+  value = data.bridgecrew_repositories.all
+}
+
+output "suppression" {
+  value = data.bridgecrew_suppressions.all
+}
+
+output "polices" {
+  value = data.bridgecrew_policies.all
+}

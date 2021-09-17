@@ -8,7 +8,7 @@ resource "bridgecrew_policy" "new" {
   category       = "logging"
 
   //still fails for now
-  #  file = "${path.module}/policy/policy.yaml"
+  #    file = "${path.module}/policy/policy.yaml"
 
   // For now only one condition block is valid
   conditions {

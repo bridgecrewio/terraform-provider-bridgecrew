@@ -237,14 +237,12 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	myPolicy, err := setPolicy(d)
 
 	if err != nil {
-		highlight("Set Policy Failed")
-		log.Fatal(err.Error())
+		return diag.FromErr(err)
 	}
 
 	jsPolicy, err := json.Marshal(myPolicy)
 	if err != nil {
-		highlight("marshal failed")
-		log.Fatal("json could no be written")
+		return diag.FromErr(err)
 	}
 
 	configure := m.(ProviderConfig)
@@ -252,8 +250,10 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	payload := strings.NewReader(string(jsPolicy))
 	highlight(string(jsPolicy))
 
-	req, _ := http.NewRequest("POST", url, payload)
-	highlight(url)
+	req, err := http.NewRequest("POST", url, payload)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/json")
@@ -261,20 +261,14 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 
 	res, err := client.Do(req)
 	if err != nil {
-		highlight("Post Failed")
-		log.Print(err)
-		log.Fatal("POST FAILED")
+		return diag.FromErr(err)
 	}
 
 	defer res.Body.Close()
-	body, err := ioutil.ReadAll(res.Body)
 
+	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		//find out what the results of the post was in the message
-		log.Print(err.Error())
-		myResults := body
-		log.Print(myResults)
-		log.Fatal("IO Failure")
+		return diag.FromErr(err)
 	}
 
 	//set the ID from the post into the current object
@@ -283,7 +277,6 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 
 	resourcePolicyRead(ctx, d, m)
 
-	highlight("Created Policy")
 	return diags
 }
 
@@ -403,28 +396,26 @@ func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface
 	configure := m.(ProviderConfig)
 
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/v1/policies/%s", configure.URL, policyID), nil)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
 	// add authorization header to the req
 	req.Header.Add("authorization", configure.Token)
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/json")
 
-	if err != nil {
-		log.Print("Failed to make get")
-		log.Fatal(err.Error())
-	}
-
 	r, err := client.Do(req)
-
 	if err != nil {
-		log.Fatal("Failed at client.Do")
+		return diag.FromErr(err)
 	}
+
 	defer r.Body.Close()
 
 	body, _ := ioutil.ReadAll(r.Body)
 	typedjson, err := typed.Json(body)
 	if err != nil {
-		log.Fatal("Failed at unmarshalling with typed")
+		return diag.FromErr(err)
 	}
 
 	d.Set("cloud_provider", strings.ToLower(typedjson["provider"].(string)))
@@ -432,8 +423,17 @@ func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface
 	d.Set("severity", strings.ToLower(typedjson["severity"].(string)))
 	d.Set("category", strings.ToLower(typedjson["category"].(string)))
 	d.Set("guidelines", typedjson["guidelines"])
-	d.Set("conditions", typedjson["conditions"])
-	d.Set("benchmarks", typedjson["benchmarks"])
+
+	err = d.Set("conditions", typedjson["conditions"])
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	err = d.Set("benchmarks", typedjson["benchmarks"])
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
 	d.Set("code", typedjson["code"])
 
 	var diags diag.Diagnostics
@@ -449,6 +449,7 @@ func highlight(myPolicy interface{}) {
 }
 
 func resourcePolicyUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
 	client := &http.Client{Timeout: 60 * time.Second}
 
 	policyID := d.Id()
@@ -456,40 +457,49 @@ func resourcePolicyUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 		myPolicy, err := setPolicy(d)
 
 		if err != nil {
-			log.Fatal(err.Error())
+			return diag.FromErr(err)
 		}
 
 		jsPolicy, err := json.Marshal(myPolicy)
 		if err != nil {
-			highlight("Failed to Marshall")
-			log.Fatal(err.Error())
+			return diag.FromErr(err)
 		}
 
 		configure := m.(ProviderConfig)
 
 		payload := strings.NewReader(string(jsPolicy))
 		req, err := http.NewRequest("PUT", fmt.Sprintf("%s/api/v1/policies/%s", configure.URL, policyID), payload)
+		if err != nil {
+			return diag.FromErr(err)
+		}
 
 		req.Header.Add("Accept", "application/json")
 		req.Header.Add("Content-Type", "application/json")
 		req.Header.Add("authorization", configure.Token)
 
 		res, err := client.Do(req)
-		defer res.Body.Close()
-		body, err := ioutil.ReadAll(res.Body)
-
 		if err != nil {
-			//find out what the results of the post was in the message
-			log.Print(err.Error())
-			myResults := body
-			log.Print(myResults)
-			log.Fatal("IO Failure")
+			return diag.FromErr(err)
 		}
 
-		//just retrieved to check the result
+		defer res.Body.Close()
+
+		body, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			return diag.FromErr(err)
+		}
+
+		//just retrieved so i should check the result
 		clean, err := strconv.Unquote(string(body))
 		highlight(clean)
-		highlight(policyID)
+
+		if err != nil {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  fmt.Sprintf("Failed at clean quotes %s \n", err.Error()),
+			})
+			return diags
+		}
 
 		d.Set("last_updated", time.Now().Format(time.RFC850))
 	}
@@ -517,6 +527,9 @@ func resourcePolicyDelete(ctx context.Context, d *schema.ResourceData, m interfa
 	policyID := d.Id()
 	configure := m.(ProviderConfig)
 	req, err := http.NewRequest("DELETE", fmt.Sprintf("%s/api/v1/policies/%s", configure.URL, policyID), nil)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/json")
@@ -524,15 +537,22 @@ func resourcePolicyDelete(ctx context.Context, d *schema.ResourceData, m interfa
 
 	res, err := client.Do(req)
 	if err != nil {
-		log.Print(err)
-		log.Fatal("DELETE FAILED")
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("Failed at client.Do %s \n", err.Error()),
+		})
+		return diags
 	}
 
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
-
-	if string(body) != "Deleted policy" {
+	if err != nil {
 		highlight(string(body))
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("Failed to delete %s \n", err.Error()),
+		})
+		return diags
 	}
 
 	// d.SetId("") is automatically called assuming delete returns no errors, but

@@ -12,6 +12,7 @@ import (
 //use basic auth client
 func authClient(path string, configure ProviderConfig) (*http.Client, *http.Request, diag.Diagnostics, bool, error) {
 
+	var diags diag.Diagnostics
 	api := configure.Token
 	url := configure.URL
 
@@ -28,12 +29,14 @@ func authClient(path string, configure ProviderConfig) (*http.Client, *http.Requ
 	client := &http.Client{Timeout: 30 * time.Second}
 
 	req, err := http.NewRequest("GET", fmt.Sprintf(path, baseurl), nil)
-
 	if err != nil {
-		log.Fatal("Failed at http")
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("Get request failed %s \n", err.Error()),
+		})
 	}
 
 	// add authorization header to the req
 	req.Header.Add("Authorization", bearer)
-	return client, req, nil, false, err
+	return client, req, diags, false, err
 }

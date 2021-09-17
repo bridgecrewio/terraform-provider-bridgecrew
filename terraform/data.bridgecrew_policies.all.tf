@@ -1,2 +1,1 @@
-#data "bridgecrew_policies" "all" {}
-#
+data "bridgecrew_policies" "all" {}
