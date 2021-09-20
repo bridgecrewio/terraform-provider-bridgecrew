@@ -12,7 +12,7 @@ type Policy struct {
 	//Resourcetypes []string `json:"resourcetypes"`
 	//accountsData      []Account
 	Guidelines string     `json:"guidelines"`
-	Conditions Conditions `json:"conditions"`
+	Conditions Conditions `json:"conditions,omitempty"`
 	Benchmarks Benchmark  `json:"benchmarks,omitempty"`
 	Code       string     `json:"code,omitempty"`
 }
@@ -50,9 +50,9 @@ type Amount struct {
 
 //Conditions is part of the simple query
 type Conditions struct {
-	Attribute     string   `json:"attribute"`
-	CondType      string   `json:"cond_type"`
-	Operator      string   `json:"operator"`
-	ResourceTypes []string `json:"resource_types"`
-	Value         string   `json:"value"`
+	Attribute     string   `json:"attribute,omitempty"`
+	CondType      string   `json:"cond_type,omitempty"`
+	Operator      string   `json:"operator,omitempty"`
+	ResourceTypes []string `json:"resource_types,omitempty"`
+	Value         string   `json:"value,omitempty"`
 }

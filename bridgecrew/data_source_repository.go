@@ -85,7 +85,7 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 
 	defer r.Body.Close()
 
-	highlight("All data obtained")
+	highlight("All repository data obtained")
 	repositories := make([]map[string]interface{}, 0)
 	err = json.NewDecoder(r.Body).Decode(&repositories)
 

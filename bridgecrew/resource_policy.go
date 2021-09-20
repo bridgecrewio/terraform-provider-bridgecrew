@@ -289,29 +289,28 @@ func setPolicy(d *schema.ResourceData) (Policy, error) {
 
 	filename, hasFilename := d.GetOk("file")
 
-	//if the filename is set
+	//if the filename is set then this is a yaml policy
 	if hasFilename {
 		highlight("Filename issue")
 		code, err := loadFileContent(filename.(string))
 		if err != nil {
 			return myPolicy, fmt.Errorf("unable to load %q: %w", filename.(string), err)
 		}
-		highlight(string(code))
+		highlight("Setting code value")
 		myPolicy.Code = string(code)
+	} else {
+		//Not a yaml policy
+		conditions, err := setConditions(d)
+		//Don't set if not set
+		if err != nil {
+			return myPolicy, fmt.Errorf("unable set conditions %q", err)
+		}
+		myPolicy.Conditions = conditions[0]
 	}
 
 	myPolicy.Provider = d.Get("cloud_provider").(string)
 	myPolicy.Severity = d.Get("severity").(string)
 	myPolicy.Title = d.Get("title").(string)
-	conditions, err := setConditions(d)
-
-	//Don't set if not set
-	if err != nil {
-		highlight("Don't set conditions as err")
-		log.Print(err)
-	} else {
-		myPolicy.Conditions = conditions[0]
-	}
 
 	myPolicy.Guidelines = d.Get("guidelines").(string)
 	highlight("Set Policy Ends")
@@ -434,7 +433,10 @@ func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface
 		return diag.FromErr(err)
 	}
 
-	d.Set("code", typedjson["code"])
+	err = d.Set("file", typedjson["file"])
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
 	var diags diag.Diagnostics
 
@@ -469,7 +471,9 @@ func resourcePolicyUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 
 		payload := strings.NewReader(string(jsPolicy))
 		req, err := http.NewRequest("PUT", fmt.Sprintf("%s/api/v1/policies/%s", configure.URL, policyID), payload)
+
 		if err != nil {
+			highlight(payload)
 			return diag.FromErr(err)
 		}
 
