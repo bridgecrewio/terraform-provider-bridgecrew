@@ -26,7 +26,7 @@ This will build and install the provider locally, and run a test template.
 If you're not using a Mac you will have to change OS_ARCH=darwin_amd64 to the value for your platform.
 
 Terraform examples live in a sub-folder Terraform:
-The example tf gets all the repositories you have in Bridgecrew and lists them, also included its a sample policy that can be created, updated and destroyed by the platform.
+The example tf gets all the repositories you have in Bridgecrew and lists them, also included it's a sample policy that can be created, updated and destroyed by the platform.
 
 Once installed you can use the Provider via the normal Terraform workflow:
 
@@ -53,7 +53,7 @@ Changes to Outputs:
 ```
 
 The Terraform config is in main.tf.
-Currently there is only support for 3 data sources:
+Currently, there is only support for 3 data sources:
 
 - bridgecrew_repositories
 - bridgecrew_suppressions
@@ -115,7 +115,7 @@ For details on the hooks used see the config: .pre-commit-config.yaml.
 
 ## Building a release
 
-This repository uses Github actions in conjunction with goreleaser, pushing a tag will invoke a matrix build of goreleaser.
+This repository uses GitHub actions in conjunction with goreleaser, pushing a tag will invoke a matrix build of goreleaser.
 
 ## Checkov/Bridgecrew
 

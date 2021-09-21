@@ -80,6 +80,7 @@ func dataSourceSuppressionRead(ctx context.Context, d *schema.ResourceData, m in
 		log.Fatal("Failed at client.Do")
 	}
 
+	//goland:noinspection GoUnhandledErrorResult
 	defer r.Body.Close()
 
 	Suppressions := make([]map[string]interface{}, 0)

@@ -45,7 +45,7 @@ func Provider() *schema.Provider {
 	}
 }
 
-// providerConfigure parses the config into the Terraform provider meta object
+// providerConfigure parses the config into the Terraform provider meta-object
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	url := d.Get("url").(string)
 	if url == "" {

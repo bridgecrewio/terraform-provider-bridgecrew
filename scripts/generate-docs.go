@@ -1,4 +1,4 @@
-// This script is designed to precompile all our documentation template files
+// This script is designed to precompile all our documentation template files,
 // so they are ready to then be passed onto the official terraform
 // documentation generation tool:
 // https://github.com/hashicorp/terraform-plugin-docs

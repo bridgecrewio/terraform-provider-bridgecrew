@@ -83,6 +83,7 @@ func dataSourceErrorRead(ctx context.Context, d *schema.ResourceData, m interfac
 		return diagnostics
 	}
 
+	//goland:noinspection GoUnhandledErrorResult
 	defer r.Body.Close()
 
 	highlight("All data obtained")

@@ -83,6 +83,7 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 		return diagnostics
 	}
 
+	//goland:noinspection GoUnhandledErrorResult
 	defer r.Body.Close()
 
 	highlight("All repository data obtained")

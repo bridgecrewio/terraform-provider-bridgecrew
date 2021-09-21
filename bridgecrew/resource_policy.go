@@ -264,6 +264,7 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 		return diag.FromErr(err)
 	}
 
+	//goland:noinspection GoUnhandledErrorResult
 	defer res.Body.Close()
 
 	body, err := ioutil.ReadAll(res.Body)
@@ -409,6 +410,7 @@ func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface
 		return diag.FromErr(err)
 	}
 
+	//goland:noinspection GoUnhandledErrorResult
 	defer r.Body.Close()
 
 	body, _ := ioutil.ReadAll(r.Body)
@@ -444,6 +446,7 @@ func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface
 }
 
 // highlight is just to help with manual debugging, so you can find the lines
+//goland:noinspection SpellCheckingInspection
 func highlight(myPolicy interface{}) {
 	log.Print("XXXXXXXXXXX")
 	log.Print(myPolicy)
@@ -493,7 +496,7 @@ func resourcePolicyUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 			return diag.FromErr(err)
 		}
 
-		//just retrieved so i should check the result
+		//just retrieved so I should check the result
 		clean, err := strconv.Unquote(string(body))
 		highlight(clean)
 
@@ -548,6 +551,7 @@ func resourcePolicyDelete(ctx context.Context, d *schema.ResourceData, m interfa
 		return diags
 	}
 
+	//goland:noinspection GoUnhandledErrorResult
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {

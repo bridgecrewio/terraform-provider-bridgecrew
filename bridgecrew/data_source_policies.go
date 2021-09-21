@@ -160,6 +160,7 @@ func dataSourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interfa
 		return diagnostics
 	}
 
+	//goland:noinspection GoUnhandledErrorResult
 	defer r.Body.Close()
 
 	body, _ := ioutil.ReadAll(r.Body)

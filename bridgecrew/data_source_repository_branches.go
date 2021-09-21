@@ -45,9 +45,10 @@ func dataSourceRepositoryBranchRead(ctx context.Context, d *schema.ResourceData,
 	r, err := client.Do(req)
 
 	if err != nil {
-		log.Fatal("Failed at client.Do")
+		log.Print("Failed at client.Do")
 		return diag.FromErr(err)
 	}
+	//goland:noinspection GoUnhandledErrorResult
 	defer r.Body.Close()
 
 	log.Print("All data obtained")
