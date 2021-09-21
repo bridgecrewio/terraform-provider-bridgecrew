@@ -22,7 +22,7 @@ func Provider() *schema.Provider {
 				Default:     "https://www.bridgecrew.cloud",
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("BRIDGECREW_URL", nil),
-				Description: "url for Bridgecrew",
+				Description: "URL for the Bridgecrew Platform",
 			},
 			"token": {
 				Type:        schema.TypeString,
