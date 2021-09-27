@@ -2,7 +2,7 @@
 
 [![Maintained by Bridgecrew.io](https://img.shields.io/badge/maintained%20by-bridgecrew.io-blueviolet)](https://bridgecrew.io/?utm_source=github&utm_medium=organic_oss&utm_campaign=terraform-provider-bridgecrew)
 [![release](https://github.com/bridgecrewio/terraform-provider-bridgecrew/actions/workflows/release.yml/badge.svg)](https://github.com/bridgecrewio/terraform-provider-bridgecrew/actions/workflows/security.yml)
-[![slack-community](https://codifiedsecurity.slack.com/)](https://codifiedsecurity.slack.com/)
+[![slack-community](https://img.shields.io/badge/slack-bridgecrew-blueviolet.svg?logo=slack)](https://codifiedsecurity.slack.com/)
 [![Go Report Card](https://goreportcard.com/badge/github.com/bridgecrewio/terraform-provider-bridgecrew)](https://goreportcard.com/report/github.com/bridgecrewio/terraform-provider-bridgecrew)
 [![Go Reference](https://pkg.go.dev/badge/github.com/bridgecrewio/terraform-provider-bridgecrew.svg)](https://pkg.go.dev/github.com/bridgecrewio/terraform-provider-bridgecrew)
 [![GitHub All Releases](https://img.shields.io/github/downloads/bridgecrewio/terraform-provider-bridgecrew/total)](https://github.com/bridgecrewio/terraform-provider-bridgecrew/releases)
