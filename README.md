@@ -65,6 +65,10 @@ and one resource:
 
 More will follow.
 
+## Examples
+
+For more detailed examples see:  <https://github.com/JamesWoolfenden/terraform-bridgecrew-examples>, each example has a video for you to follow.
+
 ## Debugging
 
 To see the debug output for a provider set:
