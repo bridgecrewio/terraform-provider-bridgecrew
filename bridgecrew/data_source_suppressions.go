@@ -113,6 +113,25 @@ func flattenSuppressionData(Suppressions *[]map[string]interface{}) []interface{
 			oi["id"] = Suppression["id"]
 			oi["policyid"] = Suppression["policyId"]
 			oi["comment"] = Suppression["comment"]
+
+			var myresources []interface{}
+			if Suppression["resources"] != nil {
+				resources := Suppression["resources"].([]interface{})
+
+				for _, element := range resources {
+
+					account := element.(map[string]interface{})
+
+					myaccount := make(map[string]interface{})
+					myaccount["accountid"] = account["accountId"].(string)
+					myaccount["resourceid"] = account["resourceId"]
+
+					myresources = append(myresources, myaccount)
+				}
+
+				oi["resources"] = myresources
+			}
+
 			ois[i] = oi
 		}
 
