@@ -86,11 +86,9 @@ func dataSourceErrorRead(ctx context.Context, d *schema.ResourceData, m interfac
 	//goland:noinspection GoUnhandledErrorResult
 	defer r.Body.Close()
 
-	highlight("All data obtained")
-
 	errors := make([]map[string]interface{}, 0)
 	var strerrors string
-	highlight(r.Body)
+
 	err = json.NewDecoder(r.Body).Decode(&strerrors)
 
 	//TODO:

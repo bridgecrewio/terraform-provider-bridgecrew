@@ -86,7 +86,6 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 	//goland:noinspection GoUnhandledErrorResult
 	defer r.Body.Close()
 
-	highlight("All repository data obtained")
 	repositories := make([]map[string]interface{}, 0)
 	err = json.NewDecoder(r.Body).Decode(&repositories)
 
@@ -98,7 +97,6 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 		return diagnostics
 	}
 
-	highlight(repositories)
 	flatRepos := flattenRepositoryData(&repositories)
 
 	if err := d.Set("repositories", flatRepos); err != nil {

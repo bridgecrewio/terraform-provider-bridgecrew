@@ -46,6 +46,14 @@ apply: install purge_tf purge_state
 	cd $(TERRAFORM) && terraform init
 	cd $(TERRAFORM) && terraform apply --auto-approve
 
+plan: install purge_tf
+	cd $(TERRAFORM) && terraform init
+	cd $(TERRAFORM) && terraform plan
+
+update: install
+	cd $(TERRAFORM) && terraform init
+	cd $(TERRAFORM) && terraform apply --auto-approve
+
 destroy:
 	cd $(TERRAFORM) && terraform destroy --auto-approve
 

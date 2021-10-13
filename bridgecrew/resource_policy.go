@@ -248,7 +248,6 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	configure := m.(ProviderConfig)
 	url := configure.URL + "/api/v1/policies"
 	payload := strings.NewReader(string(jsPolicy))
-	highlight(string(jsPolicy))
 
 	req, err := http.NewRequest("POST", url, payload)
 	if err != nil {
@@ -283,7 +282,6 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 
 func setPolicy(d *schema.ResourceData) (Policy, error) {
 	myPolicy := Policy{}
-	highlight("SetPolicy Starts")
 	myPolicy.Benchmarks = setBenchmark(d)
 
 	myPolicy.Category = d.Get("category").(string)
@@ -292,12 +290,10 @@ func setPolicy(d *schema.ResourceData) (Policy, error) {
 
 	//if the filename is set then this is a yaml policy
 	if hasFilename {
-		highlight("Filename issue")
 		code, err := loadFileContent(filename.(string))
 		if err != nil {
 			return myPolicy, fmt.Errorf("unable to load %q: %w", filename.(string), err)
 		}
-		highlight("Setting code value")
 		myPolicy.Code = string(code)
 	} else {
 		//Not a yaml policy
@@ -312,9 +308,8 @@ func setPolicy(d *schema.ResourceData) (Policy, error) {
 	myPolicy.Provider = d.Get("cloud_provider").(string)
 	myPolicy.Severity = d.Get("severity").(string)
 	myPolicy.Title = d.Get("title").(string)
-
 	myPolicy.Guidelines = d.Get("guidelines").(string)
-	highlight("Set Policy Ends")
+
 	return myPolicy, nil
 }
 
@@ -352,7 +347,6 @@ func setConditions(d *schema.ResourceData) ([]Conditions, error) {
 			conditions = append(conditions, Condition)
 		}
 	} else {
-		highlight("No conditions set")
 		return nil, errors.New("no Conditions Set")
 	}
 
@@ -423,7 +417,11 @@ func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface
 	d.Set("title", typedjson["title"].(string))
 	d.Set("severity", strings.ToLower(typedjson["severity"].(string)))
 	d.Set("category", strings.ToLower(typedjson["category"].(string)))
-	d.Set("guidelines", typedjson["guidelines"])
+
+	err = d.Set("guidelines", typedjson["guideline"])
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
 	err = d.Set("conditions", typedjson["conditions"])
 	if err != nil {
@@ -476,7 +474,6 @@ func resourcePolicyUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 		req, err := http.NewRequest("PUT", fmt.Sprintf("%s/api/v1/policies/%s", configure.URL, policyID), payload)
 
 		if err != nil {
-			highlight(payload)
 			return diag.FromErr(err)
 		}
 
