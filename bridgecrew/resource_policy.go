@@ -422,7 +422,13 @@ func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface
 		return diag.FromErr(err)
 	}
 
-	err = d.Set("conditions", typedjson["conditionQuery"])
+	//myconditions should be an array it currently a map
+	//hence this fudge
+	//todo: once you start passing around condition arrays
+	//this can go
+	myConditions := make([]interface{}, 1)
+	myConditions[0] = typedjson["conditionQuery"]
+	err = d.Set("conditions", myConditions)
 	if err != nil {
 		return diag.FromErr(err)
 	}

@@ -1,1 +1,1 @@
-data "bridgecrew_repositories" "all" {}
+#data "bridgecrew_repositories" "all" {}

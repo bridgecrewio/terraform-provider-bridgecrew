@@ -16,7 +16,7 @@ resource "bridgecrew_policy" "new" {
     cond_type      = "attribute"
     attribute      = "bucket"
     operator       = "not_equals"
-    value          = "jimbo"
+    value          = "jimbo2"
   }
 
   guidelines = "This should explain a little"
