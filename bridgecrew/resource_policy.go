@@ -216,7 +216,6 @@ func resourcePolicy() *schema.Resource {
 				Optional:      true,
 				ConflictsWith: []string{"conditions"},
 			},
-
 			"last_updated": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -433,10 +432,10 @@ func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface
 		return diag.FromErr(err)
 	}
 
-	err = d.Set("benchmarks", typedjson["benchmarks"])
-	if err != nil {
-		return diag.FromErr(err)
-	}
+	//err = d.Set("benchmarks", typedjson["benchmarks"])
+	//if err != nil {
+	//	return diag.FromErr(err)
+	//}
 
 	if typedjson["file"] != nil {
 		err = d.Set("file", typedjson["file"].(string))
