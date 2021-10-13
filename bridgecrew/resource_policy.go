@@ -283,7 +283,6 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 func setPolicy(d *schema.ResourceData) (Policy, error) {
 	myPolicy := Policy{}
 	myPolicy.Benchmarks = setBenchmark(d)
-
 	myPolicy.Category = d.Get("category").(string)
 
 	filename, hasFilename := d.GetOk("file")
@@ -423,7 +422,7 @@ func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface
 		return diag.FromErr(err)
 	}
 
-	err = d.Set("conditions", typedjson["conditions"])
+	err = d.Set("conditions", typedjson["conditionQuery"])
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -433,9 +432,11 @@ func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface
 		return diag.FromErr(err)
 	}
 
-	err = d.Set("file", typedjson["file"])
-	if err != nil {
-		return diag.FromErr(err)
+	if typedjson["file"] != nil {
+		err = d.Set("file", typedjson["file"].(string))
+		if err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	var diags diag.Diagnostics
