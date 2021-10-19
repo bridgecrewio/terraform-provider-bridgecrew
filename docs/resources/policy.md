@@ -4,7 +4,7 @@ page_title: "Bridgecrew: resource_policy"
 sidebar_current: "docs-bridgecrew-resource_policy"
 
 description: |-
-Create a new custom security policy for Bridgecrew
+Create a new custom YAML based security policy for the Bridgecrew Platform
 ---
 
 # bridgecrew_policy
@@ -22,28 +22,19 @@ Basic usage:
 
 ```hcl
 resource "bridgecrew_policy" "mypolicy" {
-  cloud_provider = "aws"
-  title          = "my first test"
-  severity       = "critical"
-  category       = "logging"
+   cloud_provider = "aws"
+   severity       = "critical"
+   category       = "logging"
 
-  code = ""
+   file = "${path.module}/policy/policy.yaml"
 
-  conditions {
-    resource_types = ["aws_s3_bucket", "aws_instance"]
-    cond_type      = "attribute"
-    attribute      = "bucket"
-    operator       = "not_equals"
-    value          = "jimbo"
-  }
+   guidelines = "This should explain a little"
 
-  guidelines = "This should explain a little"
+   benchmarks {
+     cis_aws_v12 = ["1.1", "2.1"]
+   }
 
-  benchmarks {
-    cis_aws_v12 = ["1.1", "2.1"]
-    cis_aws_v13 = ["1.3", "2.4"]
-  }
-}
+ }
 ```
 
 ## Importing existing Policies
@@ -65,15 +56,13 @@ You can view the policy id, either by using the API docs policy list feature:
 
 - **category** (String)
 - **cloud_provider** (String)
+- **file** (String)
 - **guidelines** (String)
 - **severity** (String)
-- **title** (String)
 
 ### Optional
 
 - **benchmarks** (Block Set, Max: 1) (see [below for nested schema](#nestedblock--benchmarks))
-- **conditions** (Block List, Max: 1) (see [below for nested schema](#nestedblock--conditions))
-- **file** (String)
 - **last_updated** (String)
 
 ### Read-Only
@@ -96,15 +85,3 @@ Optional:
 - **cis_gke_v11** (List of String)
 - **cis_kubernetes_v15** (List of String)
 - **cis_kubernetes_v16** (List of String)
-
-
-<a id="nestedblock--conditions"></a>
-### Nested Schema for `conditions`
-
-Required:
-
-- **attribute** (String)
-- **cond_type** (String)
-- **operator** (String)
-- **resource_types** (List of String)
-- **value** (String)

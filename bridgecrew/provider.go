@@ -33,7 +33,8 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"bridgecrew_policy": resourcePolicy(),
+			"bridgecrew_policy":        resourcePolicy(),
+			"bridgecrew_simple_policy": resourceSimplePolicy(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"bridgecrew_repositories":        dataSourceRepositories(),

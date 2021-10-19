@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func Test_resourcePolicy(t *testing.T) {
+func Test_resourceSimplePolicy(t *testing.T) {
 	tests := []struct {
 		name string
 		want *schema.Resource
@@ -18,14 +18,14 @@ func Test_resourcePolicy(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := resourcePolicy(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("resourcePolicy() = %v, want %v", got, tt.want)
+			if got := resourceSimplePolicy(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("resourceSimplePolicy() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_resourcePolicyCreate(t *testing.T) {
+func Test_resourceSimplePolicyCreate(t *testing.T) {
 	type args struct {
 		ctx context.Context
 		d   *schema.ResourceData
@@ -40,14 +40,14 @@ func Test_resourcePolicyCreate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := resourcePolicyCreate(tt.args.ctx, tt.args.d, tt.args.m); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("resourcePolicyCreate() = %v, want %v", got, tt.want)
+			if got := resourceSimplePolicyCreate(tt.args.ctx, tt.args.d, tt.args.m); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("resourceSimplePolicyCreate() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_setPolicy(t *testing.T) {
+func Test_setSimplePolicy(t *testing.T) {
 	type args struct {
 		d *schema.ResourceData
 	}
@@ -61,104 +61,65 @@ func Test_setPolicy(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := setPolicy(tt.args.d)
+			got, err := setSimplePolicy(tt.args.d)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("setPolicy() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("setSimplePolicy() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("setPolicy() = %v, want %v", got, tt.want)
+				t.Errorf("setSimplePolicy() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_loadFileContent(t *testing.T) {
+func Test_setConditions(t *testing.T) {
 	type args struct {
-		v string
+		d *schema.ResourceData
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    []byte
+		want    []Conditions
 		wantErr bool
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := loadFileContent(tt.args.v)
+			got, err := setConditions(tt.args.d)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("loadFileContent() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("setConditions() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("loadFileContent() = %v, want %v", got, tt.want)
+				t.Errorf("setConditions() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestCastToStringList(t *testing.T) {
+func Test_setBenchmark(t *testing.T) {
 	type args struct {
-		temp []interface{}
+		d *schema.ResourceData
 	}
 	tests := []struct {
 		name string
 		args args
-		want []string
+		want Benchmark
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := CastToStringList(tt.args.temp); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("CastToStringList() = %v, want %v", got, tt.want)
+			if got := setBenchmark(tt.args.d); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("setBenchmark() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_resourcePolicyRead(t *testing.T) {
-	type args struct {
-		ctx context.Context
-		d   *schema.ResourceData
-		m   interface{}
-	}
-	tests := []struct {
-		name string
-		args args
-		want diag.Diagnostics
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := resourcePolicyRead(tt.args.ctx, tt.args.d, tt.args.m); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("resourcePolicyRead() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_highlight(t *testing.T) {
-	type args struct {
-		myPolicy interface{}
-	}
-	tests := []struct {
-		name string
-		args args
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			highlight(tt.args.myPolicy)
-		})
-	}
-}
-
-func Test_resourcePolicyUpdate(t *testing.T) {
+func Test_resourceSimplePolicyRead(t *testing.T) {
 	type args struct {
 		ctx context.Context
 		d   *schema.ResourceData
@@ -173,14 +134,36 @@ func Test_resourcePolicyUpdate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := resourcePolicyUpdate(tt.args.ctx, tt.args.d, tt.args.m); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("resourcePolicyUpdate() = %v, want %v", got, tt.want)
+			if got := resourceSimplePolicyRead(tt.args.ctx, tt.args.d, tt.args.m); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("resourceSimplePolicyRead() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_policyChange(t *testing.T) {
+func Test_resourceSimplePolicyUpdate(t *testing.T) {
+	type args struct {
+		ctx context.Context
+		d   *schema.ResourceData
+		m   interface{}
+	}
+	tests := []struct {
+		name string
+		args args
+		want diag.Diagnostics
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := resourceSimplePolicyUpdate(tt.args.ctx, tt.args.d, tt.args.m); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("resourceSimplePolicyUpdate() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_simplepolicyChange(t *testing.T) {
 	type args struct {
 		d *schema.ResourceData
 	}
@@ -193,14 +176,14 @@ func Test_policyChange(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := policyChange(tt.args.d); got != tt.want {
-				t.Errorf("policyChange() = %v, want %v", got, tt.want)
+			if got := simplepolicyChange(tt.args.d); got != tt.want {
+				t.Errorf("simplepolicyChange() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_resourcePolicyDelete(t *testing.T) {
+func Test_resourceSimplePolicyDelete(t *testing.T) {
 	type args struct {
 		ctx context.Context
 		d   *schema.ResourceData
@@ -215,8 +198,8 @@ func Test_resourcePolicyDelete(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := resourcePolicyDelete(tt.args.ctx, tt.args.d, tt.args.m); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("resourcePolicyDelete() = %v, want %v", got, tt.want)
+			if got := resourceSimplePolicyDelete(tt.args.ctx, tt.args.d, tt.args.m); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("resourceSimplePolicyDelete() = %v, want %v", got, tt.want)
 			}
 		})
 	}

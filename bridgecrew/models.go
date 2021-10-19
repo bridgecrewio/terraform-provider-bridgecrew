@@ -2,19 +2,21 @@ package bridgecrew
 
 // The Policy record
 type Policy struct {
-	Provider string `json:"provider"`
-	ID       int    `json:"id,omitempty"`
-	Title    string `json:"title"`
-	//descriptivetitle  string
-	//constructivetitle string
-	Severity string `json:"severity"`
-	Category string `json:"category"`
-	//Resourcetypes []string `json:"resourcetypes"`
-	//accountsData      []Account
+	Provider   string    `json:"provider"`
+	ID         int       `json:"id,omitempty"`
+	Benchmarks Benchmark `json:"benchmarks,omitempty"`
+	Code       string    `json:"code,omitempty"`
+}
+
+type simplePolicy struct {
+	Provider   string     `json:"provider"`
+	ID         int        `json:"id,omitempty"`
+	Title      string     `json:"title"`
+	Severity   string     `json:"severity"`
+	Category   string     `json:"category"`
 	Guidelines string     `json:"guidelines"`
 	Conditions Conditions `json:"conditions,omitempty"`
 	Benchmarks Benchmark  `json:"benchmarks,omitempty"`
-	Code       string     `json:"code,omitempty"`
 }
 
 // Benchmark is child object to Policy
