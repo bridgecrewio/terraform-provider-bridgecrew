@@ -32,3 +32,18 @@ resource "random_string" "new" {
   length  = 8
   special = false
 }
+
+resource "bridgecrew_simple_policy" "tagging" {
+  cloud_provider = "all"
+  title          = "Check that all resources have a yor tag"
+  severity       = "critical"
+  category       = "general"
+  guidelines     = "Use (yor.io)[yor.io](yor.io)!"
+
+  conditions {
+    resource_types = ["all"]
+    cond_type      = "attribute"
+    attribute      = "tags.yor_trace"
+    operator       = "exists"
+  }
+}

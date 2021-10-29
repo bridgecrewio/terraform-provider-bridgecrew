@@ -42,6 +42,9 @@ Required:
 - **cond_type** (String)
 - **operator** (String)
 - **resource_types** (List of String)
+
+Optional:
+
 - **value** (String)
 
 

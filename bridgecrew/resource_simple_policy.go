@@ -115,7 +115,7 @@ func resourceSimplePolicy() *schema.Resource {
 						},
 						"value": {
 							Type:     schema.TypeString,
-							Required: true,
+							Optional: true,
 						},
 					},
 				},

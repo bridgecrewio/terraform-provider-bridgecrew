@@ -54,11 +54,8 @@ You can view the policy id, either by using the API docs policy list feature:
 
 ### Required
 
-- **category** (String)
 - **cloud_provider** (String)
 - **file** (String)
-- **guidelines** (String)
-- **severity** (String)
 
 ### Optional
 
