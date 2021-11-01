@@ -52,6 +52,12 @@ func resourceSimplePolicy() *schema.Resource {
 				Type:     schema.TypeString,
 				ForceNew: true,
 				Required: true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if len(val.(string)) < 20 {
+						errs = append(errs, fmt.Errorf("%q Title should attempt be meaningful (gt 20 chars)", val))
+					}
+					return
+				},
 			},
 			"severity": {
 				Type:     schema.TypeString,
@@ -101,6 +107,12 @@ func resourceSimplePolicy() *schema.Resource {
 			"guidelines": {
 				Type:     schema.TypeString,
 				Required: true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if len(val.(string)) < 50 {
+						errs = append(errs, fmt.Errorf("%q Guideline should attempt be helpful (gt 50 chars)", val))
+					}
+					return
+				},
 			},
 			"conditions": {
 				Type:     schema.TypeList,

@@ -153,6 +153,11 @@ func resourcePolicy() *schema.Resource {
 					return
 				},
 			},
+			"source_code_hash": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+			},
 			"last_updated": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -376,6 +381,7 @@ func resourcePolicyUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 func policyChange(d *schema.ResourceData) bool {
 	return d.HasChange("cloud_provider") ||
 		d.HasChange("benchmarks") ||
+		d.HasChange("source_code_hash") ||
 		d.HasChange("file")
 }
 

@@ -16,7 +16,7 @@ resource "bridgecrew_simple_policy" "new" {
     value          = "jimbo2"
   }
 
-  guidelines = "This should explain a lot more"
+  guidelines = "This should explain a lot more, infact im padding this out to at least 50 characters"
 
   // although benchmarks take a free text this is total ***, as it needs to be an existing benchmark as
   // does the version, and that more like a category than anything

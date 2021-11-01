@@ -54,16 +54,14 @@ You can view the policy id, either by using the API docs policy list feature:
 
 ### Required
 
-- **category** (String)
 - **cloud_provider** (String)
 - **file** (String)
-- **guidelines** (String)
-- **severity** (String)
 
 ### Optional
 
 - **benchmarks** (Block Set, Max: 1) (see [below for nested schema](#nestedblock--benchmarks))
 - **last_updated** (String)
+- **source_code_hash** (String)
 
 ### Read-Only
 

@@ -2,7 +2,7 @@
 
 resource "bridgecrew_simple_policy" "new" {
   cloud_provider = "bogus"
-  title          = "my first test ${random_string.new.id}"
+  title          = "is too short"
   severity       = "safe"
   category       = "jimmy"
 
@@ -15,7 +15,7 @@ resource "bridgecrew_simple_policy" "new" {
     value          = "jimbo2"
   }
 
-  guidelines = ""
+  guidelines = "Way too lazy to write docs"
 
   // although benchmarks take a free text this is total ***, as it needs to be an existing benchmark as
   // does the version, and that more like a category than anything
