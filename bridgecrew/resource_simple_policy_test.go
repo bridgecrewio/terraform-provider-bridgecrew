@@ -108,7 +108,7 @@ func Test_setBenchmark(t *testing.T) {
 		args args
 		want Benchmark
 	}{
-		// TODO: Add test cases.
+		//{name: "test1",args{{"benchmark": {"cis_aws_v12"}},Benchmark{Cisawsv12:["1.2","1.3"]}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

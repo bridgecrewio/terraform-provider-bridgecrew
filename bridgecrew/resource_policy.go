@@ -12,11 +12,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mitchellh/go-homedir"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/karlseguin/typed"
+	"github.com/mitchellh/go-homedir"
 )
 
 func resourcePolicy() *schema.Resource {
@@ -31,6 +30,21 @@ func resourcePolicy() *schema.Resource {
 				ForceNew: true,
 				Computed: false,
 				Required: true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					switch val.(string) {
+					case
+						"aws",
+						"gcp",
+						"linode",
+						"azure",
+						"oci",
+						"alicloud",
+						"digitalocean":
+						return
+					}
+					errs = append(errs, fmt.Errorf("%q Must be one of aws, gcp, linode, azure, oci, aliclcoud or digitalocean", val))
+					return
+				},
 			},
 			"id": {
 				Type:     schema.TypeString,
@@ -125,6 +139,19 @@ func resourcePolicy() *schema.Resource {
 			"file": {
 				Type:     schema.TypeString,
 				Required: true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errors []error) {
+
+					code, err := loadFileContent(val.(string))
+					if err != nil {
+						errors = append(errors, fmt.Errorf("unable to load %q: %w", val.(string), err))
+						return
+					}
+
+					if _, err := checkYAMLString(string(code)); err != nil {
+						errors = append(errors, fmt.Errorf("%q contains an invalid YAML: %s", key, err))
+					}
+					return
+				},
 			},
 			"last_updated": {
 				Type:     schema.TypeString,

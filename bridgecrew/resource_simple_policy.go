@@ -28,6 +28,21 @@ func resourceSimplePolicy() *schema.Resource {
 				ForceNew: true,
 				Computed: false,
 				Required: true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					switch val.(string) {
+					case
+						"aws",
+						"gcp",
+						"linode",
+						"azure",
+						"oci",
+						"alicloud",
+						"digitalocean":
+						return
+					}
+					errs = append(errs, fmt.Errorf("%q Must be one of aws, gcp, linode, azure, oci, aliclcoud or digitalocean", val))
+					return
+				},
 			},
 			"id": {
 				Type:     schema.TypeString,

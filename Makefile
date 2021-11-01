@@ -7,6 +7,7 @@ BINARY=terraform-provider-${NAME}
 VERSION=0.1.1
 OS_ARCH=darwin_amd64
 TERRAFORM=./terraform/
+TF_TEST=./terraform_test/
 
 default: install
 
@@ -41,6 +42,11 @@ testacc:
 check: install purge_tf purge_state
 	cd $(TERRAFORM) && terraform init
 	cd $(TERRAFORM) && terraform plan
+
+check_tf: install
+	cd $(TF_TEST) && rm .terraform.*
+	cd $(TF_TEST) && terraform init
+	cd $(TF_TEST) && terraform plan
 
 apply: install purge_tf purge_state
 	cd $(TERRAFORM) && terraform init
