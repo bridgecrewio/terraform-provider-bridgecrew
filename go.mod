@@ -9,7 +9,7 @@ require (
 	github.com/hashicorp/go-cty v1.4.1-0.20200414143053-d3edf31b6320 // indirect
 	github.com/hashicorp/go-getter v1.5.3 // indirect
 	github.com/hashicorp/go-plugin v1.4.1 // indirect
-	github.com/hashicorp/terraform-plugin-docs v0.4.0 // indirect
+	github.com/hashicorp/terraform-plugin-docs v0.5.0 // indirect
 	github.com/hashicorp/terraform-plugin-sdk v1.16.1 // indirect
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.7.1
 	github.com/karlseguin/typed v1.1.7

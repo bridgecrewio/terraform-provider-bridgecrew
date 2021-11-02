@@ -30,18 +30,21 @@ import (
 	"flag"
 	"fmt"
 	"html/template"
-	"io"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
+
+	"github.com/jameswoolfenden/terraform-provider-bridgecrew/version"
 )
 
 // PageData represents a type of service and enables a template to render
 // different content depending on the service type.
 type PageData struct {
-	ServiceType string
+	ServiceType     string
+	ProviderVersion string
 }
 
 // Page represents a template page to be rendered.
@@ -105,67 +108,27 @@ func main() {
 			name: "resource_policy",
 			path: tempDir + "/resources/policy.md.tmpl",
 		},
-		//,
-		//{
-		//	name: "service_compute",
-		//	path: tempDir + "/resources/service_compute.md.tmpl",
-		//	Data: PageData{
-		//		"wasm",
-		//	},
-		//},
-		//{
-		//	name: "service_dictionary_items_v1",
-		//	path: tempDir + "/resources/service_dictionary_items_v1.md.tmpl",
-		//},
-		//{
-		//	name: "service_acl_entries_v1",
-		//	path: tempDir + "/resources/service_acl_entries_v1.md.tmpl",
-		//},
-		//{
-		//	name: "service_dynamic_snippet_content_v1",
-		//	path: tempDir + "/resources/service_dynamic_snippet_content_v1.md.tmpl",
-		//},
-		//{
-		//	name: "service_waf_configuration",
-		//	path: tempDir + "/resources/service_waf_configuration.md.tmpl",
-		//},
-		//{
-		//	name: "user_v1",
-		//	path: tempDir + "/resources/user_v1.md.tmpl",
-		//},
-		//{
-		//	name: "tls_activation",
-		//	path: tempDir + "/resources/tls_activation.md.tmpl",
-		//},
-		//{
-		//	name: "tls_certificate",
-		//	path: tempDir + "/resources/tls_certificate.md.tmpl",
-		//},
-		//{
-		//	name: "tls_platform_certificate",
-		//	path: tempDir + "/resources/tls_platform_certificate.md.tmpl",
-		//},
-		//{
-		//	name: "tls_private_key",
-		//	path: tempDir + "/resources/tls_private_key.md.tmpl",
-		//},
-		//{
-		//	name: "tls_subscription",
-		//	path: tempDir + "/resources/tls_subscription.md.tmpl",
-		//},
-		//{
-		//	name: "tls_subscription_validation",
-		//	path: tempDir + "/resources/tls_subscription_validation.md.tmpl",
-		//},
+		{
+			name: "resource_simple_policy",
+			path: tempDir + "/resources/simple_policy.md.tmpl",
+		},
 	}
 
-	pages := append(resourcePages, dataPages...)
+	var indexPages = []Page{
+		{
+			name: "index",
+			path: tempDir + "/index.md.tmpl",
+			Data: PageData{
+				ProviderVersion: strings.Replace(version.ProviderVersion, "v", "", 1),
+			},
+		},
+	}
+
+	pages := append(append(indexPages, resourcePages...), dataPages...)
 
 	renderPages(getTemplate(tmplDir), pages)
 
 	appendSyntaxToFiles(tempDir)
-
-	copyIndexToTempDir(tmplDir, tempDir)
 
 	backupTemplatesDir(tmplDir)
 
@@ -188,9 +151,7 @@ func tfPluginDocsExists(tfplugindocsLocation string) bool {
 // files, and parsing all the templates found (ensuring they must parse).
 func getTemplate(tmplDir string) *template.Template {
 	var templateFiles []string
-	log.Print(tmplDir)
 	filepath.Walk(tmplDir, func(path string, info os.FileInfo, err error) error {
-		log.Print(path)
 		if filepath.Ext(path) == ".tmpl" {
 			templateFiles = append(templateFiles, path)
 		}
@@ -200,7 +161,6 @@ func getTemplate(tmplDir string) *template.Template {
 	if err != nil {
 		log.Fatalf("Error parsing template files: %s", err)
 	}
-	log.Print(template)
 	return template
 }
 
@@ -270,38 +230,6 @@ func appendSyntaxToFiles(tempDir string) {
 		}
 		return nil
 	})
-}
-
-// copyIndexToTempDir copies the non-templated index.md into our temporary
-// directory so that when we come to replace the repo's /templates with our
-// pre-compiled version, then the tfplugindocs command will be able to include
-// the index.md in the generated output in the /docs directory.
-//
-// The reason the index.md isn't already in our temporary directory of
-// pre-compiled Markdown templates is because the renderPages function is
-// designed to include only files with a .tmpl extension, where as index.md
-// doesn't require any templating.
-func copyIndexToTempDir(tmplDir string, tempDir string) {
-	filename := "/index.md"
-	srcFile := tmplDir + filename
-	dstFile := tempDir + filename
-
-	src, err := os.Open(srcFile)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer src.Close()
-
-	dst, err := os.Create(dstFile)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer dst.Close()
-
-	_, err = io.Copy(dst, src)
-	if err != nil {
-		log.Fatal(err)
-	}
 }
 
 // backupTemplatesDir renames the /templates directory.

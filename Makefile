@@ -1,6 +1,9 @@
 .PHONY: clean  docs
 TEST?=$$(go list ./... | grep -v 'vendor')
 HOSTNAME=jameswoolfenden
+FULL_PKG_NAME=github.com/bridgecrewio/terraform-provider-bridgecrew
+VERSION_PLACEHOLDER=version.ProviderVersion
+VERSION=$(shell git describe --tags --always)
 NAMESPACE=dev
 NAME=bridgecrew
 BINARY=terraform-provider-${NAME}
@@ -79,7 +82,12 @@ $(BIN)/%:
 	@echo "Installing tools from tools/tools.go"
 	@cat tools/tools.go | grep _ | awk -F '"' '{print $$2}' | GOBIN=$(BIN) xargs -tI {} go install {}
 
+generate-docs: $(BIN)/tfplugindocs
+	go run -ldflags="-X $(FULL_PKG_NAME)/$(VERSION_PLACEHOLDER)=$(shell git describe --tags --always --abbrev=0)" scripts/generate-docs.go -tfplugindocsPath=$(BIN)/tfplugindocs
+
+
 docs: $(BIN)/tfplugindocs
+	-rm -fr templates-backup
 	go run scripts/generate-docs.go -tfplugindocsPath=$(BIN)/tfplugindocs
 
 validate-docs: $(BIN)/tfplugindocs

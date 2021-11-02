@@ -1,7 +1,8 @@
----
+{{define "index"}}---
 page_title: "Bridgecrew Provider"
 subcategory: ""
 description: |-
+Provider information
 ---
 
 # Bridgecrew Provider
@@ -12,10 +13,19 @@ The Bridgecrew provider is used to interact with the Bridgecrew Security Platfor
 In order to use this Provider, you must have an active account with Bridgecrew.
 Pricing and sign-up information can be found at <https://www.bridgecrew.cloud/login/signUp?return_to=%2Fsignup>
 
-For further infomation on bridgecrew see their on line documentation <https://docs.bridgecrew.io/docs>.
+For further information on bridgecrew see their on line documentation <https://docs.bridgecrew.io/docs>.
 ## Example Usage
 
 ```hcl
+# Terraform 0.13+ requires providers to be declared in a "required_providers" block
+terraform {
+  required_providers {
+    bridgecrew = {
+      source = "bridgecrew/bridgecrew"
+      version >= "{{ .Data.ProviderVersion }}"
+    }
+  }
+}
 # Configure the Bridgecrew Provider
 provider "bridgecrew" {
   token = "test"
@@ -83,3 +93,5 @@ The following arguments are supported in the `provider` block:
   if using a private instance of the API and otherwise defaults to the
   public Bridgecrew production service. It can also be sourced from the
   `BRIDGECREW_URL` environment variable
+
+{{end}}
