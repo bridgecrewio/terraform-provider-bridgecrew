@@ -1,8 +1,6 @@
 package bridgecrew
 
 import (
-	"log"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -49,15 +47,7 @@ func Provider() *schema.Provider {
 // providerConfigure parses the config into the Terraform provider meta-object
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	url := d.Get("url").(string)
-	if url == "" {
-		log.Fatal("Defaulting environment in URL config to use API default version...")
-	}
-
 	token := d.Get("token").(string)
-	if token == "" {
-		log.Fatal("Defaulting environment in URL config to use API default hostname...")
-	}
-
 	return newProvider(url, token)
 }
 

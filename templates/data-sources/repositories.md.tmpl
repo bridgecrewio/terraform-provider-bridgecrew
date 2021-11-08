@@ -8,7 +8,7 @@ Gets a list of all your repositories managed by the Bridgecrew platform <https:/
 
 ---
 
-# bridgecrew_repositories (Data Source)
+# bridgecrew_repositories
 
 Use this datasource to get the details of your managed repositories from Bridgecrew.
 

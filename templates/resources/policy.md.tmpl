@@ -9,7 +9,7 @@ Create a new custom YAML based security policy for the Bridgecrew Platform
 
 # bridgecrew_policy
 
-Use this resource to create new custom policies for the Bridgecrew platform <https://www.bridgecrew.cloud/incidents>.
+Use this resource to create new custom policies (YAML) for the Bridgecrew platform <https://www.bridgecrew.cloud/incidents>.
 For more details on this API see their online API documentation <https://docs.bridgecrew.io/reference/savepolicy>.
 
 

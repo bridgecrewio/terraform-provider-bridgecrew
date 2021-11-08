@@ -9,7 +9,7 @@ Supplies details on the branches under analysis for a given repository <https://
 
 ---
 
-# bridgecrew_repository_branches (Data Source)
+# bridgecrew_repository_branches
 
 Use this datasource to get the details of your managed repositories branches from Bridgecrew.
 
