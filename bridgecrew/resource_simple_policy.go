@@ -306,7 +306,12 @@ func resourceSimplePolicyCreate(ctx context.Context, d *schema.ResourceData, m i
 
 func setSimplePolicy(d *schema.ResourceData) (simplePolicy, error) {
 	myPolicy := simplePolicy{}
-	myPolicy.Benchmarks = setBenchmark(d)
+	myBenchmark, err := setBenchmark(d)
+
+	if err == nil {
+		myPolicy.Benchmarks = myBenchmark
+	}
+
 	myPolicy.Category = d.Get("category").(string)
 
 	conditions, err := setConditions(d)
@@ -352,23 +357,30 @@ func setConditions(d *schema.ResourceData) ([]Conditions, error) {
 	return conditions, nil
 }
 
-func setBenchmark(d *schema.ResourceData) Benchmark {
-	myBenchmark := (d.Get("benchmarks").(*schema.Set)).List()
+func setBenchmark(d *schema.ResourceData) (Benchmark, error) {
 
+	_, data := d.GetOk("benchmarks")
 	var myItem Benchmark
-	s := myBenchmark[0].(map[string]interface{})
-	myItem.Cisawsv12 = CastToStringList(s["cis_aws_v12"].([]interface{}))
-	myItem.Cisawsv13 = CastToStringList(s["cis_aws_v13"].([]interface{}))
-	myItem.Cisazurev11 = CastToStringList(s["cis_azure_v11"].([]interface{}))
-	myItem.Cisazurev12 = CastToStringList(s["cis_azure_v12"].([]interface{}))
-	myItem.Cisazurev13 = CastToStringList(s["cis_azure_v13"].([]interface{}))
-	myItem.Cisgcpv11 = CastToStringList(s["cis_gcp_v11"].([]interface{}))
-	myItem.Ciskubernetesv15 = CastToStringList(s["cis_kubernetes_v15"].([]interface{}))
-	myItem.Ciskubernetesv16 = CastToStringList(s["cis_kubernetes_v16"].([]interface{}))
-	myItem.Cisdockerv11 = CastToStringList(s["cis_docker_v11"].([]interface{}))
-	myItem.Ciseksv11 = CastToStringList(s["cis_eks_v11"].([]interface{}))
-	myItem.Cisgkev11 = CastToStringList(s["cis_gke_v11"].([]interface{}))
-	return myItem
+
+	if data {
+		myBenchmark := (d.Get("benchmarks").(*schema.Set)).List()
+
+		s := myBenchmark[0].(map[string]interface{})
+		myItem.Cisawsv12 = CastToStringList(s["cis_aws_v12"].([]interface{}))
+		myItem.Cisawsv13 = CastToStringList(s["cis_aws_v13"].([]interface{}))
+		myItem.Cisazurev11 = CastToStringList(s["cis_azure_v11"].([]interface{}))
+		myItem.Cisazurev12 = CastToStringList(s["cis_azure_v12"].([]interface{}))
+		myItem.Cisazurev13 = CastToStringList(s["cis_azure_v13"].([]interface{}))
+		myItem.Cisgcpv11 = CastToStringList(s["cis_gcp_v11"].([]interface{}))
+		myItem.Ciskubernetesv15 = CastToStringList(s["cis_kubernetes_v15"].([]interface{}))
+		myItem.Ciskubernetesv16 = CastToStringList(s["cis_kubernetes_v16"].([]interface{}))
+		myItem.Cisdockerv11 = CastToStringList(s["cis_docker_v11"].([]interface{}))
+		myItem.Ciseksv11 = CastToStringList(s["cis_eks_v11"].([]interface{}))
+		myItem.Cisgkev11 = CastToStringList(s["cis_gke_v11"].([]interface{}))
+		return myItem, nil
+	}
+
+	return myItem, errors.New("no benchmark data")
 }
 
 func resourceSimplePolicyRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

@@ -7,7 +7,7 @@ description: |-
 Get a list of all your policies suppressions in the Bridgecrew platform <https://docs.bridgecrew.io/reference/getsuppressions>
 ---
 
-# bridgecrew_suppressions (Data Source)
+# bridgecrew_suppressions
 
 Use this datasource to get the details of your policy suppressions from Bridgecrew.
 

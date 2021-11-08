@@ -21,6 +21,8 @@ For more details on this API see their online API documentation <https://docs.br
 Basic usage:
 
 ```hcl
+
+
 resource "bridgecrew_simple_policy" "new" {
   cloud_provider = "aws"
   title          = "my first test"
@@ -44,6 +46,7 @@ resource "bridgecrew_simple_policy" "new" {
     cis_aws_v12 = ["1.1", "2.1"]
     //cis_aws_v13 = ["1.3", "2.4"]
   }
+
 }
 ```
 

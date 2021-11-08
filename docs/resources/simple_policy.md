@@ -4,12 +4,12 @@ page_title: "Bridgecrew: resource_simple_policy"
 sidebar_current: "docs-bridgecrew-resource_simple_policy"
 
 description: |-
-Create a new custom security policy for Bridgecrew
+Create a new custom 'simple' security policy for the Bridgecrew Platform
 ---
 
 # bridgecrew_simple_policy
 
-Use this resource to create new custom policies for the Bridgecrew platform <https://www.bridgecrew.cloud/incidents>.
+Use this resource to create new "simple" custom policies for the Bridgecrew platform <https://www.bridgecrew.cloud/incidents>.
 For more details on this API see their online API documentation <https://docs.bridgecrew.io/reference/savepolicy>.
 
 
@@ -21,26 +21,32 @@ For more details on this API see their online API documentation <https://docs.br
 Basic usage:
 
 ```hcl
-resource "bridgecrew_simple_policy" "mypolicy" {
+
+
+resource "bridgecrew_simple_policy" "new" {
   cloud_provider = "aws"
   title          = "my first test"
   severity       = "critical"
   category       = "logging"
 
+  // For now only one condition block is valid
   conditions {
-    resource_types = ["aws_s3_bucket", "aws_instance"]
+    resource_types = ["aws_s3_bucket"]
     cond_type      = "attribute"
     attribute      = "bucket"
     operator       = "not_equals"
-    value          = "jimbo"
+    value          = "jimbo2"
   }
 
-  guidelines = "This should explain a little"
+  guidelines = "This should explain a lot more, infact im padding this out to at least 50 characters"
 
+  // although benchmarks take a free text this is total ***, as it needs to be an existing benchmark as
+  // does the version, and that more like a category than anything
   benchmarks {
     cis_aws_v12 = ["1.1", "2.1"]
-    cis_aws_v13 = ["1.3", "2.4"]
+    //cis_aws_v13 = ["1.3", "2.4"]
   }
+
 }
 ```
 
@@ -61,16 +67,16 @@ You can view the policy id, either by using the API docs policy list feature:
 
 ### Required
 
-- **category** (String)
-- **cloud_provider** (String)
-- **conditions** (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--conditions))
-- **guidelines** (String)
-- **severity** (String)
-- **title** (String)
+- **category** (String) Check category for grouping similar checks
+- **cloud_provider** (String) The Cloud provider this is for e.g. - aws, gcp, azure
+- **conditions** (Block List, Min: 1, Max: 1) Conditions captures the actual check logic (see [below for nested schema](#nestedblock--conditions))
+- **guidelines** (String) A detailed description helps you understand why the check was written and should include details on how to fix the violation. The field must more than 50 chars in it, to encourage detail
+- **severity** (String) Severity category allows you to indicate importance and this value can determine build or PR failure in the platform
+- **title** (String) The title of the check, needs to be longer than 20 chars - an effort to ensure detailed names
 
 ### Optional
 
-- **benchmarks** (Block Set, Max: 1) (see [below for nested schema](#nestedblock--benchmarks))
+- **benchmarks** (Block Set, Max: 1) This associates the check to one or many compliance frameworks (see [below for nested schema](#nestedblock--benchmarks))
 - **last_updated** (String)
 
 ### Read-Only

@@ -9,7 +9,7 @@ Create a new custom YAML based security policy for the Bridgecrew Platform
 
 # bridgecrew_policy
 
-Use this resource to create new custom policies for the Bridgecrew platform <https://www.bridgecrew.cloud/incidents>.
+Use this resource to create new custom policies (YAML) for the Bridgecrew platform <https://www.bridgecrew.cloud/incidents>.
 For more details on this API see their online API documentation <https://docs.bridgecrew.io/reference/savepolicy>.
 
 
@@ -54,14 +54,14 @@ You can view the policy id, either by using the API docs policy list feature:
 
 ### Required
 
-- **cloud_provider** (String)
-- **file** (String)
+- **cloud_provider** (String) The Cloud provider this is for e.g. - aws, gcp, azure
+- **file** (String) The is the name of the YAML policy file
 
 ### Optional
 
-- **benchmarks** (Block Set, Max: 1) (see [below for nested schema](#nestedblock--benchmarks))
+- **benchmarks** (Block Set, Max: 1) This associates the check to one or many compliance frameworks (see [below for nested schema](#nestedblock--benchmarks))
 - **last_updated** (String)
-- **source_code_hash** (String)
+- **source_code_hash** (String) By providing the source code hash change to the YAML file can be caught and the resource updated
 
 ### Read-Only
 

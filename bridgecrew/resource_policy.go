@@ -227,7 +227,11 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 
 func setPolicy(d *schema.ResourceData) (Policy, error) {
 	myPolicy := Policy{}
-	myPolicy.Benchmarks = setBenchmark(d)
+	myBenchmark, err := setBenchmark(d)
+
+	if err == nil {
+		myPolicy.Benchmarks = myBenchmark
+	}
 
 	filename, hasFilename := d.GetOk("file")
 
