@@ -54,7 +54,7 @@ func Test_setSimplePolicy(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    Policy
+		want    simplePolicy
 		wantErr bool
 	}{
 		// TODO: Add test cases.
@@ -104,15 +104,21 @@ func Test_setBenchmark(t *testing.T) {
 		d *schema.ResourceData
 	}
 	tests := []struct {
-		name string
-		args args
-		want Benchmark
+		name    string
+		args    args
+		want    Benchmark
+		wantErr bool
 	}{
-		//{name: "test1",args{{"benchmark": {"cis_aws_v12"}},Benchmark{Cisawsv12:["1.2","1.3"]}}},
+		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := setBenchmark(tt.args.d); !reflect.DeepEqual(got, tt.want) {
+			got, err := setBenchmark(tt.args.d)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("setBenchmark() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("setBenchmark() = %v, want %v", got, tt.want)
 			}
 		})
