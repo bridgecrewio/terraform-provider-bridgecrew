@@ -3,6 +3,7 @@ package bridgecrew
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -50,6 +51,14 @@ func resourcePolicy() *schema.Resource {
 			"id": {
 				Type:     schema.TypeString,
 				Computed: true,
+			},
+			"frameworks": {
+				Type:        schema.TypeList,
+				Description: "Which IAC framework is this policy targeting.",
+				Required:    true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
 			},
 			"benchmarks": {
 				Type:        schema.TypeSet,
@@ -211,14 +220,26 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	//goland:noinspection GoUnhandledErrorResult
 	defer res.Body.Close()
 
+	diagnostics, fail := CheckStatus(res)
+
+	if fail {
+		return diagnostics
+	}
+
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	//set the ID from the post into the current object
-	clean, err := strconv.Unquote(string(body))
-	d.SetId(clean)
+	newResults := &Result{}
+	err = json.Unmarshal([]byte(body), newResults)
+
+	if err != nil {
+		errStr := errors.New("Platform Failed to return ID")
+		return diag.FromErr(errStr)
+	}
+
+	d.SetId(newResults.Policy)
 
 	resourcePolicyRead(ctx, d, m)
 
@@ -247,6 +268,7 @@ func setPolicy(d *schema.ResourceData) (Policy, error) {
 	}
 
 	myPolicy.Provider = d.Get("cloud_provider").(string)
+	myPolicy.Frameworks = CastToStringList(d.Get("frameworks").([]interface{}))
 
 	return myPolicy, nil
 }
@@ -306,6 +328,7 @@ func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface
 	}
 
 	d.Set("cloud_provider", strings.ToLower(typedjson["provider"].(string)))
+	d.Set("frameworks", typedjson["frameworks"])
 
 	if typedjson["file"] != nil {
 		err = d.Set("file", typedjson["file"].(string))
@@ -390,7 +413,8 @@ func policyChange(d *schema.ResourceData) bool {
 	return d.HasChange("cloud_provider") ||
 		d.HasChange("benchmarks") ||
 		d.HasChange("source_code_hash") ||
-		d.HasChange("file")
+		d.HasChange("file") ||
+		d.HasChange("frameworks")
 }
 
 func resourcePolicyDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

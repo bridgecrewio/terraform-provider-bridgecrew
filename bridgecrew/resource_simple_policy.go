@@ -78,6 +78,14 @@ func resourceSimplePolicy() *schema.Resource {
 					return
 				},
 			},
+			"frameworks": {
+				Type:        schema.TypeList,
+				Description: "Which IAC framework is this policy targeting.",
+				Required:    true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 			"category": {
 				Type:        schema.TypeString,
 				Required:    true,
@@ -290,14 +298,26 @@ func resourceSimplePolicyCreate(ctx context.Context, d *schema.ResourceData, m i
 	//goland:noinspection GoUnhandledErrorResult
 	defer res.Body.Close()
 
+	diagnostics, fail := CheckStatus(res)
+
+	if fail {
+		return diagnostics
+	}
+
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	//set the ID from the post into the current object
-	clean, err := strconv.Unquote(string(body))
-	d.SetId(clean)
+	newResults := &Result{}
+	err = json.Unmarshal([]byte(body), newResults)
+
+	if err != nil {
+		errStr := errors.New("Platform Failed to return ID")
+		return diag.FromErr(errStr)
+	}
+
+	d.SetId(newResults.Policy)
 
 	resourceSimplePolicyRead(ctx, d, m)
 
@@ -326,6 +346,7 @@ func setSimplePolicy(d *schema.ResourceData) (simplePolicy, error) {
 	myPolicy.Severity = d.Get("severity").(string)
 	myPolicy.Title = d.Get("title").(string)
 	myPolicy.Guidelines = d.Get("guidelines").(string)
+	myPolicy.Frameworks = CastToStringList(d.Get("frameworks").([]interface{}))
 
 	return myPolicy, nil
 }
@@ -418,6 +439,7 @@ func resourceSimplePolicyRead(ctx context.Context, d *schema.ResourceData, m int
 	d.Set("title", typedjson["title"].(string))
 	d.Set("severity", strings.ToLower(typedjson["severity"].(string)))
 	d.Set("category", strings.ToLower(typedjson["category"].(string)))
+	d.Set("frameworks", typedjson["frameworks"])
 
 	err = d.Set("guidelines", typedjson["guideline"])
 	if err != nil {
@@ -506,7 +528,8 @@ func simplepolicyChange(d *schema.ResourceData) bool {
 		d.HasChange("severity") ||
 		d.HasChange("category") ||
 		d.HasChange("guidelines") ||
-		d.HasChange("benchmarks")
+		d.HasChange("benchmarks") ||
+		d.HasChange("frameworks")
 }
 
 func resourceSimplePolicyDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

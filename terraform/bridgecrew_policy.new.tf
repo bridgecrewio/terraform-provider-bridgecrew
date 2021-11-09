@@ -1,8 +1,7 @@
-
-
 resource "bridgecrew_policy" "new" {
   count          = 1
   cloud_provider = "aws"
+  frameworks     = ["Terraform"]
 
   file             = "${path.module}/policy/policy.yaml"
   source_code_hash = filesha256("${path.module}/policy/policy.yaml")

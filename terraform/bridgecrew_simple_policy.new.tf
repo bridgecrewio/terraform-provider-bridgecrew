@@ -1,11 +1,10 @@
-
-
 resource "bridgecrew_simple_policy" "new" {
   count          = 1
   cloud_provider = "aws"
   title          = "my first test ${count.index} ${random_string.new.id}"
   severity       = "critical"
   category       = "logging"
+  frameworks     = ["Terraform"]
 
   // For now only one condition block is valid
   conditions {

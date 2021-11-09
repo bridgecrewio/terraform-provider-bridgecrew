@@ -6,6 +6,7 @@ type Policy struct {
 	ID         int       `json:"id,omitempty"`
 	Benchmarks Benchmark `json:"benchmarks,omitempty"`
 	Code       string    `json:"code,omitempty"`
+	Frameworks []string  `json:"frameworks"`
 }
 
 type simplePolicy struct {
@@ -17,6 +18,7 @@ type simplePolicy struct {
 	Guidelines string     `json:"guidelines"`
 	Conditions Conditions `json:"conditions,omitempty"`
 	Benchmarks Benchmark  `json:"benchmarks,omitempty"`
+	Frameworks []string   `json:"frameworks"`
 }
 
 // Benchmark is child object to Policy
@@ -57,4 +59,9 @@ type Conditions struct {
 	Operator      string   `json:"operator,omitempty"`
 	ResourceTypes []string `json:"resource_types,omitempty"`
 	Value         string   `json:"value,omitempty"`
+}
+
+//Result is for parsing return messages from the platform
+type Result struct {
+	Policy string
 }

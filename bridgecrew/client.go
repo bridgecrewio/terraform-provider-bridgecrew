@@ -40,3 +40,13 @@ func authClient(path string, configure ProviderConfig) (*http.Client, *http.Requ
 	req.Header.Add("Authorization", bearer)
 	return client, req, diags, false, err
 }
+
+// CheckStatus confirms returns codes are 200
+func CheckStatus(res *http.Response) (diag.Diagnostics, bool) {
+	if res.StatusCode != http.StatusOK {
+		errStr := fmt.Errorf("Non-OK HTTP status: %d", res.StatusCode)
+		return diag.FromErr(errStr), true
+	}
+
+	return nil, false
+}
