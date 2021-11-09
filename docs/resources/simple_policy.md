@@ -67,16 +67,17 @@ You can view the policy id, either by using the API docs policy list feature:
 
 ### Required
 
-- **category** (String) Check category for grouping similar checks
-- **cloud_provider** (String) The Cloud provider this is for e.g. - aws, gcp, azure
+- **category** (String) Check category for grouping similar checks.
+- **cloud_provider** (String) The Cloud provider this is for e.g. - aws, gcp, azure.
 - **conditions** (Block List, Min: 1, Max: 1) Conditions captures the actual check logic (see [below for nested schema](#nestedblock--conditions))
-- **guidelines** (String) A detailed description helps you understand why the check was written and should include details on how to fix the violation. The field must more than 50 chars in it, to encourage detail
-- **severity** (String) Severity category allows you to indicate importance and this value can determine build or PR failure in the platform
-- **title** (String) The title of the check, needs to be longer than 20 chars - an effort to ensure detailed names
+- **frameworks** (List of String) Which IAC framework is this policy targeting.
+- **guidelines** (String) A detailed description helps you understand why the check was written and should include details on how to fix the violation. The field must more than 50 chars in it, to encourage detail.
+- **severity** (String) Severity category allows you to indicate importance and this value can determine build or PR failure in the platform.
+- **title** (String) The title of the check, needs to be longer than 20 chars - an effort to ensure detailed names.
 
 ### Optional
 
-- **benchmarks** (Block Set, Max: 1) This associates the check to one or many compliance frameworks (see [below for nested schema](#nestedblock--benchmarks))
+- **benchmarks** (Block Set, Max: 1) This associates the check to one or many compliance frameworks. (see [below for nested schema](#nestedblock--benchmarks))
 - **last_updated** (String)
 
 ### Read-Only

@@ -54,14 +54,15 @@ You can view the policy id, either by using the API docs policy list feature:
 
 ### Required
 
-- **cloud_provider** (String) The Cloud provider this is for e.g. - aws, gcp, azure
-- **file** (String) The is the name of the YAML policy file
+- **cloud_provider** (String) The Cloud provider this is for e.g. - aws, gcp, azure.
+- **file** (String) This is the name of the YAML policy file.
+- **frameworks** (List of String) Which IAC framework is this policy targeting.
 
 ### Optional
 
-- **benchmarks** (Block Set, Max: 1) This associates the check to one or many compliance frameworks (see [below for nested schema](#nestedblock--benchmarks))
+- **benchmarks** (Block Set, Max: 1) This associates the check to one or many compliance frameworks. (see [below for nested schema](#nestedblock--benchmarks))
 - **last_updated** (String)
-- **source_code_hash** (String) By providing the source code hash change to the YAML file can be caught and the resource updated
+- **source_code_hash** (String) By providing the source code hash change to the YAML file can be caught and the resource updated.
 
 ### Read-Only
 
