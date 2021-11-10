@@ -105,14 +105,13 @@ func resourceSimplePolicy() *schema.Resource {
 						"backup_and_recovery",
 						"iam",
 						"secrets",
-						"public",
-						"general_security":
+						"public":
 						return
 					}
 					errs = append(errs,
 						fmt.Errorf("%q Must be one of logging, elasticsearch, general, storage, encryption,"+
 							" networking, monitoring, kubernetes, serverless, backup_and_recovery, backup_and_recovery, public,"+
-							" general_security or iam", val))
+							" or iam", val))
 					return
 				},
 			},
