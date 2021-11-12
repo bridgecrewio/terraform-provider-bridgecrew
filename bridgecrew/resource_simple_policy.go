@@ -302,11 +302,6 @@ func setSimplePolicy(d *schema.ResourceData) (simplePolicy, error) {
 
 	myPolicy.Category = d.Get("category").(string)
 
-	//Don't set if not set
-	if err != nil {
-		return myPolicy, fmt.Errorf("unable set conditions %q", err)
-	}
-
 	var jsonMap map[string]interface{}
 	json.Unmarshal([]byte(d.Get("conditions").(string)), &jsonMap)
 
