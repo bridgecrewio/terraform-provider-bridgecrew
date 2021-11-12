@@ -17,7 +17,7 @@ abc:
       b: "1"
 `
 
-	actual, err = checkYAMLString(validYaml)
+	actual, err = CheckYAMLString(validYaml)
 	if err != nil {
 		t.Fatalf("Expected not to throw an error while parsing YAML, but got: %s", err)
 	}
@@ -29,7 +29,7 @@ abc:
 
 	invalidYaml := `abc: [`
 
-	actual, err = checkYAMLString(invalidYaml)
+	actual, err = CheckYAMLString(invalidYaml)
 	if err == nil {
 		t.Fatalf("Expected to throw an error while parsing YAML, but got: %s", err)
 	}

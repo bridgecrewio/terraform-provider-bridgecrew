@@ -69,7 +69,7 @@ You can view the policy id, either by using the API docs policy list feature:
 
 - **category** (String) Check category for grouping similar checks.
 - **cloud_provider** (String) The Cloud provider this is for e.g. - aws, gcp, azure.
-- **conditions** (Block List, Min: 1, Max: 1) Conditions captures the actual check logic (see [below for nested schema](#nestedblock--conditions))
+- **conditions** (String) Conditions captures the actual check logic
 - **frameworks** (List of String) Which IAC framework is this policy targeting.
 - **guidelines** (String) A detailed description helps you understand why the check was written and should include details on how to fix the violation. The field must more than 50 chars in it, to encourage detail.
 - **severity** (String) Severity category allows you to indicate importance and this value can determine build or PR failure in the platform.
@@ -83,18 +83,6 @@ You can view the policy id, either by using the API docs policy list feature:
 ### Read-Only
 
 - **id** (String) The ID of this resource.
-
-<a id="nestedblock--conditions"></a>
-### Nested Schema for `conditions`
-
-Required:
-
-- **attribute** (String)
-- **cond_type** (String)
-- **operator** (String)
-- **resource_types** (List of String)
-- **value** (String)
-
 
 <a id="nestedblock--benchmarks"></a>
 ### Nested Schema for `benchmarks`

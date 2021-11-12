@@ -1,19 +1,21 @@
 resource "bridgecrew_simple_policy" "new" {
   count          = 1
   cloud_provider = "aws"
-  title          = "my first test ${count.index} ${random_string.new.id}"
+  title          = "my second test ${count.index} ${random_string.new.id}"
   severity       = "critical"
   category       = "logging"
   frameworks     = ["Terraform"]
 
   // For now only one condition block is valid
-  conditions {
-    resource_types = ["aws_s3_bucket", "aws_instance"]
-    cond_type      = "attribute"
-    attribute      = "bucket"
-    operator       = "not_equals"
-    value          = "jimbo2"
-  }
+  conditions = jsonencode({
+    "value" : "t3.micro",
+    "operator" : "equals",
+    "attribute" : "instance_type",
+    "cond_type" : "attribute",
+    "resource_types" : [
+      "aws_instance"
+    ]
+  })
 
   guidelines = "This should explain a lot more, in fact im padding this out to at least 50 characters"
 

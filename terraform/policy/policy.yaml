@@ -1,22 +1,23 @@
 ---
 metadata:
-  name: "using yaml complex"
-  guidelines: "This should have a good guideline"
-  category: "general"
-  severity: "high"
+  name: "Ensure this check name is long enough to describe it" #give your custom policy a unique name
+  guidelines: "This needs to be long enough to describe it and outline any solutiuon that is required" #add text that explains the configuration the policy looks for, its implications, and how to fix it
+  category: "general" #choose one: "general"/"elaticsearch"/"iam"/"kubernetes"/"logging"/"monitoring"/"networking"/"public"/"secrets"/"serverless"/"storage"
+  severity: "low" #choose one: "critical"/"high"/"medium"/"low"
 scope:
-  provider: "aws"
-definition:
+  provider: "aws" #choose one: "aws"/"azure"/"gcp"
+definition: #define the conditions the policy searches for.
+  # The example below checks EC2s with instance_type t3.micro or t3.nano. for more examples please visit our docs - https://docs.bridgecrew.io/docs/yaml-format-for-custom-policies
   or:
     - cond_type: "attribute"
       resource_types:
-      - "aws_instance"
+        - "aws_instance"
       attribute: "instance_type"
       operator: "equals"
       value: "t3.micro"
     - cond_type: "attribute"
       resource_types:
-      - "aws_instance"
+        - "aws_instance"
       attribute: "instance_type"
       operator: "equals"
       value: "t3.nano"

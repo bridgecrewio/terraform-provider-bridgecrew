@@ -3,20 +3,15 @@ package bridgecrew
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
-	"os"
-	"strconv"
 	"strings"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/karlseguin/typed"
-	"github.com/mitchellh/go-homedir"
 )
 
 func resourcePolicy() *schema.Resource {
@@ -159,7 +154,7 @@ func resourcePolicy() *schema.Resource {
 						return
 					}
 
-					if _, err := checkYAMLString(string(code)); err != nil {
+					if _, err := CheckYAMLString(string(code)); err != nil {
 						errors = append(errors, fmt.Errorf("%q contains an invalid YAML: %s", key, err))
 					}
 					return
@@ -231,12 +226,9 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 		return diag.FromErr(err)
 	}
 
-	newResults := &Result{}
-	err = json.Unmarshal([]byte(body), newResults)
-
-	if err != nil {
-		errStr := errors.New("Platform Failed to return ID")
-		return diag.FromErr(errStr)
+	newResults, d2, done := VerifyReturn(err, body)
+	if done {
+		return d2
 	}
 
 	d.SetId(newResults.Policy)
@@ -271,29 +263,6 @@ func setPolicy(d *schema.ResourceData) (Policy, error) {
 	myPolicy.Frameworks = CastToStringList(d.Get("frameworks").([]interface{}))
 
 	return myPolicy, nil
-}
-
-// loadFileContent returns contents of a file in a given path
-func loadFileContent(v string) ([]byte, error) {
-	filename, err := homedir.Expand(v)
-	if err != nil {
-		return nil, err
-	}
-	fileContent, err := os.ReadFile(filename)
-	if err != nil {
-		return nil, err
-	}
-	return fileContent, nil
-}
-
-// CastToStringList is a helper to work with conversion of types
-// If there's a better way (most likely)?
-func CastToStringList(temp []interface{}) []string {
-	var versions []string
-	for _, version := range temp {
-		versions = append(versions, version.(string))
-	}
-	return versions
 }
 
 func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -342,16 +311,8 @@ func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface
 	return diags
 }
 
-// highlight is just to help with manual debugging, so you can find the lines
-//goland:noinspection SpellCheckingInspection
-func highlight(myPolicy interface{}) {
-	log.Print("XXXXXXXXXXX")
-	log.Print(myPolicy)
-	log.Print("XXXXXXXXXXX")
-}
-
 func resourcePolicyUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
+
 	client := &http.Client{Timeout: 60 * time.Second}
 
 	policyID := d.Id()
@@ -388,20 +349,15 @@ func resourcePolicyUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 		defer res.Body.Close()
 
 		body, err := ioutil.ReadAll(res.Body)
+
 		if err != nil {
 			return diag.FromErr(err)
 		}
 
-		//just retrieved so I should check the result
-		clean, err := strconv.Unquote(string(body))
-		highlight(clean)
+		_, d2, done := VerifyReturn(err, body)
 
-		if err != nil {
-			diags = append(diags, diag.Diagnostic{
-				Severity: diag.Error,
-				Summary:  fmt.Sprintf("Failed at clean quotes %s \n", err.Error()),
-			})
-			return diags
+		if done {
+			return d2
 		}
 
 		d.Set("last_updated", time.Now().Format(time.RFC850))
