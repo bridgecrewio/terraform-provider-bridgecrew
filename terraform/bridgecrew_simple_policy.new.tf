@@ -6,7 +6,6 @@ resource "bridgecrew_simple_policy" "new" {
   category       = "logging"
   frameworks     = ["Terraform"]
 
-  // For now only one condition block is valid
   conditions = jsonencode({
     "value" : "t3.micro",
     "operator" : "equals",
