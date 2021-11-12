@@ -1,0 +1,24 @@
+{{define "data_source_apitokens"}}---
+layout: "bridgecrew"
+page_title: "Bridgecrew: data_source_apitokens"
+sidebar_current: "docs-bridgecrew-data_source_apitokens"
+
+description: |-
+Get a list of all your Bridgecrew platform apitokens.
+More details on the Bridgecrew API for this datasource are available <https://docs.bridgecrew.io/reference/apitokenlistbyuserid>.
+
+---
+
+# bridgecrew_apitokens
+
+Use this datasource to get the details of your apitokens from Bridgecrew.
+
+
+
+
+## Example Usage
+```hcl
+data "bridgecrew_apitokens" "myapitokens" {
+}
+```
+{{end}}

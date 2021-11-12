@@ -1,7 +1,11 @@
+output "apitokens" {
+  value = data.bridgecrew_apitokens.all
+}
+
 #output "branches" {
 #  value = data.bridgecrew_repository_branches.all
 #}
-#
+
 output "errors" {
   value = data.bridgecrew_errors.all
 }

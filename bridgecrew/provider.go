@@ -40,6 +40,7 @@ func Provider() *schema.Provider {
 			"bridgecrew_suppressions":        dataSourceSuppressions(),
 			"bridgecrew_policies":            dataSourcePolicies(),
 			"bridgecrew_errors":              dataSourceErrors(),
+			"bridgecrew_apitokens":           dataSourceApitokens(),
 		},
 	}
 }
