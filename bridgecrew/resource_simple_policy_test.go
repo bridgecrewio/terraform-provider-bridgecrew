@@ -73,32 +73,6 @@ func Test_setSimplePolicy(t *testing.T) {
 	}
 }
 
-func Test_setConditions(t *testing.T) {
-	type args struct {
-		d *schema.ResourceData
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    []Conditions
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := setConditions(tt.args.d)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("setConditions() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("setConditions() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func Test_setBenchmark(t *testing.T) {
 	type args struct {
 		d *schema.ResourceData
