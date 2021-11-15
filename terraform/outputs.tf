@@ -1,3 +1,7 @@
+output "integrations" {
+  value = data.bridgecrew_integrations.all
+}
+
 output "apitokens" {
   value = data.bridgecrew_apitokens.all
 }
