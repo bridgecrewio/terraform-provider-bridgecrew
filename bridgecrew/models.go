@@ -56,3 +56,12 @@ type Amount struct {
 type Result struct {
 	Policy string
 }
+
+//User is for eventually managing users
+type User struct {
+	Role         string   `json:"role"`
+	Email        string   `json:"email"`
+	Accounts     []string `json:"accounts"`
+	LastModified int64    `json:"last_modified"`
+	CustomerName string   `json:"customer_name"`
+}
