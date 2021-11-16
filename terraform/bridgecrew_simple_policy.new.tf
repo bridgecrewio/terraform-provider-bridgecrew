@@ -6,15 +6,14 @@ resource "bridgecrew_simple_policy" "new" {
   category       = "logging"
   frameworks     = ["Terraform"]
 
-  conditions = jsonencode({
-    "value" : "t3.micro",
-    "operator" : "equals",
-    "attribute" : "instance_type",
-    "cond_type" : "attribute",
-    "resource_types" : [
-      "aws_instance"
-    ]
-  })
+  // For now only one condition block is valid
+  conditions {
+    resource_types = ["aws_s3_bucket", "aws_instance"]
+    cond_type      = "attribute"
+    attribute      = "bucket"
+    operator       = "not_equals"
+    value          = "jimbo2"
+  }
 
   guidelines = "This should explain a lot more, in fact im padding this out to at least 50 characters"
 

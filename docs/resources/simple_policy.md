@@ -30,15 +30,14 @@ resource "bridgecrew_simple_policy" "new" {
   category       = "logging"
   frameworks     = ["Terraform"]
 
-  conditions = jsonencode({
-    "value" : "t3.micro",
-    "operator" : "equals",
-    "attribute" : "instance_type",
-    "cond_type" : "attribute",
-    "resource_types" : [
-      "aws_instance"
-    ]
-  })
+  // For now only one condition block is valid
+  conditions {
+    resource_types = ["aws_s3_bucket"]
+    cond_type      = "attribute"
+    attribute      = "bucket"
+    operator       = "not_equals"
+    value          = "jimbo2"
+  }
 
   guidelines = "This should explain a lot more, in fact im padding this out to at least 50 characters"
 
@@ -71,7 +70,7 @@ You can view the policy id, either by using the API docs policy list feature:
 
 - **category** (String) Check category for grouping similar checks.
 - **cloud_provider** (String) The Cloud provider this is for e.g. - aws, gcp, azure.
-- **conditions** (String) Conditions captures the actual check logic
+- **conditions** (Block List, Min: 1, Max: 1) Conditions captures the actual check logic (see [below for nested schema](#nestedblock--conditions))
 - **frameworks** (List of String) Which IAC framework is this policy targeting.
 - **guidelines** (String) A detailed description helps you understand why the check was written and should include details on how to fix the violation. The field must more than 50 chars in it, to encourage detail.
 - **severity** (String) Severity category allows you to indicate importance and this value can determine build or PR failure in the platform.
@@ -85,6 +84,18 @@ You can view the policy id, either by using the API docs policy list feature:
 ### Read-Only
 
 - **id** (String) The ID of this resource.
+
+<a id="nestedblock--conditions"></a>
+### Nested Schema for `conditions`
+
+Required:
+
+- **attribute** (String)
+- **cond_type** (String)
+- **operator** (String)
+- **resource_types** (List of String)
+- **value** (String)
+
 
 <a id="nestedblock--benchmarks"></a>
 ### Nested Schema for `benchmarks`
