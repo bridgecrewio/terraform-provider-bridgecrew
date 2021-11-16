@@ -9,16 +9,28 @@ type Policy struct {
 	Frameworks []string  `json:"frameworks"`
 }
 
+type complexPolicy struct {
+	Provider   string     `json:"provider"`
+	ID         int        `json:"id,omitempty"`
+	Title      string     `json:"title"`
+	Severity   string     `json:"severity"`
+	Category   string     `json:"category"`
+	Guidelines string     `json:"guidelines"`
+	Conditions Conditions `json:"conditions,omitempty"`
+	Benchmarks Benchmark  `json:"benchmarks,omitempty"`
+	Frameworks []string   `json:"frameworks"`
+}
+
 type simplePolicy struct {
-	Provider   string                 `json:"provider"`
-	ID         int                    `json:"id,omitempty"`
-	Title      string                 `json:"title"`
-	Severity   string                 `json:"severity"`
-	Category   string                 `json:"category"`
-	Guidelines string                 `json:"guidelines"`
-	Conditions map[string]interface{} `json:"conditions"`
-	Benchmarks Benchmark              `json:"benchmarks,omitempty"`
-	Frameworks []string               `json:"frameworks"`
+	Provider   string     `json:"provider"`
+	ID         int        `json:"id,omitempty"`
+	Title      string     `json:"title"`
+	Severity   string     `json:"severity"`
+	Category   string     `json:"category"`
+	Guidelines string     `json:"guidelines"`
+	Conditions Conditions `json:"conditions,omitempty"`
+	Benchmarks Benchmark  `json:"benchmarks,omitempty"`
+	Frameworks []string   `json:"frameworks"`
 }
 
 // Benchmark is child object to Policy
@@ -50,6 +62,15 @@ type Amount struct {
 	OPEN       int
 	REMEDIATED int
 	SUPPRESSED int
+}
+
+//Conditions is part of the simple query
+type Conditions struct {
+	Attribute     string   `json:"attribute,omitempty"`
+	CondType      string   `json:"cond_type,omitempty"`
+	Operator      string   `json:"operator,omitempty"`
+	ResourceTypes []string `json:"resource_types,omitempty"`
+	Value         string   `json:"value,omitempty"`
 }
 
 //Result is for parsing return messages from the platform
