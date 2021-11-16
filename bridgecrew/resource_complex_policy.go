@@ -126,36 +126,78 @@ func resourceComplexPolicy() *schema.Resource {
 					return
 				},
 			},
-			"conditions": {
-				Type:        schema.TypeList,
-				Required:    true,
+			"conditionquery": {
+				Type:        schema.TypeSet,
 				MaxItems:    1,
-				Description: "Conditions captures the actual check logic",
+				Optional:    true,
+				Description: "The actual query.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"resource_types": {
-							Type:     schema.TypeList,
-							Required: true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
+						"and": {
+							Type:        schema.TypeList,
+							Required:    true,
+							Description: "Conditions captures the actual check logic",
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"resource_types": {
+										Type:     schema.TypeList,
+										Required: true,
+										Elem: &schema.Schema{
+											Type: schema.TypeString,
+										},
+									},
+									"cond_type": {
+										Type:     schema.TypeString,
+										Required: true,
+									},
+									"attribute": {
+										Type:     schema.TypeString,
+										Required: true,
+									},
+
+									"operator": {
+										Type:     schema.TypeString,
+										Required: true,
+									},
+									"value": {
+										Type:     schema.TypeString,
+										Required: true,
+									},
+								},
 							},
 						},
-						"cond_type": {
-							Type:     schema.TypeString,
-							Required: true,
-						},
-						"attribute": {
-							Type:     schema.TypeString,
-							Required: true,
-						},
+						"or": {
+							Type:        schema.TypeList,
+							Optional:    true,
+							Description: "Conditions captures the actual check logic",
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"resource_types": {
+										Type:     schema.TypeList,
+										Required: true,
+										Elem: &schema.Schema{
+											Type: schema.TypeString,
+										},
+									},
+									"cond_type": {
+										Type:     schema.TypeString,
+										Required: true,
+									},
+									"attribute": {
+										Type:     schema.TypeString,
+										Required: true,
+									},
 
-						"operator": {
-							Type:     schema.TypeString,
-							Required: true,
-						},
-						"value": {
-							Type:     schema.TypeString,
-							Required: true,
+									"operator": {
+										Type:     schema.TypeString,
+										Required: true,
+									},
+									"value": {
+										Type:     schema.TypeString,
+										Required: true,
+									},
+								},
+							},
 						},
 					},
 				},
@@ -280,6 +322,9 @@ func resourceComplexPolicyCreate(ctx context.Context, d *schema.ResourceData, m 
 	payload := strings.NewReader(string(jsPolicy))
 
 	req, err := http.NewRequest("POST", url, payload)
+
+	highlight(payload)
+
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -329,13 +374,13 @@ func setComplexPolicy(d *schema.ResourceData) (complexPolicy, error) {
 
 	myPolicy.Category = d.Get("category").(string)
 
-	conditions, err := setComplexConditions(d)
+	conditionQuery, err := setComplexConditions(d)
 
 	//Don't set if not set
 	if err != nil {
 		return myPolicy, fmt.Errorf("unable set conditions %q", err)
 	}
-	myPolicy.Conditions = conditions[0]
+	myPolicy.ConditionQuery = conditionQuery
 
 	myPolicy.Provider = d.Get("cloud_provider").(string)
 	myPolicy.Severity = d.Get("severity").(string)
@@ -346,13 +391,17 @@ func setComplexPolicy(d *schema.ResourceData) (complexPolicy, error) {
 	return myPolicy, nil
 }
 
-func setComplexConditions(d *schema.ResourceData) ([]Conditions, error) {
-	conditions := make([]Conditions, 0, 1)
+func setComplexConditions(d *schema.ResourceData) (ConditionQuery, error) {
+	var conditionQuery ConditionQuery
 
-	myConditions := d.Get("conditions").([]interface{})
+	highlight(d.Get("conditionquery"))
+	myQuery := d.Get("conditionquery").(map[string]interface{})
 
-	if len(myConditions) > 0 {
-		for _, myCondition := range myConditions {
+	if len(myQuery) > 0 {
+		TheAnds := myQuery["and"].([]interface{})
+		highlight(TheAnds)
+		var conditions []Conditions
+		for _, myCondition := range TheAnds {
 			temp := myCondition.(map[string]interface{})
 			var Condition Conditions
 			Condition.Value = temp["value"].(string)
@@ -365,12 +414,14 @@ func setComplexConditions(d *schema.ResourceData) ([]Conditions, error) {
 			Condition.ResourceTypes = myResources
 
 			conditions = append(conditions, Condition)
+			//conditions = append(conditions, Condition)
 		}
+		conditionQuery.Ands = conditions
 	} else {
-		return nil, errors.New("no Conditions Set")
+		return conditionQuery, errors.New("no Conditions Set")
 	}
 
-	return conditions, nil
+	return conditionQuery, nil
 }
 
 func resourceComplexPolicyRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -417,7 +468,7 @@ func resourceComplexPolicyRead(ctx context.Context, d *schema.ResourceData, m in
 
 	//myconditions should be an array it currently a map
 	//hence this fudge
-	//todo: once you start passing around condition arrays
+	//todo: once you start passing around conconditionQuerydition arrays
 	//this can go
 	myConditions := make([]interface{}, 1)
 	myConditions[0] = typedjson["conditionQuery"]

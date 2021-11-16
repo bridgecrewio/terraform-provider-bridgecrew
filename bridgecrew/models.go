@@ -10,15 +10,15 @@ type Policy struct {
 }
 
 type complexPolicy struct {
-	Provider   string     `json:"provider"`
-	ID         int        `json:"id,omitempty"`
-	Title      string     `json:"title"`
-	Severity   string     `json:"severity"`
-	Category   string     `json:"category"`
-	Guidelines string     `json:"guidelines"`
-	Conditions Conditions `json:"conditions,omitempty"`
-	Benchmarks Benchmark  `json:"benchmarks,omitempty"`
-	Frameworks []string   `json:"frameworks"`
+	Provider       string         `json:"provider"`
+	ID             int            `json:"id,omitempty"`
+	Title          string         `json:"title"`
+	Severity       string         `json:"severity"`
+	Category       string         `json:"category"`
+	Guidelines     string         `json:"guidelines"`
+	ConditionQuery ConditionQuery `json:"conditions,omitempty"`
+	Benchmarks     Benchmark      `json:"benchmarks,omitempty"`
+	Frameworks     []string       `json:"frameworks"`
 }
 
 type simplePolicy struct {
@@ -62,6 +62,12 @@ type Amount struct {
 	OPEN       int
 	REMEDIATED int
 	SUPPRESSED int
+}
+
+//ConditionQuery is the construct for the complex query screen
+type ConditionQuery struct {
+	Ands []Conditions `json:"and,omitempty"`
+	Ors  []Conditions `json:"or,omitempty"`
 }
 
 //Conditions is part of the simple query
