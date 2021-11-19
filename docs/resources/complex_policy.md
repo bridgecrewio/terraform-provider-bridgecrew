@@ -20,7 +20,7 @@ For more details on this API see their online API documentation <https://docs.br
 
 Basic usage:
 
-This policy is checking an AWS instance resource, to sure that it is either a t3.micro or t2.micro (the Ors statement)
+This policy is checking an AWS instance resource, to ensure that it is either a t3.micro or t2.micro (the Ors statement)
 and that's instance is named "jimbo". Well why not.
 
 ```hcl
