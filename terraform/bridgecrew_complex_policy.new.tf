@@ -5,7 +5,6 @@ resource "bridgecrew_complex_policy" "new" {
   category       = "logging"
   frameworks     = ["Terraform"]
 
-  // For now only one condition block is valid
   conditionquery {
     and {
       or {
