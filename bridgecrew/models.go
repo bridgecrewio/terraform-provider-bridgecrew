@@ -67,11 +67,21 @@ type Amount struct {
 //ConditionQuery is the construct for the complex query screen
 type ConditionQuery struct {
 	Ands []Conditions `json:"and,omitempty"`
-	Ors  []Conditions `json:"or,omitempty"`
+	//Ors  []Conditions `json:"or,omitempty"`
 }
 
 //Conditions is part of the simple query
 type Conditions struct {
+	Attribute     string   `json:"attribute,omitempty"`
+	CondType      string   `json:"cond_type,omitempty"`
+	Operator      string   `json:"operator,omitempty"`
+	ResourceTypes []string `json:"resource_types,omitempty"`
+	Value         string   `json:"value,omitempty"`
+	Or            []Or     `json:"or,omitempty"`
+}
+
+//Or Is the Condition query to construct an Or block in tf
+type Or struct {
 	Attribute     string   `json:"attribute,omitempty"`
 	CondType      string   `json:"cond_type,omitempty"`
 	Operator      string   `json:"operator,omitempty"`

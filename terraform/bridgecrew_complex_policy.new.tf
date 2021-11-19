@@ -7,13 +7,21 @@ resource "bridgecrew_complex_policy" "new" {
 
   // For now only one condition block is valid
   conditionquery {
-
     and {
-      resource_types = ["aws_instance"]
-      cond_type      = "attribute"
-      attribute      = "instance_type"
-      operator       = "equals"
-      value          = "t2.micro"
+      or {
+        resource_types = ["aws_instance"]
+        cond_type      = "attribute"
+        attribute      = "instance_type"
+        operator       = "equals"
+        value          = "t2.micro"
+      }
+      or {
+        resource_types = ["aws_instance"]
+        cond_type      = "attribute"
+        attribute      = "instance_type"
+        operator       = "equals"
+        value          = "t3.micro"
+      }
     }
 
     and {
@@ -21,7 +29,7 @@ resource "bridgecrew_complex_policy" "new" {
       cond_type      = "attribute"
       attribute      = "name"
       operator       = "not_equals"
-      value          = "jimbo2"
+      value          = "jimbo"
     }
 
   }

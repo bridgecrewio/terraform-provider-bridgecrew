@@ -1,15 +1,15 @@
-{{define "resource_simple_policy"}}---
+{{define "resource_complex_policy"}}---
 layout: "bridgecrew"
-page_title: "Bridgecrew: resource_simple_policy"
-sidebar_current: "docs-bridgecrew-resource_simple_policy"
+page_title: "Bridgecrew: resource_complex_policy"
+sidebar_current: "docs-bridgecrew-resource_complex_policy"
 
 description: |-
-Create a new custom 'simple' security policy for the Bridgecrew Platform
+Create a new custom 'complex' security policy for the Bridgecrew Platform
 ---
 
-# bridgecrew_simple_policy
+# bridgecrew_complex_policy
 
-Use this resource to create new "simple" custom policies for the Bridgecrew platform <https://www.bridgecrew.cloud/incidents>.
+Use this resource to create new "complex" custom policies for the Bridgecrew platform <https://www.bridgecrew.cloud/incidents>.
 For more details on this API see their online API documentation <https://docs.bridgecrew.io/reference/savepolicy>.
 
 
@@ -20,23 +20,45 @@ For more details on this API see their online API documentation <https://docs.br
 
 Basic usage:
 
+This policy is checking an AWS instance resource, to sure that it is either a t3.micro or t2.micro (the Ors statement)
+and that's instance is named "jimbo". Well why not.
+
 ```hcl
 
-
-resource "bridgecrew_simple_policy" "new" {
+resource "bridgecrew_complex_policy" "new" {
   cloud_provider = "aws"
-  title          = "Ensure that this title is meaningfully long (20 chars)"
+  title          = "my second test also neeeds to be long enough"
   severity       = "critical"
   category       = "logging"
   frameworks     = ["Terraform"]
 
   // For now only one condition block is valid
-  conditions {
-    resource_types = ["aws_s3_bucket"]
-    cond_type      = "attribute"
-    attribute      = "bucket"
-    operator       = "not_equals"
-    value          = "jimbo2"
+  conditionquery {
+    and {
+      or {
+        resource_types = ["aws_instance"]
+        cond_type      = "attribute"
+        attribute      = "instance_type"
+        operator       = "equals"
+        value          = "t2.micro"
+      }
+      or {
+        resource_types = ["aws_instance"]
+        cond_type      = "attribute"
+        attribute      = "instance_type"
+        operator       = "equals"
+        value          = "t3.micro"
+      }
+    }
+
+    and {
+      resource_types = ["aws_instance"]
+      cond_type      = "attribute"
+      attribute      = "name"
+      operator       = "not_equals"
+      value          = "jimbo"
+    }
+
   }
 
   guidelines = "This should explain a lot more, in fact im padding this out to at least 50 characters"
@@ -56,7 +78,7 @@ resource "bridgecrew_simple_policy" "new" {
 You can import existing platform policies into Terraform code.
 
 ```
-terraform import bridgecrew_simple_policy.imported mypolicyid
+terraform import bridgecrew_complex_policy.imported mypolicyid
 ```
 
 You can view the policy id, either by using the API docs policy list feature:

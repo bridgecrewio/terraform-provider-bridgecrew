@@ -8,7 +8,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"reflect"
 	"strings"
 	"time"
 
@@ -138,66 +137,64 @@ func resourceComplexPolicy() *schema.Resource {
 						"and": {
 							Type:        schema.TypeList,
 							Required:    true,
-							Description: "Conditions captures the actual check logic",
-							//ConflictsWith: []string{"or"],
+							Description: "Conditions captures the actual check logic. Do not add resource_types and an or statement in the same block",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"resource_types": {
 										Type:     schema.TypeList,
-										Required: true,
+										Optional: true,
 										Elem: &schema.Schema{
 											Type: schema.TypeString,
 										},
 									},
 									"cond_type": {
 										Type:     schema.TypeString,
-										Required: true,
+										Optional: true,
 									},
 									"attribute": {
 										Type:     schema.TypeString,
-										Required: true,
+										Optional: true,
 									},
-
 									"operator": {
 										Type:     schema.TypeString,
-										Required: true,
+										Optional: true,
 									},
 									"value": {
 										Type:     schema.TypeString,
-										Required: true,
+										Optional: true,
 									},
-								},
-							},
-						},
-						"or": {
-							Type:        schema.TypeList,
-							Optional:    true,
-							Description: "Conditions captures the actual check logic",
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									"resource_types": {
-										Type:     schema.TypeList,
-										Required: true,
-										Elem: &schema.Schema{
-											Type: schema.TypeString,
+									"or": {
+										Type:        schema.TypeList,
+										Optional:    true,
+										Description: "Conditions captures the actual check logic",
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"resource_types": {
+													Type:     schema.TypeList,
+													Required: true,
+													Elem: &schema.Schema{
+														Type: schema.TypeString,
+													},
+												},
+												"cond_type": {
+													Type:     schema.TypeString,
+													Required: true,
+												},
+												"attribute": {
+													Type:     schema.TypeString,
+													Required: true,
+												},
+
+												"operator": {
+													Type:     schema.TypeString,
+													Required: true,
+												},
+												"value": {
+													Type:     schema.TypeString,
+													Required: true,
+												},
+											},
 										},
-									},
-									"cond_type": {
-										Type:     schema.TypeString,
-										Required: true,
-									},
-									"attribute": {
-										Type:     schema.TypeString,
-										Required: true,
-									},
-
-									"operator": {
-										Type:     schema.TypeString,
-										Required: true,
-									},
-									"value": {
-										Type:     schema.TypeString,
-										Required: true,
 									},
 								},
 							},
@@ -382,7 +379,6 @@ func setComplexPolicy(d *schema.ResourceData) (complexPolicy, error) {
 		return myPolicy, fmt.Errorf("unable set conditions %q", err)
 	}
 	myPolicy.ConditionQuery = conditionQuery
-
 	myPolicy.Provider = d.Get("cloud_provider").(string)
 	myPolicy.Severity = d.Get("severity").(string)
 	myPolicy.Title = d.Get("title").(string)
@@ -395,34 +391,58 @@ func setComplexPolicy(d *schema.ResourceData) (complexPolicy, error) {
 func setComplexConditions(d *schema.ResourceData) (ConditionQuery, error) {
 	var conditionQuery ConditionQuery
 
-	log.Print("In setComplexConditions")
 	query := d.Get("conditionquery").(*schema.Set)
-
-	//	log.Print(reflect.TypeOf(query))
 
 	if query.Len() > 0 {
 		myQuery := query.List()
-		//myQuery:=query[0].(map[string]interface{})
 		duff := myQuery[0].(map[string]interface{})
 		TheAnds := duff["and"].([]interface{})
-		log.Print(reflect.TypeOf(TheAnds))
-		log.Print(TheAnds)
 
 		var conditions []Conditions
+		var TheOrs Conditions
+
 		for _, myCondition := range TheAnds {
 			temp := myCondition.(map[string]interface{})
+
 			var Condition Conditions
-			Condition.Value = temp["value"].(string)
-			Condition.CondType = temp["cond_type"].(string)
-			Condition.Attribute = temp["attribute"].(string)
-			Condition.Operator = temp["operator"].(string)
 
-			var myResources []string
-			myResources = CastToStringList(temp["resource_types"].([]interface{}))
-			Condition.ResourceTypes = myResources
+			if len(temp["or"].([]interface{})) > 0 {
+				//have to have some way of ignoring root vars if you choose to make an or statement
+				log.Print("Or value set, ignoring other vars in block")
 
-			conditions = append(conditions, Condition)
+				ors := temp["or"].([]interface{})
+				var orConditions []Or
+
+				//Process all the Or conditions
+				for _, anor := range ors {
+					localor := anor.(map[string]interface{})
+
+					var orCondition Or
+					orCondition.Value = localor["value"].(string)
+					orCondition.CondType = localor["cond_type"].(string)
+					orCondition.Attribute = localor["attribute"].(string)
+					orCondition.Operator = localor["operator"].(string)
+
+					orCondition.ResourceTypes = CastToStringList(localor["resource_types"].([]interface{}))
+					orConditions = append(orConditions, orCondition)
+				}
+				TheOrs.Or = orConditions
+			} else {
+				//process the condition if just the root Condition
+				Condition.Value = temp["value"].(string)
+				Condition.CondType = temp["cond_type"].(string)
+				Condition.Attribute = temp["attribute"].(string)
+				Condition.Operator = temp["operator"].(string)
+
+				Condition.ResourceTypes = CastToStringList(temp["resource_types"].([]interface{}))
+				conditions = append(conditions, Condition)
+			}
 		}
+
+		//append the Ors as complete coniditions
+		conditions = append(conditions, TheOrs)
+
+		//add the whole condition to the resource
 		conditionQuery.Ands = conditions
 	} else {
 		return conditionQuery, errors.New("no Conditions Set")

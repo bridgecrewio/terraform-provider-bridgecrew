@@ -1,15 +1,15 @@
 ---
 layout: "bridgecrew"
-page_title: "Bridgecrew: resource_simple_policy"
-sidebar_current: "docs-bridgecrew-resource_simple_policy"
+page_title: "Bridgecrew: resource_complex_policy"
+sidebar_current: "docs-bridgecrew-resource_complex_policy"
 
 description: |-
-Create a new custom 'simple' security policy for the Bridgecrew Platform
+Create a new custom 'complex' security policy for the Bridgecrew Platform
 ---
 
-# bridgecrew_simple_policy
+# bridgecrew_complex_policy
 
-Use this resource to create new "simple" custom policies for the Bridgecrew platform <https://www.bridgecrew.cloud/incidents>.
+Use this resource to create new "complex" custom policies for the Bridgecrew platform <https://www.bridgecrew.cloud/incidents>.
 For more details on this API see their online API documentation <https://docs.bridgecrew.io/reference/savepolicy>.
 
 
@@ -20,23 +20,45 @@ For more details on this API see their online API documentation <https://docs.br
 
 Basic usage:
 
+This policy is checking an AWS instance resource, to sure that it is either a t3.micro or t2.micro (the Ors statement)
+and that's instance is named "jimbo". Well why not.
+
 ```hcl
 
-
-resource "bridgecrew_simple_policy" "new" {
+resource "bridgecrew_complex_policy" "new" {
   cloud_provider = "aws"
-  title          = "Ensure that this title is meaningfully long (20 chars)"
+  title          = "my second test also neeeds to be long enough"
   severity       = "critical"
   category       = "logging"
   frameworks     = ["Terraform"]
 
   // For now only one condition block is valid
-  conditions {
-    resource_types = ["aws_s3_bucket"]
-    cond_type      = "attribute"
-    attribute      = "bucket"
-    operator       = "not_equals"
-    value          = "jimbo2"
+  conditionquery {
+    and {
+      or {
+        resource_types = ["aws_instance"]
+        cond_type      = "attribute"
+        attribute      = "instance_type"
+        operator       = "equals"
+        value          = "t2.micro"
+      }
+      or {
+        resource_types = ["aws_instance"]
+        cond_type      = "attribute"
+        attribute      = "instance_type"
+        operator       = "equals"
+        value          = "t3.micro"
+      }
+    }
+
+    and {
+      resource_types = ["aws_instance"]
+      cond_type      = "attribute"
+      attribute      = "name"
+      operator       = "not_equals"
+      value          = "jimbo"
+    }
+
   }
 
   guidelines = "This should explain a lot more, in fact im padding this out to at least 50 characters"
@@ -56,7 +78,7 @@ resource "bridgecrew_simple_policy" "new" {
 You can import existing platform policies into Terraform code.
 
 ```
-terraform import bridgecrew_simple_policy.imported mypolicyid
+terraform import bridgecrew_complex_policy.imported mypolicyid
 ```
 
 You can view the policy id, either by using the API docs policy list feature:
@@ -70,7 +92,6 @@ You can view the policy id, either by using the API docs policy list feature:
 
 - **category** (String) Check category for grouping similar checks.
 - **cloud_provider** (String) The Cloud provider this is for e.g. - aws, gcp, azure.
-- **conditions** (Block List, Min: 1, Max: 1) Conditions captures the actual check logic (see [below for nested schema](#nestedblock--conditions))
 - **frameworks** (List of String) Which IAC framework is this policy targeting.
 - **guidelines** (String) A detailed description helps you understand why the check was written and should include details on how to fix the violation. The field must more than 50 chars in it, to encourage detail.
 - **severity** (String) Severity category allows you to indicate importance and this value can determine build or PR failure in the platform.
@@ -79,23 +100,12 @@ You can view the policy id, either by using the API docs policy list feature:
 ### Optional
 
 - **benchmarks** (Block Set, Max: 1) This associates the check to one or many compliance frameworks. (see [below for nested schema](#nestedblock--benchmarks))
+- **conditionquery** (Block Set, Max: 1) The actual query. (see [below for nested schema](#nestedblock--conditionquery))
 - **last_updated** (String)
 
 ### Read-Only
 
 - **id** (String) The ID of this resource.
-
-<a id="nestedblock--conditions"></a>
-### Nested Schema for `conditions`
-
-Required:
-
-- **attribute** (String)
-- **cond_type** (String)
-- **operator** (String)
-- **resource_types** (List of String)
-- **value** (String)
-
 
 <a id="nestedblock--benchmarks"></a>
 ### Nested Schema for `benchmarks`
@@ -113,3 +123,34 @@ Optional:
 - **cis_gke_v11** (List of String)
 - **cis_kubernetes_v15** (List of String)
 - **cis_kubernetes_v16** (List of String)
+
+
+<a id="nestedblock--conditionquery"></a>
+### Nested Schema for `conditionquery`
+
+Required:
+
+- **and** (Block List, Min: 1) Conditions captures the actual check logic. Do not add resource_types and an or statement in the same block (see [below for nested schema](#nestedblock--conditionquery--and))
+
+<a id="nestedblock--conditionquery--and"></a>
+### Nested Schema for `conditionquery.and`
+
+Optional:
+
+- **attribute** (String)
+- **cond_type** (String)
+- **operator** (String)
+- **or** (Block List) Conditions captures the actual check logic (see [below for nested schema](#nestedblock--conditionquery--and--or))
+- **resource_types** (List of String)
+- **value** (String)
+
+<a id="nestedblock--conditionquery--and--or"></a>
+### Nested Schema for `conditionquery.and.or`
+
+Required:
+
+- **attribute** (String)
+- **cond_type** (String)
+- **operator** (String)
+- **resource_types** (List of String)
+- **value** (String)
