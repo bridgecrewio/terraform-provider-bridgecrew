@@ -1,1 +1,1 @@
-#data "bridgecrew_apitokens" "all" {}
+data "bridgecrew_apitokens" "all" {}

@@ -67,7 +67,6 @@ type Amount struct {
 //ConditionQuery is the construct for the complex query screen
 type ConditionQuery struct {
 	Ands []Conditions `json:"and,omitempty"`
-	//Ors  []Conditions `json:"or,omitempty"`
 }
 
 //Conditions is part of the simple query

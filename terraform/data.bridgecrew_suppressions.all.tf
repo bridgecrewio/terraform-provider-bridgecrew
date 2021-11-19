@@ -1,1 +1,1 @@
-#data "bridgecrew_suppressions" "all" {}
+data "bridgecrew_suppressions" "all" {}
