@@ -1,1 +1,1 @@
-data "bridgecrew_integrations" "all" {}
+#data "bridgecrew_integrations" "all" {}

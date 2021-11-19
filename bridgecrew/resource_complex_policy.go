@@ -6,7 +6,9 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"reflect"
 	"strings"
 	"time"
 
@@ -137,6 +139,7 @@ func resourceComplexPolicy() *schema.Resource {
 							Type:        schema.TypeList,
 							Required:    true,
 							Description: "Conditions captures the actual check logic",
+							//ConflictsWith: []string{"or"],
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"resource_types": {
@@ -323,8 +326,6 @@ func resourceComplexPolicyCreate(ctx context.Context, d *schema.ResourceData, m 
 
 	req, err := http.NewRequest("POST", url, payload)
 
-	highlight(payload)
-
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -394,12 +395,19 @@ func setComplexPolicy(d *schema.ResourceData) (complexPolicy, error) {
 func setComplexConditions(d *schema.ResourceData) (ConditionQuery, error) {
 	var conditionQuery ConditionQuery
 
-	highlight(d.Get("conditionquery"))
-	myQuery := d.Get("conditionquery").(map[string]interface{})
+	log.Print("In setComplexConditions")
+	query := d.Get("conditionquery").(*schema.Set)
 
-	if len(myQuery) > 0 {
-		TheAnds := myQuery["and"].([]interface{})
-		highlight(TheAnds)
+	//	log.Print(reflect.TypeOf(query))
+
+	if query.Len() > 0 {
+		myQuery := query.List()
+		//myQuery:=query[0].(map[string]interface{})
+		duff := myQuery[0].(map[string]interface{})
+		TheAnds := duff["and"].([]interface{})
+		log.Print(reflect.TypeOf(TheAnds))
+		log.Print(TheAnds)
+
 		var conditions []Conditions
 		for _, myCondition := range TheAnds {
 			temp := myCondition.(map[string]interface{})
@@ -414,7 +422,6 @@ func setComplexConditions(d *schema.ResourceData) (ConditionQuery, error) {
 			Condition.ResourceTypes = myResources
 
 			conditions = append(conditions, Condition)
-			//conditions = append(conditions, Condition)
 		}
 		conditionQuery.Ands = conditions
 	} else {
@@ -472,7 +479,7 @@ func resourceComplexPolicyRead(ctx context.Context, d *schema.ResourceData, m in
 	//this can go
 	myConditions := make([]interface{}, 1)
 	myConditions[0] = typedjson["conditionQuery"]
-	err = d.Set("conditions", myConditions)
+	err = d.Set("conditionquery", myConditions)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -535,7 +542,7 @@ func resourceComplexPolicyUpdate(ctx context.Context, d *schema.ResourceData, m 
 }
 
 func complexPolicyChange(d *schema.ResourceData) bool {
-	return d.HasChange("conditions") ||
+	return d.HasChange("conditionquery") ||
 		d.HasChange("cloud_provider") ||
 		d.HasChange("title") ||
 		d.HasChange("severity") ||
