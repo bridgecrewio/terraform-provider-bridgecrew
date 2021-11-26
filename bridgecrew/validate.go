@@ -2,6 +2,8 @@ package bridgecrew
 
 import (
 	"fmt"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/structure"
 )
 
 //ValidateOperator looks at valid logic operator inputs
@@ -117,6 +119,23 @@ func ValidateGuidelines(val interface{}, key string) (warns []string, errs []err
 func ValidatePolicyTitle(val interface{}, key string) (warns []string, errs []error) {
 	if len(val.(string)) < 20 {
 		errs = append(errs, fmt.Errorf("%q Title should attempt be meaningful (gt 20 chars)", val))
+	}
+	return
+}
+
+// ValidPolicyJSON checks that a string contains JSON
+func ValidPolicyJSON(v interface{}, k string) (ws []string, errors []error) {
+	value := v.(string)
+	if len(value) < 1 {
+		errors = append(errors, fmt.Errorf("%q contains an invalid JSON policy", k))
+		return
+	}
+	if value[:1] != "{" {
+		errors = append(errors, fmt.Errorf("%q contains an invalid JSON policy", k))
+		return
+	}
+	if _, err := structure.NormalizeJsonString(v); err != nil {
+		errors = append(errors, fmt.Errorf("%q contains an invalid JSON: %s", k, err))
 	}
 	return
 }
