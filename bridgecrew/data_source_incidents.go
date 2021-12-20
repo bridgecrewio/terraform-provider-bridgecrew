@@ -24,47 +24,84 @@ func dataSourceIncidents() *schema.Resource {
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"cloud_provider": {
+						"incident_id": {
 							Type:        schema.TypeString,
-							Computed:    false,
-							Required:    true,
-							Description: "The name of the Cloud Provider",
-						},
-						"id": {
-							Type:     schema.TypeString,
-							Computed: true,
+							Description: "Typically the bridgecrew incident id, e.g. \"BC_AWS_IAM_37\"",
+							Computed:    true,
 						},
 						"title": {
-							Type:     schema.TypeString,
-							Required: true,
+							Type:        schema.TypeString,
+							Description: "The short check title",
+							Required:    true,
 						},
 						"category": {
-							Type:     schema.TypeString,
-							Required: true,
+							Type:        schema.TypeString,
+							Description: "The check category",
+							Required:    true,
 						},
 						"guideline": {
-							Type:     schema.TypeString,
-							Computed: true,
+							Type:        schema.TypeString,
+							Description: "The URL to the checks description documentation",
+							Computed:    true,
 						},
 						"severity": {
-							Type:     schema.TypeString,
-							Required: true,
+							Type:        schema.TypeString,
+							Description: "Severity of the Incident",
+							Required:    true,
 						},
 						"constructive_title": {
-							Type:     schema.TypeString,
-							Optional: true,
-						},
-						"descriptive_title": {
-							Type:     schema.TypeString,
-							Optional: true,
-						},
-						"pc_severity": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Type:        schema.TypeString,
+							Description: "A title but verbose- hopefully",
+							Optional:    true,
 						},
 						"iscustom": {
 							Type:     schema.TypeBool,
 							Computed: true,
+						},
+						"benchmarks": {
+							Type:        schema.TypeList,
+							Description: "The compliance framework this check/incident is against",
+							Computed:    true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"remediation_ids": {
+							Type:        schema.TypeList,
+							Computed:    true,
+							Description: "Describes the auto-remediation that is available for this",
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"runtime_remediation": {
+							Type:     schema.TypeList,
+							Required: true,
+							MaxItems: 1,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"params": {
+										Type:        schema.TypeList,
+										Required:    true,
+										Description: "The parameters",
+										Elem: &schema.Schema{
+											Type: schema.TypeString,
+										},
+									},
+									"id": {
+										Type:     schema.TypeString,
+										Required: true,
+									},
+									"description": {
+										Type:     schema.TypeString,
+										Required: true,
+									},
+									"warning": {
+										Type:     schema.TypeString,
+										Required: true,
+									},
+								},
+							},
 						},
 					},
 				},
@@ -152,16 +189,43 @@ func flattenIncidentData(Incidents *[]map[string]interface{}) []interface{} {
 		for i, Incident := range *Incidents {
 			oi := make(map[string]interface{})
 
-			oi["cloud_provider"] = Incident["provider"]
-			oi["id"] = Incident["incidentId"]
+			oi["incident_id"] = Incident["incidentId"]
 			oi["title"] = Incident["title"]
 			oi["constructive_title"] = Incident["constructiveTitle"]
-			oi["descriptive_title"] = Incident["descriptiveTitle"]
 			oi["severity"] = Incident["severity"]
-			oi["pc_severity"] = Incident["pcSeverity"]
 			oi["category"] = Incident["category"]
 			oi["guideline"] = Incident["guideline"]
 			oi["iscustom"] = Incident["isCustom"]
+			if keyExists(Incident, "benchmarks") {
+				oi["benchmarks"] = Incident["benchmarks"]
+			}
+
+			if keyExists(Incident, "remediationIds") {
+				oi["remediation_ids"] = Incident["remediationIds"]
+			}
+
+			if keyExists(Incident, "runtimeRemediation") {
+				var remediations []interface{}
+
+				remediateData := Incident["runtimeRemediation"].([]interface{})
+				if len(remediateData) > 0 {
+					for _, element := range remediateData {
+						account := make(map[string]interface{})
+						//account["repository"] = key
+						temp := element.(map[string]interface{})
+						account["id"] = temp["id"]
+						account["warning"] = temp["warning"]
+						account["description"] = temp["description"]
+						if keyExists(temp, "params") {
+							account["params"], _ = temp["params"].([]string)
+						}
+
+						remediations = append(remediations, account)
+					}
+
+					oi["runtime_remediation"] = remediations
+				}
+			}
 
 			ois[i] = oi
 		}
