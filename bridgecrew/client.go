@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 )
 
-// Request parameters for auth client
+//RequestParams (parameters) for auth client
 type RequestParams struct {
 	path    string
 	version string
@@ -44,7 +44,9 @@ func authClient(params RequestParams, configure ProviderConfig) (*http.Client, *
 	}
 
 	// add authorization header to the req
-	req.Header.Add("Authorization", bearer)
+	req.Header.Add("authorization", bearer)
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Content-Type", "application/json")
 
 	return client, req, diags, false, err
 }
