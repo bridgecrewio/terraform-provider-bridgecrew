@@ -201,7 +201,7 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 		return diag.FromErr(err)
 	}
 
-	newResults, d2, done := VerifyReturn(err, body)
+	newResults, d2, done := VerifyReturn(body)
 	if done {
 		return d2
 	}
@@ -242,6 +242,7 @@ func setPolicy(d *schema.ResourceData) (Policy, error) {
 }
 
 func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
 	client := &http.Client{Timeout: 60 * time.Second}
 
 	policyID := d.Id()
@@ -272,8 +273,11 @@ func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface
 		return diag.FromErr(err)
 	}
 
-	d.Set("cloud_provider", strings.ToLower(typedjson["provider"].(string)))
-	d.Set("frameworks", typedjson["frameworks"])
+	err = d.Set("cloud_provider", strings.ToLower(typedjson["provider"].(string)))
+	diags = LogAppendError(err, diags)
+
+	err = d.Set("frameworks", typedjson["frameworks"])
+	diags = LogAppendError(err, diags)
 
 	if typedjson["file"] != nil {
 		err = d.Set("file", typedjson["file"].(string))
@@ -281,8 +285,6 @@ func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface
 			return diag.FromErr(err)
 		}
 	}
-
-	var diags diag.Diagnostics
 
 	return diags
 }
@@ -330,13 +332,16 @@ func resourcePolicyUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 			return diag.FromErr(err)
 		}
 
-		_, d2, done := VerifyReturn(err, body)
+		_, d2, done := VerifyReturn(body)
 
 		if done {
 			return d2
 		}
 
-		d.Set("last_updated", time.Now().Format(time.RFC850))
+		err = d.Set("last_updated", time.Now().Format(time.RFC850))
+		if err != nil {
+			return diag.FromErr(err)
+		}
 	}
 	return resourcePolicyRead(ctx, d, m)
 }

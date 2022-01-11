@@ -102,6 +102,7 @@ func dataSourceIncidentsInfo() *schema.Resource {
 	}
 }
 
+//goland:noinspection GoUnusedParameter
 func dataSourceIncidentInfoRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	params := RequestParams{"%s/incidents/info", "v2", "POST"}
 
@@ -152,17 +153,36 @@ func dataSourceIncidentInfoRead(ctx context.Context, d *schema.ResourceData, m i
 
 	test := myinfo["data"].(map[string]interface{})
 	if test["status"] != nil {
-		d.Set("status", flattenStatus(test["status"].(map[string]interface{})))
+		check := d.Set("status", flattenStatus(test["status"].(map[string]interface{})))
+		diagnostics = LogAppendError(check, diagnostics)
 	}
 
-	d.Set("traced", flattenTraced(test["traced"].(map[string]interface{})))
-	d.Set("encryption", flattenEncryption(test["encryption"].(map[string]interface{})))
-	d.Set("reachability", flattenReachability(test["reachability"].(map[string]interface{})))
-	d.Set("total", test["total"])
+	check := d.Set("traced", flattenTraced(test["traced"].(map[string]interface{})))
+	diagnostics = LogAppendError(check, diagnostics)
+
+	check = d.Set("encryption", flattenEncryption(test["encryption"].(map[string]interface{})))
+	diagnostics = LogAppendError(check, diagnostics)
+
+	check = d.Set("reachability", flattenReachability(test["reachability"].(map[string]interface{})))
+	diagnostics = LogAppendError(check, diagnostics)
+
+	check = d.Set("total", test["total"])
+	diagnostics = LogAppendError(check, diagnostics)
 
 	// always run
 	d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
 
+	return diagnostics
+}
+
+//LogAppendError adds error to diagnostic stack
+func LogAppendError(check error, diagnostics diag.Diagnostics) diag.Diagnostics {
+	if check != nil {
+		diagnostics = append(diagnostics, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("Failed set %s \n", check.Error()),
+		})
+	}
 	return diagnostics
 }
 

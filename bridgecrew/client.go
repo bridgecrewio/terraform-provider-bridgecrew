@@ -46,15 +46,11 @@ func authClient(params RequestParams, configure ProviderConfig) (*http.Client, *
 		url = prisma + "/bridgecrew"
 
 		if err != nil {
-			diags = append(diags, diag.Diagnostic{
-				Severity: diag.Error,
-				Summary:  fmt.Sprintf("Failed to logon to Prisma %s \n", err),
-			})
+			diags = append(diags, err[0])
 		}
 	}
 
-	var baseurl string
-	baseurl = fmt.Sprintf(url + "/api/" + params.version)
+	baseurl := fmt.Sprintf(url + "/api/" + params.version)
 
 	if api == "" {
 		log.Fatal("BRIDGECREW_API is missing")
@@ -101,19 +97,19 @@ func loginPrisma(username string, password string, loginURL string) (string, dia
 	res, _ := http.DefaultClient.Do(req)
 
 	defer res.Body.Close()
-	rawtoken, _ := ioutil.ReadAll(res.Body)
+	rawToken, _ := ioutil.ReadAll(res.Body)
 
-	mysecrets := make(map[string]interface{})
-	err := json.Unmarshal(rawtoken, &mysecrets)
+	mySecrets := make(map[string]interface{})
+	err := json.Unmarshal(rawToken, &mySecrets)
 
 	if err != nil {
 		return "", diag.FromErr(err)
 	}
 
-	if mysecrets["message"] != "login_successful" {
-		errStr := fmt.Errorf(mysecrets["message"].(string))
+	if mySecrets["message"] != "login_successful" {
+		errStr := fmt.Errorf(mySecrets["message"].(string))
 		return "", diag.FromErr(errStr)
 	}
 
-	return mysecrets["token"].(string), nil
+	return mySecrets["token"].(string), nil
 }

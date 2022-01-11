@@ -123,7 +123,7 @@ func dataSourceRepositoryRead(ctx context.Context, d *schema.ResourceData, m int
 
 func flattenRepositoryData(Repositories *[]map[string]interface{}) []interface{} {
 	if Repositories != nil {
-		ois := make([]interface{}, len(*Repositories), len(*Repositories))
+		ois := make([]interface{}, len(*Repositories))
 
 		for i, Repository := range *Repositories {
 			oi := make(map[string]interface{})

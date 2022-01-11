@@ -14,6 +14,7 @@ type ProviderConfig struct {
 }
 
 //Provider main object
+//goland:noinspection GoDeprecation
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		ConfigureFunc: providerConfigure,
