@@ -6,8 +6,11 @@ import (
 
 // ProviderConfig vars for endpoint and API key
 type ProviderConfig struct {
-	URL   string
-	Token string
+	URL         string
+	Token       string
+	AccessKeyID string
+	SecretKey   string
+	Prisma      string
 }
 
 //Provider main object
@@ -28,6 +31,26 @@ func Provider() *schema.Provider {
 				Sensitive:   true,
 				DefaultFunc: schema.EnvDefaultFunc("BRIDGECREW_API", nil),
 				Description: "API Token for Bridgecrew",
+			},
+			"access_key_id": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Sensitive:   true,
+				DefaultFunc: schema.EnvDefaultFunc("PRISMA_ACCESS_KEY_ID", nil),
+				Description: "Access key for Prisma",
+			},
+			"secret_key": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Sensitive:   true,
+				DefaultFunc: schema.EnvDefaultFunc("PRISMA_SECRET_KEY", nil),
+				Description: "Secret Key for Prisma",
+			},
+			"prisma": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("PRISMA_API_URL", nil),
+				Description: "URL for the Prisma, if set overrides the URL",
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
@@ -56,14 +79,20 @@ func Provider() *schema.Provider {
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	url := d.Get("url").(string)
 	token := d.Get("token").(string)
-	return newProvider(url, token)
+	accessKeyID := d.Get("accessKeyID").(string)
+	secretKey := d.Get("secretKey").(string)
+	prisma := d.Get("prisma").(string)
+	return newProvider(url, token, accessKeyID, secretKey, prisma)
 }
 
 // newProviderClient is a factory for creating ProviderClient structs
-func newProvider(url, token string) (ProviderConfig, error) {
+func newProvider(url, token, accessKeyID, secretKey, prisma string) (ProviderConfig, error) {
 	p := ProviderConfig{
-		URL:   url,
-		Token: token,
+		URL:         url,
+		Token:       token,
+		AccessKeyID: accessKeyID,
+		SecretKey:   secretKey,
+		Prisma:      prisma,
 	}
 
 	return p, nil

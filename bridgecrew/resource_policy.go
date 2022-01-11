@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -224,7 +225,8 @@ func setPolicy(d *schema.ResourceData) (Policy, error) {
 
 	//if the filename is set then this is a yaml policy
 	if hasFilename {
-		code, err := loadFileContent(filename.(string))
+		file, _ := filepath.Abs(filename.(string))
+		code, err := loadFileContent(file)
 		if err != nil {
 			return myPolicy, fmt.Errorf("unable to load %q: %w", filename.(string), err)
 		}

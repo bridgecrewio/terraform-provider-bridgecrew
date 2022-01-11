@@ -186,7 +186,10 @@ func flattenIncidentsPresetData(Presets *map[string]interface{}) []interface{} {
 			oi["description"] = rawdata["description"].(string)
 			oi["id"] = rawdata["id"].(string)
 			oi["counter"] = rawdata["counter"].(float64)
-			oi["isselected"] = rawdata["isSelected"].(bool)
+
+			if oi["isselected"] != nil {
+				oi["isselected"] = rawdata["isSelected"].(bool)
+			}
 
 			filters := make([]interface{}, 1, 1)
 			if rawdata["filters"] != nil {

@@ -20,10 +20,6 @@ func dataSourceRepositories() *schema.Resource {
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"creationdate": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
 						"id": {
 							Type:     schema.TypeString,
 							Computed: true,
@@ -48,6 +44,18 @@ func dataSourceRepositories() *schema.Resource {
 							Type:     schema.TypeBool,
 							Optional: true,
 							Default:  false,
+						},
+						"runs": {
+							Type:     schema.TypeInt,
+							Required: true,
+						},
+						"creationdate": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"lastscandate": {
+							Type:     schema.TypeString,
+							Computed: true,
 						},
 					},
 				},
@@ -123,9 +131,11 @@ func flattenRepositoryData(Repositories *[]map[string]interface{}) []interface{}
 			oi["repository"] = Repository["repository"]
 			oi["source"] = Repository["source"]
 			oi["owner"] = Repository["owner"]
-			oi["creationdate"] = Repository["creationDate"]
 			oi["defaultbranch"] = Repository["defaultBranch"]
-			oi["ispublic"] = Repository["ispublic"]
+			oi["ispublic"] = Repository["isPublic"].(bool)
+			oi["runs"] = Repository["runs"]
+			oi["creationdate"] = Repository["creationDate"]
+			oi["lastscandate"] = Repository["lastScanDate"]
 
 			ois[i] = oi
 		}

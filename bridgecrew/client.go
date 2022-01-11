@@ -1,9 +1,12 @@
 package bridgecrew
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -22,6 +25,33 @@ func authClient(params RequestParams, configure ProviderConfig) (*http.Client, *
 	var diags diag.Diagnostics
 	api := configure.Token
 	url := configure.URL
+	prisma := configure.Prisma
+	accessKey := configure.AccessKeyID
+	secretKey := configure.SecretKey
+
+	if prisma != "" {
+		//check accessKey and secretKey aren't empty
+		if accessKey == "" {
+			log.Fatal("PRISMA_ACCESS_KEY_ID is missing")
+		}
+
+		if secretKey == "" {
+			log.Fatal("PRISMA_SECRET_KEY is missing")
+		}
+
+		loginURL := prisma + "/login"
+
+		var err diag.Diagnostics
+		api, err = loginPrisma(accessKey, secretKey, loginURL)
+		url = prisma + "/bridgecrew"
+
+		if err != nil {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  fmt.Sprintf("Failed to logon to Prisma %s \n", err),
+			})
+		}
+	}
 
 	var baseurl string
 	baseurl = fmt.Sprintf(url + "/api/" + params.version)
@@ -59,4 +89,31 @@ func CheckStatus(res *http.Response) (diag.Diagnostics, bool) {
 	}
 
 	return nil, false
+}
+
+func loginPrisma(username string, password string, loginURL string) (string, diag.Diagnostics) {
+	payload := strings.NewReader(fmt.Sprintf("{\"username\":\"%s\",\"password\":\"%s\"}", username, password))
+	req, _ := http.NewRequest("POST", loginURL, payload)
+
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Content-Type", "application/json")
+
+	res, _ := http.DefaultClient.Do(req)
+
+	defer res.Body.Close()
+	rawtoken, _ := ioutil.ReadAll(res.Body)
+
+	mysecrets := make(map[string]interface{})
+	err := json.Unmarshal(rawtoken, &mysecrets)
+
+	if err != nil {
+		return "", diag.FromErr(err)
+	}
+
+	if mysecrets["message"] != "login_successful" {
+		errStr := fmt.Errorf(mysecrets["message"].(string))
+		return "", diag.FromErr(errStr)
+	}
+
+	return mysecrets["token"].(string), nil
 }
