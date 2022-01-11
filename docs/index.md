@@ -110,8 +110,8 @@ The following arguments are supported in the `provider` block:
 
 ### Optional
 
-- **access_key_id** (String, Sensitive) Access key for Prisma
+- **accesskeyid** (String, Sensitive) Access key for Prisma
 - **prisma** (String) URL for the Prisma, if set overrides the URL
-- **secret_key** (String, Sensitive) Secret Key for Prisma
+- **secretkey** (String, Sensitive) Secret Key for Prisma
 - **token** (String, Sensitive) API Token for Bridgecrew
 - **url** (String) URL for the Bridgecrew Platform

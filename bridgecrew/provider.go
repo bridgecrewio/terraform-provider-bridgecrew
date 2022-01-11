@@ -32,14 +32,14 @@ func Provider() *schema.Provider {
 				DefaultFunc: schema.EnvDefaultFunc("BRIDGECREW_API", nil),
 				Description: "API Token for Bridgecrew",
 			},
-			"access_key_id": {
+			"accesskeyid": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Sensitive:   true,
 				DefaultFunc: schema.EnvDefaultFunc("PRISMA_ACCESS_KEY_ID", nil),
 				Description: "Access key for Prisma",
 			},
-			"secret_key": {
+			"secretkey": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Sensitive:   true,
@@ -79,8 +79,8 @@ func Provider() *schema.Provider {
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	url := d.Get("url").(string)
 	token := d.Get("token").(string)
-	accessKeyID := d.Get("accessKeyID").(string)
-	secretKey := d.Get("secretKey").(string)
+	accessKeyID := d.Get("accesskeyid").(string)
+	secretKey := d.Get("secretkey").(string)
 	prisma := d.Get("prisma").(string)
 	return newProvider(url, token, accessKeyID, secretKey, prisma)
 }

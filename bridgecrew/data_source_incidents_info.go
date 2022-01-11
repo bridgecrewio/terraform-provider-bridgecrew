@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"strconv"
 	"time"
 
@@ -145,8 +146,15 @@ func dataSourceIncidentInfoRead(ctx context.Context, d *schema.ResourceData, m i
 		return diagnostics
 	}
 
+	if myinfo["message"] != nil {
+		log.Fatal(myinfo["message"].(string))
+	}
+
 	test := myinfo["data"].(map[string]interface{})
-	d.Set("status", flattenStatus(test["status"].(map[string]interface{})))
+	if test["status"] != nil {
+		d.Set("status", flattenStatus(test["status"].(map[string]interface{})))
+	}
+
 	d.Set("traced", flattenTraced(test["traced"].(map[string]interface{})))
 	d.Set("encryption", flattenEncryption(test["encryption"].(map[string]interface{})))
 	d.Set("reachability", flattenReachability(test["reachability"].(map[string]interface{})))

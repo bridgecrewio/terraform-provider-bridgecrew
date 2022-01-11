@@ -162,6 +162,10 @@ func dataSourceIncidentsPresetRead(ctx context.Context, d *schema.ResourceData, 
 		log.Fatal("Failed to parse data")
 	}
 
+	if Presets["message"] != nil {
+		log.Fatal(Presets["message"].(string))
+	}
+
 	flatRepos := flattenIncidentsPresetData(&Presets)
 
 	if err := d.Set("presets", flatRepos); err != nil {
