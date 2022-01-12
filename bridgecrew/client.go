@@ -3,6 +3,7 @@ package bridgecrew
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -20,7 +21,7 @@ type RequestParams struct {
 }
 
 //use basic auth client
-func authClient(params RequestParams, configure ProviderConfig) (*http.Client, *http.Request, diag.Diagnostics, bool) {
+func authClient(params RequestParams, configure ProviderConfig, body io.Reader) (*http.Client, *http.Request, diag.Diagnostics, bool) {
 
 	var diags diag.Diagnostics
 	api := configure.Token
@@ -60,9 +61,9 @@ func authClient(params RequestParams, configure ProviderConfig) (*http.Client, *
 	// Create a Bearer string by appending string access token
 	var bearer = "Bearer " + api
 
-	client := &http.Client{Timeout: 30 * time.Second}
+	client := &http.Client{Timeout: 60 * time.Second}
 
-	req, err := http.NewRequest(params.method, fmt.Sprintf(params.path, baseurl), nil)
+	req, err := http.NewRequest(params.method, fmt.Sprintf(params.path, baseurl), body)
 	if err != nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,

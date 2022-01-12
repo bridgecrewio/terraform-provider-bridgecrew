@@ -62,7 +62,7 @@ func dataSourceErrorRead(ctx context.Context, d *schema.ResourceData, m interfac
 	params := RequestParams{"%s/errors/gitBlameAuthors", "v1", "GET"}
 
 	configure := m.(ProviderConfig)
-	client, req, diagnostics, done := authClient(params, configure)
+	client, req, diagnostics, done := authClient(params, configure, nil)
 
 	if done {
 		return diagnostics

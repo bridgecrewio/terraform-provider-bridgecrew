@@ -137,7 +137,7 @@ func dataSourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interfa
 	params := RequestParams{"%s/policies/table/data", "v1", "GET"}
 
 	configure := m.(ProviderConfig)
-	client, req, diagnostics, done := authClient(params, configure)
+	client, req, diagnostics, done := authClient(params, configure, nil)
 
 	if done {
 		return diagnostics

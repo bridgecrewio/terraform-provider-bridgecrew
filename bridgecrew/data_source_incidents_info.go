@@ -107,7 +107,7 @@ func dataSourceIncidentInfoRead(ctx context.Context, d *schema.ResourceData, m i
 	params := RequestParams{"%s/incidents/info", "v2", "POST"}
 
 	configure := m.(ProviderConfig)
-	client, req, diagnostics, done := authClient(params, configure)
+	client, req, diagnostics, done := authClient(params, configure, nil)
 
 	if done {
 		return diagnostics
