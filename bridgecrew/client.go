@@ -20,7 +20,7 @@ type RequestParams struct {
 }
 
 //use basic auth client
-func authClient(params RequestParams, configure ProviderConfig) (*http.Client, *http.Request, diag.Diagnostics, bool, error) {
+func authClient(params RequestParams, configure ProviderConfig) (*http.Client, *http.Request, diag.Diagnostics, bool) {
 
 	var diags diag.Diagnostics
 	api := configure.Token
@@ -47,6 +47,7 @@ func authClient(params RequestParams, configure ProviderConfig) (*http.Client, *
 
 		if err != nil {
 			diags = append(diags, err[0])
+			return nil, nil, diags, true
 		}
 	}
 
@@ -67,6 +68,7 @@ func authClient(params RequestParams, configure ProviderConfig) (*http.Client, *
 			Severity: diag.Error,
 			Summary:  fmt.Sprintf("Get request failed %s \n", err.Error()),
 		})
+		return nil, nil, diags, true
 	}
 
 	// add authorization header to the req
@@ -74,7 +76,7 @@ func authClient(params RequestParams, configure ProviderConfig) (*http.Client, *
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/json")
 
-	return client, req, diags, false, err
+	return client, req, diags, false
 }
 
 // CheckStatus confirms returns codes are 200
@@ -94,13 +96,20 @@ func loginPrisma(username string, password string, loginURL string) (string, dia
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/json")
 
-	res, _ := http.DefaultClient.Do(req)
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", diag.FromErr(err)
+	}
 
 	defer res.Body.Close()
-	rawToken, _ := ioutil.ReadAll(res.Body)
+	rawToken, err := ioutil.ReadAll(res.Body)
+
+	if err != nil {
+		return "", diag.FromErr(err)
+	}
 
 	mySecrets := make(map[string]interface{})
-	err := json.Unmarshal(rawToken, &mySecrets)
+	err = json.Unmarshal(rawToken, &mySecrets)
 
 	if err != nil {
 		return "", diag.FromErr(err)

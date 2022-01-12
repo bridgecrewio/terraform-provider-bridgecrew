@@ -36,7 +36,7 @@ func dataSourceRepositoryBranchRead(ctx context.Context, d *schema.ResourceData,
 	//todo endpoint doesnt work like this
 
 	configure := m.(ProviderConfig)
-	client, req, diagnostics, done, err := authClient(params, configure)
+	client, req, diagnostics, done := authClient(params, configure)
 
 	if done {
 		return diagnostics
