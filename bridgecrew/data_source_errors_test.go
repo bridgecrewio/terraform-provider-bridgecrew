@@ -13,6 +13,9 @@ func TestAccDataSourceErrors(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceErrors(),
+				Check:  resource.ComposeAggregateTestCheckFunc(
+				// resource.TestCheckResourceAttrSet("data.bridgecrew_errors.test", "id"),
+				),
 			},
 		},
 	})
