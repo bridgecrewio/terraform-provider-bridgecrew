@@ -15,6 +15,7 @@ require (
 	github.com/karlseguin/typed v1.1.7
 	github.com/mitchellh/cli v1.1.2 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
+	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	golang.org/x/mod v0.5.0 // indirect
 	golang.org/x/sys v0.0.0-20210921065528-437939a70204 // indirect
 	golang.org/x/tools v0.1.6 // indirect

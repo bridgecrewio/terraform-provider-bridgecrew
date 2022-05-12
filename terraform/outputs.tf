@@ -1,3 +1,7 @@
+output "mappings" {
+  value = data.bridgecrew_mappings.new
+}
+
 output "integrations" {
   value = data.bridgecrew_integrations.all
 }
