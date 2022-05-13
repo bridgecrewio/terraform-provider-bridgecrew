@@ -66,3 +66,7 @@ output "info" {
 output "organisation" {
   value = data.bridgecrew_organisation.mine
 }
+
+output "tag" {
+  value = data.bridgecrew_tag.found
+}

@@ -83,6 +83,10 @@ func main() {
 
 	var dataPages = []Page{
 		{
+			name: "data_source_tag",
+			path: tempDir + "/data-sources/tag.md.tmpl",
+		},
+		{
 			name: "data_source_mappings",
 			path: tempDir + "/data-sources/mappings.md.tmpl",
 		},
