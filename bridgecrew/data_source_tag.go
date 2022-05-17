@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"log"
-	"reflect"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -129,6 +128,14 @@ func dataSourceTagRead(ctx context.Context, d *schema.ResourceData, m interface{
 		log.Panic("Failed to parse data")
 	}
 
+	if err := flattenTag(Tag, d, id); err != nil {
+		return err
+	}
+
+	return diagnostics
+}
+
+func flattenTag(Tag map[string]interface{}, d *schema.ResourceData, id string) diag.Diagnostics {
 	name := Tag["name"].(string)
 	description := Tag["description"].(string)
 	candoactions := Tag["canDoActions"].(bool)
@@ -136,17 +143,17 @@ func dataSourceTagRead(ctx context.Context, d *schema.ResourceData, m interface{
 	if Tag["createdBy"] != nil {
 		createdby := Tag["createdBy"].(string)
 		if err := d.Set("createdby", createdby); err != nil {
-			log.Fatal(reflect.TypeOf(Tag))
+			return diag.FromErr(err)
 		}
 	}
 
 	if Tag["definition"] != nil {
 		u, err := json.Marshal(Tag["definition"])
 		if err != nil {
-			panic(err)
+			return diag.FromErr(err)
 		}
 		if err := d.Set("definition", string(u)); err != nil {
-			log.Fatal(reflect.TypeOf(Tag))
+			return diag.FromErr(err)
 		}
 	}
 
@@ -166,35 +173,35 @@ func dataSourceTagRead(ctx context.Context, d *schema.ResourceData, m interface{
 		}
 
 		if err := d.Set("repositories", processed); err != nil {
-			log.Fatal(reflect.TypeOf(Tag))
+			return diag.FromErr(err)
 		}
 	}
 
 	if Tag["tagRuleOOTBId"] != nil {
 		tagruleootbid := Tag["tagRuleOOTBId"].(string)
 		if err := d.Set("tagruleootbid", tagruleootbid); err != nil {
-			log.Fatal(reflect.TypeOf(Tag))
+			return diag.FromErr(err)
 		}
 	}
 
 	creationdate := Tag["creationDate"].(string)
 	isenabled := Tag["isEnabled"].(bool)
 	if err := d.Set("description", description); err != nil {
-		log.Fatal(reflect.TypeOf(Tag))
+		return diag.FromErr(err)
 	}
 	if err := d.Set("name", name); err != nil {
-		log.Fatal(reflect.TypeOf(Tag))
+		return diag.FromErr(err)
 	}
 	if err := d.Set("candoactions", candoactions); err != nil {
-		log.Fatal(reflect.TypeOf(Tag))
+		return diag.FromErr(err)
 	}
 	if err := d.Set("creationdate", creationdate); err != nil {
-		log.Fatal(reflect.TypeOf(Tag))
+		return diag.FromErr(err)
 	}
 	if err := d.Set("isenabled", isenabled); err != nil {
-		log.Fatal(reflect.TypeOf(Tag))
+		return diag.FromErr(err)
 	}
 
 	d.SetId(id)
-	return diagnostics
+	return nil
 }
