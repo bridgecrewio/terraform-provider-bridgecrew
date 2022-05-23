@@ -12,9 +12,9 @@ package bridgecrew
 //	})
 //}
 
-func testAccDataSourceRepositoryBranches() string {
-	return `
-	data "bridgecrew_repository_branches" "test" {
-	   target="cfngoat"
-	}`
-}
+//func testAccDataSourceRepositoryBranches() string {
+//	return `
+//	data "bridgecrew_repository_branches" "test" {
+//	   target="cfngoat"
+//	}`
+//}

@@ -123,8 +123,8 @@ func main() {
 			path: tempDir + "/data-sources/suppressions.md.tmpl",
 		},
 		{
-			name: "data_source_errors",
-			path: tempDir + "/data-sources/errors.md.tmpl",
+			name: "data_source_authors",
+			path: tempDir + "/data-sources/authors.md.tmpl",
 		},
 		{
 			name: "data_source_incidents",

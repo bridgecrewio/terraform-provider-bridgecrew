@@ -22,10 +22,10 @@ output "users" {
 #  value = data.bridgecrew_repository_branches.all
 #}
 
-#api doesnt work - has undefined query params
-#output "errors" {
-#  value = data.bridgecrew_errors.all
-#}
+
+output "authors" {
+  value = data.bridgecrew_authors.all
+}
 
 output "policy" {
   value = bridgecrew_policy.new
