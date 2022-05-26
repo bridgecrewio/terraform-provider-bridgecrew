@@ -31,7 +31,7 @@ func TestAccDataSourceRepositoryBranches(t *testing.T) {
 func testAccDataSourceRepositoryBranches() string {
 	return `
 	data "bridgecrew_repository_branches" "test" {
-	     reponame="terraform-aws-cassandra"
+	 reponame="terraform-aws-cassandra"
          repoowner="JamesWoolfenden"
 	}`
 }
