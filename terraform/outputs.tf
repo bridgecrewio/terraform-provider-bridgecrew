@@ -70,3 +70,7 @@ output "organisation" {
 output "tag" {
   value = data.bridgecrew_tag.found
 }
+
+output "tags" {
+  value = data.bridgecrew_tags.found
+}
