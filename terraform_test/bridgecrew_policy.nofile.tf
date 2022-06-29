@@ -3,6 +3,8 @@
 resource "bridgecrew_policy" "no_file" {
   cloud_provider = "bogus"
 
+  
+  
   file = "${path.module}/policy/nofile.yaml"
 
   // although benchmarks take a free text this is total ***, as it needs to be an existing benchmark as
