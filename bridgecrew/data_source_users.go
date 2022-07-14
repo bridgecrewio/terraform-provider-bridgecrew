@@ -124,8 +124,6 @@ func flattenUserData(Users *[]map[string]interface{}) []interface{} {
 			oi["email"] = User["email"]
 			oi["lastmodified"] = User["last_modified"]
 
-			//		oi["accounts"] = User["accounts"]
-
 			if User["accounts"] != nil {
 				var accounts []interface{}
 				accountsData := User["accounts"].([]interface{})
