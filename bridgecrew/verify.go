@@ -71,9 +71,6 @@ func setNotNil(typedjson typed.Typed, d *schema.ResourceData, diags diag.Diagnos
 	var err error
 	if typedjson[item] != nil {
 		err = d.Set(toset, strings.ToLower(typedjson[item].(string)))
-
-	} else {
-		err = d.Set(toset, "")
 	}
 	diags = LogAppendError(err, diags)
 	return diags
